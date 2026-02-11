@@ -7,6 +7,7 @@ import Landing from "./pages/Landing";
 import Milestones from "./pages/Milestones";
 import Mentors from "./pages/Mentors";
 import Explore from "./pages/Explore";
+import CareerDetails from "./pages/CareerDetails";
 import Resources from "./pages/Resources";
 import AppLayout from "./components/AppLayout";
 import NotFound from "./pages/NotFound";
@@ -25,6 +26,7 @@ const App = () => (
             <Route path="/milestones" element={<Milestones />} />
             <Route path="/mentors" element={<Mentors />} />
             <Route path="/explore" element={<Explore />} />
+            <Route path="/careers" element={<CareerDetails />} />
             <Route path="/resources" element={<Resources />} />
           </Route>
           <Route path="*" element={<NotFound />} />

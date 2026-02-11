@@ -4,6 +4,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { careerPaths } from "@/data/mockData";
 import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Link } from "react-router-dom";
 
 const Explore = () => {
   const [selected, setSelected] = useState<string[]>([]);
@@ -54,8 +55,8 @@ const Explore = () => {
       </div>
 
       <div className="flex justify-center">
-        <Button size="lg" className="rounded-full px-10" disabled={selected.length === 0 && !interests}>
-          Find My Path
+        <Button size="lg" className="rounded-full px-10" disabled={selected.length === 0 && !interests} asChild>
+          <Link to="/careers">Find My Path</Link>
         </Button>
       </div>
     </div>
