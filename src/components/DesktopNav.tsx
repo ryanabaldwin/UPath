@@ -1,4 +1,4 @@
-import { Map, Users, Compass, BookOpen, Home } from "lucide-react";
+import { Map, Users, Compass, BookOpen, Home, Briefcase } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -7,6 +7,7 @@ const links = [
   { to: "/milestones", icon: Map, label: "Milestones" },
   { to: "/mentors", icon: Users, label: "Mentors" },
   { to: "/explore", icon: Compass, label: "Explore" },
+  { to: "/careers", icon: Briefcase, label: "Careers" },
   { to: "/resources", icon: BookOpen, label: "Resources" },
 ];
 
