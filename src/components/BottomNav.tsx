@@ -1,4 +1,4 @@
-import { Map, Users, Compass, BookOpen } from "lucide-react";
+import { Map, Users, Compass, BookOpen, Briefcase } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -6,6 +6,7 @@ const tabs = [
   { to: "/milestones", icon: Map, label: "Milestones" },
   { to: "/mentors", icon: Users, label: "Mentors" },
   { to: "/explore", icon: Compass, label: "Explore" },
+  { to: "/careers", icon: Briefcase, label: "Careers" },
   { to: "/resources", icon: BookOpen, label: "Resources" },
 ];
 
