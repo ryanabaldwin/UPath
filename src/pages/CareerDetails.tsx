@@ -15,7 +15,7 @@ import {
   BookOpen,
   Users,
 } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 interface CareerPath {
   title: string;
@@ -119,6 +119,20 @@ const careers: CareerPath[] = [
 ];
 
 const CareerDetails = () => {
+  const location = useLocation();
+  const state = location.state as { selectedPaths?: string[]; interests?: string } | null;
+  const selectedPaths = state?.selectedPaths ?? [];
+  const interests = state?.interests ?? "";
+  const orderedCareers = selectedPaths.length > 0
+    ? [...careers].sort((a, b) => {
+        const aMatch = selectedPaths.includes(a.title);
+        const bMatch = selectedPaths.includes(b.title);
+        if (aMatch && !bMatch) return -1;
+        if (!aMatch && bMatch) return 1;
+        return 0;
+      })
+    : careers;
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -132,12 +146,14 @@ const CareerDetails = () => {
         </Link>
         <h1 className="text-2xl font-bold text-foreground">Your Career Matches</h1>
         <p className="mt-1 text-muted-foreground">
-          Based on your interests, here are some paths worth exploring ✨
+          {selectedPaths.length > 0 || interests
+            ? "Based on your interests, here are some paths worth exploring ✨"
+            : "Here are some paths worth exploring ✨"}
         </p>
       </div>
 
       {/* Career Cards */}
-      {careers.map((career) => (
+      {orderedCareers.map((career) => (
         <Card key={career.title} className="overflow-hidden">
           {/* Title & Match */}
           <CardHeader className="pb-3">

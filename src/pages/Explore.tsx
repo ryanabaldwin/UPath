@@ -1,14 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { careerPaths } from "@/data/mockData";
 import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
+import { fetchUserPreferences, putUserPreferences } from "@/lib/api";
 
 const Explore = () => {
+  const { userId } = useDemoIdentity();
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
   const [selected, setSelected] = useState<string[]>([]);
   const [interests, setInterests] = useState("");
+
+  const { data: prefs } = useQuery({
+    queryKey: ["preferences", userId],
+    queryFn: () => fetchUserPreferences(userId!),
+    enabled: !!userId,
+    retry: false,
+  });
+
+  useEffect(() => {
+    if (prefs) {
+      if (Array.isArray(prefs.selected_career_paths)) setSelected(prefs.selected_career_paths);
+      if (prefs.interests != null) setInterests(prefs.interests);
+    }
+  }, [prefs]);
+
+  const saveMutation = useMutation({
+    mutationFn: () => putUserPreferences(userId!, { interests, selected_career_paths: selected }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["preferences", userId] });
+    },
+  });
 
   const toggle = (path: string) =>
     setSelected((prev) =>
@@ -55,8 +82,27 @@ const Explore = () => {
       </div>
 
       <div className="flex justify-center">
-        <Button size="lg" className="rounded-full px-10" disabled={selected.length === 0 && !interests} asChild>
-          <Link to="/careers">Find My Path</Link>
+        <Button
+          size="lg"
+          className="rounded-full px-10"
+          disabled={selected.length === 0 && !interests}
+          onClick={() => {
+            if (userId) {
+              saveMutation.mutate(undefined, {
+                onSettled: () => {
+                  navigate("/careers", {
+                    state: { selectedPaths: selected, interests },
+                  });
+                },
+              });
+            } else {
+              navigate("/careers", {
+                state: { selectedPaths: selected, interests },
+              });
+            }
+          }}
+        >
+          {saveMutation.isPending ? "Saving…" : "Find My Path"}
         </Button>
       </div>
     </div>

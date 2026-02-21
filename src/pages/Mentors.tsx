@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchMentors, bookMentor, unbookMentor, type Mentor } from "@/lib/api";
+import { fetchMentors, bookMentor, unbookMentor, fetchUserMeetings, type Mentor } from "@/lib/api";
+import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 import { toast } from "sonner";
 
 function avatarInitials(m: Mentor) {
@@ -19,12 +20,14 @@ function MentorCard({
   onUnbook,
   isBooking,
   isUnbooking,
+  canBook,
 }: {
   mentor: Mentor;
   onBook: (id: number) => void;
   onUnbook: (id: number) => void;
   isBooking: boolean;
   isUnbooking: boolean;
+  canBook: boolean;
 }) {
   const available = mentor.is_available;
 
@@ -64,7 +67,7 @@ function MentorCard({
               <Button
                 size="sm"
                 className="rounded-full"
-                disabled={isBooking}
+                disabled={!canBook || isBooking}
                 onClick={() => onBook(mentor.mentor_id)}
               >
                 {isBooking ? "Booking…" : "Book Now"}
@@ -74,7 +77,7 @@ function MentorCard({
                 size="sm"
                 variant="outline"
                 className="rounded-full"
-                disabled={isUnbooking}
+                disabled={!canBook || isUnbooking}
                 onClick={() => onUnbook(mentor.mentor_id)}
               >
                 {isUnbooking ? "Cancelling…" : "Cancel Booking"}
@@ -105,15 +108,22 @@ function MentorCardSkeleton() {
 
 const Mentors = () => {
   const queryClient = useQueryClient();
+  const { userId } = useDemoIdentity();
   const { data: mentors = [], isLoading } = useQuery({
     queryKey: ["mentors"],
     queryFn: fetchMentors,
   });
+  const { data: myMeetings = [] } = useQuery({
+    queryKey: ["user-meetings", userId],
+    queryFn: () => fetchUserMeetings(userId!),
+    enabled: !!userId,
+  });
 
   const bookMutation = useMutation({
-    mutationFn: (mentorId: number) => bookMentor(mentorId),
+    mutationFn: (mentorId: number) => bookMentor(mentorId, userId!),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mentors"] });
+      queryClient.invalidateQueries({ queryKey: ["user-meetings", userId] });
       toast.success("Mentor booked successfully!");
     },
     onError: (err: Error) => {
@@ -122,15 +132,18 @@ const Mentors = () => {
   });
 
   const unbookMutation = useMutation({
-    mutationFn: (mentorId: number) => unbookMentor(mentorId),
+    mutationFn: (mentorId: number) => unbookMentor(mentorId, userId!),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mentors"] });
+      queryClient.invalidateQueries({ queryKey: ["user-meetings", userId] });
       toast.success("Booking cancelled.");
     },
     onError: (err: Error) => {
       toast.error(err.message || "Failed to cancel booking");
     },
   });
+
+  const canBook = !!userId;
 
   return (
     <div className="space-y-6">
@@ -140,6 +153,33 @@ const Mentors = () => {
           Connect with people who care about your future
         </p>
       </div>
+
+      {myMeetings.length > 0 && (
+        <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
+          <h2 className="text-sm font-semibold text-foreground mb-2">My mentor sessions</h2>
+          <ul className="space-y-2">
+            {myMeetings.map((m) => (
+              <li key={`${m.mentor_id}-${m.time}`} className="flex items-center justify-between text-sm">
+                <span>
+                  {m.mentor_first} {m.mentor_last}
+                  {m.specialty && <span className="text-muted-foreground"> · {m.specialty}</span>}
+                  <span className="block text-muted-foreground text-xs">
+                    {new Date(m.time).toLocaleString()}
+                  </span>
+                </span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => unbookMutation.mutate(m.mentor_id)}
+                  disabled={unbookMutation.isPending}
+                >
+                  Cancel
+                </Button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       <div className="space-y-4">
         {isLoading ? (
@@ -153,6 +193,7 @@ const Mentors = () => {
               onUnbook={(id) => unbookMutation.mutate(id)}
               isBooking={bookMutation.isPending}
               isUnbooking={unbookMutation.isPending}
+              canBook={canBook}
             />
           ))
         )}

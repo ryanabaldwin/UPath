@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const links = [
-  { to: "/", icon: Home, label: "Home" },
+  { to: "/dashboard", icon: Home, label: "Dashboard" },
   { to: "/milestones", icon: Map, label: "Milestones" },
   { to: "/mentors", icon: Users, label: "Mentors" },
   { to: "/explore", icon: Compass, label: "Explore" },
@@ -12,7 +12,7 @@ const links = [
 ];
 
 const DesktopNav = () => (
-  <aside className="fixed inset-y-0 left-0 z-40 hidden w-56 border-r border-border bg-card md:flex md:flex-col">
+  <aside className="fixed inset-y-0 left-0 z-40 hidden w-56 border-r border-border bg-card md:flex md:flex-col" aria-label="Side navigation">
     <div className="flex items-center gap-2 px-5 py-5">
       <Compass className="h-7 w-7 text-primary" />
       <span className="text-lg font-bold text-foreground">PathFinder</span>
@@ -22,7 +22,7 @@ const DesktopNav = () => (
         <NavLink
           key={to}
           to={to}
-          end={to === "/"}
+          end={to === "/dashboard"}
           className={({ isActive }) =>
             cn(
               "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",

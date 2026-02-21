@@ -27,11 +27,18 @@ const Landing = () => (
       <p className="mb-8 max-w-md text-lg text-muted-foreground">
         Make your dreams a reality. Explore careers, connect with mentors, and unlock opportunities — all in one place.
       </p>
-      <Link to="/explore">
-        <Button size="lg" className="rounded-full px-8 text-base gap-2">
-          Who are you? <ArrowRight className="h-5 w-5" />
-        </Button>
-      </Link>
+      <div className="flex flex-wrap justify-center gap-3">
+        <Link to="/dashboard">
+          <Button size="lg" className="rounded-full px-8 text-base gap-2">
+            Go to my dashboard <ArrowRight className="h-5 w-5" />
+          </Button>
+        </Link>
+        <Link to="/explore">
+          <Button variant="outline" size="lg" className="rounded-full px-8 text-base">
+            Explore careers first
+          </Button>
+        </Link>
+      </div>
     </section>
 
     {/* Steps Preview */}

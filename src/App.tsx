@@ -3,7 +3,9 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { DemoIdentityProvider } from "@/contexts/DemoIdentityContext";
 import Landing from "./pages/Landing";
+import Dashboard from "./pages/Dashboard";
 import Milestones from "./pages/Milestones";
 import Mentors from "./pages/Mentors";
 import Explore from "./pages/Explore";
@@ -16,13 +18,15 @@ const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
+    <DemoIdentityProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route element={<AppLayout />}>
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/milestones" element={<Milestones />} />
             <Route path="/mentors" element={<Mentors />} />
             <Route path="/explore" element={<Explore />} />
@@ -33,6 +37,7 @@ const App = () => (
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
+    </DemoIdentityProvider>
   </QueryClientProvider>
 );
 
