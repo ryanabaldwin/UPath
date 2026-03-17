@@ -1253,6 +1253,60 @@ app.post("/api/users/:id/resource-recommendations", async (req, res, next) => {
   }
 });
 
+app.put("/api/users/:id/onboarding", async (req, res, next) => {
+  try {
+    await ensureAiTables();
+    await ensureMilestoneSchema();
+    const { id } = req.params;
+    await assertUserExists(id);
+
+    const { background, goal, interests, challenge, weekly_time } = req.body ?? {};
+
+    if (typeof background === "string" && background.trim()) {
+      await query(
+        `UPDATE users SET current_grade_level = $1 WHERE id = $2`,
+        [background.trim().slice(0, 50), id]
+      );
+    }
+
+    const safeInterests = Array.isArray(interests)
+      ? interests.filter((i) => typeof i === "string").map((i) => i.trim()).filter(Boolean).slice(0, 10)
+      : [];
+
+    const onboardingPatch = {
+      ...(goal ? { exploration_mode: String(goal).trim().slice(0, 100) } : {}),
+      ...(safeInterests.length > 0 ? { interests: safeInterests } : {}),
+      ...(challenge ? { constraints: [String(challenge).trim().slice(0, 200)] } : {}),
+      preferences: {
+        ...(background ? { background: String(background).trim().slice(0, 100) } : {}),
+        ...(weekly_time ? { weekly_time: String(weekly_time).trim().slice(0, 50) } : {}),
+      },
+    };
+
+    await query(
+      `INSERT INTO student_profiles (user_id, profile_json, completeness, updated_at)
+       VALUES ($1, $2::jsonb, 20, NOW())
+       ON CONFLICT (user_id) DO UPDATE SET
+         profile_json = student_profiles.profile_json || $2::jsonb,
+         completeness = GREATEST(student_profiles.completeness, 20),
+         updated_at = NOW()`,
+      [id, JSON.stringify(onboardingPatch)]
+    );
+
+    await logEvent(id, "onboarding_completed", {
+      background: background ?? null,
+      goal: goal ?? null,
+      interests_count: safeInterests.length,
+      challenge: challenge ?? null,
+      weekly_time: weekly_time ?? null,
+    });
+
+    res.json({ ok: true });
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use((_req, res) => {
   res.status(404).json({ error: { code: "ROUTE_NOT_FOUND", message: "Route not found" } });
 });
