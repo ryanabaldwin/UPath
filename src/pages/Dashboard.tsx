@@ -7,20 +7,22 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Map, Users, Compass, BookOpen, ArrowRight, Star } from "lucide-react";
 import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 import {
-  fetchUser,
-  fetchUserProgress,
+  fetchMilestoneTree,
   fetchUserMeetings,
   fetchUserBookmarks,
   fetchGoals,
+  fetchNextPlanStep,
+  type MilestoneNode,
 } from "@/lib/api";
 
 const Dashboard = () => {
   const { userId, user } = useDemoIdentity();
 
-  const { data: progressList = [] } = useQuery({
-    queryKey: ["user-progress", userId],
-    queryFn: () => fetchUserProgress(userId!),
+  const { data: treeData } = useQuery({
+    queryKey: ["milestone-tree", userId],
+    queryFn: () => fetchMilestoneTree(userId!),
     enabled: !!userId,
+    retry: false,
   });
 
   const { data: meetings = [] } = useQuery({
@@ -42,22 +44,37 @@ const Dashboard = () => {
     queryFn: () => fetchGoals(),
   });
 
-  const currentGoalId = user?.goal_id ?? null;
-  const primaryProgress = currentGoalId
-    ? progressList.find((p) => String(p.goal_id) === String(currentGoalId))
-    : null;
-  const completedCount = primaryProgress
-    ? [primaryProgress.milestone1_is_complete, primaryProgress.milestone2_is_complete, primaryProgress.milestone_n_is_complete].filter(Boolean).length
-    : 0;
-  const progressPct = primaryProgress ? Math.round((completedCount / 3) * 100) : 0;
+  const { data: nextStepData } = useQuery({
+    queryKey: ["next-step", userId],
+    queryFn: () => fetchNextPlanStep(userId!),
+    enabled: !!userId,
+    retry: false,
+  });
+
+  const tree = treeData?.tree ?? [];
+
+  // Collect all daily nodes recursively for progress computation
+  const allDailies: MilestoneNode[] = [];
+  function collectDailies(nodes: MilestoneNode[]) {
+    for (const n of nodes) {
+      if (n.tier === "daily") allDailies.push(n);
+      if (n.children.length > 0) collectDailies(n.children);
+    }
+  }
+  collectDailies(tree);
+
+  const completedDailies = allDailies.filter((n) => n.status === "complete").length;
+  const progressPct = allDailies.length > 0 ? Math.round((completedDailies / allDailies.length) * 100) : 0;
+  const hasMilestones = tree.length > 0;
+  const macroNode = tree.find((n) => n.tier === "macro");
+
   const nextMeeting = meetings[0];
 
-  const hasGoal = !!currentGoalId;
   const hasMentor = meetings.length > 0;
   const hasExplored = goals.length > 0;
-  const checklistDone = hasGoal && hasMentor;
+  const checklistDone = hasMilestones && hasMentor;
   const checklistSteps = [
-    { done: hasGoal, label: "Set your goal", to: "/milestones", icon: Map },
+    { done: hasMilestones, label: "Create your milestone plan", to: "/milestones", icon: Map },
     { done: hasMentor, label: "Connect with a mentor", to: "/mentors", icon: Users },
     { done: hasExplored, label: "Explore career paths", to: "/explore", icon: Compass },
   ];
@@ -129,19 +146,19 @@ const Dashboard = () => {
         </Card>
       )}
 
-      {/* Current goal & progress */}
-      {primaryProgress && (
+      {/* Current milestone plan progress */}
+      {hasMilestones && (
         <Card>
           <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Current goal</CardTitle>
-            <p className="text-sm text-muted-foreground">{primaryProgress.goal_title ?? "Goal"}</p>
+            <CardTitle className="text-lg">Your plan</CardTitle>
+            <p className="text-sm text-muted-foreground">{macroNode?.title ?? "Milestone plan"}</p>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between text-sm">
-              <span className="text-muted-foreground">Progress</span>
-              <span className="font-semibold text-foreground">{progressPct}%</span>
+              <span className="text-muted-foreground">Daily steps</span>
+              <span className="font-semibold text-foreground">{completedDailies} / {allDailies.length} complete</span>
             </div>
-            <Progress value={progressPct} className="h-2" aria-label={`Goal progress ${progressPct} percent`} />
+            <Progress value={progressPct} className="h-2" aria-label={`Plan progress ${progressPct} percent`} />
             <Button variant="outline" size="sm" className="w-full rounded-full" asChild>
               <Link to="/milestones">View milestones</Link>
             </Button>
@@ -149,23 +166,30 @@ const Dashboard = () => {
         </Card>
       )}
 
-      {!primaryProgress && currentGoalId && (
+      {!hasMilestones && (
         <Card>
           <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground mb-3">Your goal is set. Start tracking milestones.</p>
-            <Button variant="outline" size="sm" className="rounded-full" asChild>
-              <Link to="/milestones">Go to milestones</Link>
+            <p className="text-sm text-muted-foreground mb-3">Create a milestone plan to track your progress.</p>
+            <Button size="sm" className="rounded-full" asChild>
+              <Link to="/milestones">Get started</Link>
             </Button>
           </CardContent>
         </Card>
       )}
 
-      {!currentGoalId && (
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-sm text-muted-foreground mb-3">Set a goal to track your progress.</p>
-            <Button size="sm" className="rounded-full" asChild>
-              <Link to="/milestones">Choose a goal</Link>
+      {nextStepData?.next_step && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Next step from your plan</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-foreground">{nextStepData.next_step.label}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              {nextStepData.next_step.week} · ~{nextStepData.next_step.estimated_hours} hrs · $
+              {nextStepData.next_step.estimated_cost_usd} estimated
+            </p>
+            <Button variant="outline" size="sm" className="mt-3 rounded-full" asChild>
+              <Link to="/milestones">Track this step</Link>
             </Button>
           </CardContent>
         </Card>
