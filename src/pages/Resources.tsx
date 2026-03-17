@@ -9,6 +9,7 @@ import { Search, ExternalLink, Bookmark, BookmarkCheck } from "lucide-react";
 import { resources as mockResources } from "@/data/mockData";
 import {
   fetchResources,
+  fetchResourcesSearch,
   fetchUserBookmarks,
   addBookmark,
   removeBookmark,
@@ -19,17 +20,44 @@ import { toast } from "sonner";
 
 const categories = ["All", "Scholarships", "Jobs", "College"] as const;
 
-type ResourceItem = ApiResource | { resource_id: number; title: string; description: string; category: string; link: string };
+type ResourceItem =
+  | ApiResource
+  | {
+      resource_id: number;
+      title: string;
+      description: string;
+      category: string;
+      link: string;
+      education_level?: string | null;
+      location?: string | null;
+      cost_usd?: number | null;
+    };
 
 const Resources = () => {
   const queryClient = useQueryClient();
   const { userId } = useDemoIdentity();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<string>("All");
+  const [industryFilter, setIndustryFilter] = useState("");
+  const [educationFilter, setEducationFilter] = useState("");
+  const [formatFilter, setFormatFilter] = useState("");
+  const [locationFilter, setLocationFilter] = useState("");
 
   const { data: apiResources, isError: apiError } = useQuery({
-    queryKey: ["resources"],
-    queryFn: () => fetchResources(),
+    queryKey: ["resources", industryFilter, educationFilter, formatFilter, locationFilter],
+    queryFn: () => {
+      const hasAdvancedFilters =
+        industryFilter.trim() || educationFilter.trim() || formatFilter.trim() || locationFilter.trim();
+      if (hasAdvancedFilters) {
+        return fetchResourcesSearch({
+          industry: industryFilter.trim() || undefined,
+          education_level: educationFilter.trim() || undefined,
+          format: formatFilter.trim() || undefined,
+          location: locationFilter.trim() || undefined,
+        });
+      }
+      return fetchResources();
+    },
     retry: false,
   });
 
@@ -98,6 +126,33 @@ const Resources = () => {
         />
       </div>
 
+      <div className="grid grid-cols-2 gap-2">
+        <Input
+          placeholder="Industry (e.g. tech)"
+          value={industryFilter}
+          onChange={(e) => setIndustryFilter(e.target.value)}
+          className="rounded-xl"
+        />
+        <Input
+          placeholder="Education level"
+          value={educationFilter}
+          onChange={(e) => setEducationFilter(e.target.value)}
+          className="rounded-xl"
+        />
+        <Input
+          placeholder="Format (online/in-person)"
+          value={formatFilter}
+          onChange={(e) => setFormatFilter(e.target.value)}
+          className="rounded-xl"
+        />
+        <Input
+          placeholder="Location"
+          value={locationFilter}
+          onChange={(e) => setLocationFilter(e.target.value)}
+          className="rounded-xl"
+        />
+      </div>
+
       <Tabs value={tab} onValueChange={setTab}>
         <TabsList className="w-full justify-start rounded-xl">
           {categories.map((c) => (
@@ -135,6 +190,15 @@ const Resources = () => {
                         <p className="mt-1 text-sm text-muted-foreground leading-relaxed">
                           {r.description ?? ""}
                         </p>
+                        {(r.education_level || r.location || r.cost_usd != null) && (
+                          <p className="mt-1 text-xs text-muted-foreground">
+                            {r.education_level ? `Education: ${r.education_level}` : "Education: any"}
+                            {" · "}
+                            {r.location ? `Location: ${r.location}` : "Location: flexible"}
+                            {" · "}
+                            {r.cost_usd == null ? "Cost: varies" : `Cost: $${r.cost_usd}`}
+                          </p>
+                        )}
                         <Badge variant="outline" className="mt-2 text-xs">
                           {r.category}
                         </Badge>

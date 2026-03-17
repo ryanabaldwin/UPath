@@ -1,131 +1,151 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Star, Flag, ChevronRight } from "lucide-react";
+import { Star, Flag, ChevronRight, ChevronDown, Flame, Plus } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
 import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 import {
+  fetchMilestoneTree,
+  patchMilestone,
+  generateMilestones,
   fetchUser,
-  fetchUserProgress,
-  fetchGoals,
-  patchProgress,
-  patchUserGoal,
-  createUserProgress,
-  type UserProgressWithGoal,
-  type Goal,
+  fetchNextPlanStep,
+  type MilestoneNode,
 } from "@/lib/api";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
-function milestoneLabel(p: UserProgressWithGoal, index: 1 | 2 | 3): string {
-  if (index === 1) return p.milestone1 ?? "Milestone 1";
-  if (index === 2) return p.milestone2 ?? "Milestone 2";
-  return p.milestone_n ?? "Final milestone";
-}
+const TIER_LABELS: Record<string, string> = {
+  macro: "North Star",
+  checkpoint: "Checkpoint",
+  domain: "Focus Area",
+  daily: "Action Step",
+};
 
-function completed(p: UserProgressWithGoal, index: 1 | 2 | 3): boolean {
-  if (index === 1) return p.milestone1_is_complete;
-  if (index === 2) return p.milestone2_is_complete;
-  return p.milestone_n_is_complete;
-}
+const TIER_ORDER = ["macro", "checkpoint", "domain", "daily"];
+
+const CATEGORY_COLORS: Record<string, string> = {
+  school: "bg-blue-100 text-blue-700 border-blue-200",
+  work: "bg-violet-100 text-violet-700 border-violet-200",
+  life: "bg-green-100 text-green-700 border-green-200",
+  finance: "bg-amber-100 text-amber-700 border-amber-200",
+};
 
 function MilestoneRow({
-  label,
-  done,
+  node,
   onToggle,
   disabled,
+  depth = 0,
 }: {
-  label: string;
-  done: boolean;
-  onToggle: () => void;
+  node: MilestoneNode;
+  onToggle: (id: number, done: boolean) => void;
   disabled: boolean;
+  depth?: number;
 }) {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(depth < 2);
+  const done = node.status === "complete";
+  const hasChildren = node.children.length > 0;
+
   return (
-    <div className="relative flex gap-4">
-      <div className="flex flex-col items-center">
-        <button
-          type="button"
-          onClick={onToggle}
-          disabled={disabled}
+    <div className={cn("relative", depth > 0 && "ml-6 border-l border-border pl-4")}>
+      <div className="relative flex gap-3 pb-3">
+        <div className="flex flex-col items-center">
+          <button
+            type="button"
+            onClick={() => onToggle(node.id, done)}
+            disabled={disabled}
+            className={cn(
+              "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
+              done
+                ? "border-primary bg-primary text-primary-foreground"
+                : "border-border bg-card text-muted-foreground hover:border-primary/50"
+            )}
+            aria-label={done ? "Mark incomplete" : "Mark complete"}
+          >
+            {done ? <Star className="h-4 w-4" /> : <Flag className="h-3.5 w-3.5" />}
+          </button>
+        </div>
+
+        <div
           className={cn(
-            "flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 transition-colors",
-            done
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-border bg-card text-muted-foreground hover:border-primary/50"
+            "flex-1 rounded-xl p-3 shadow-sm transition-shadow",
+            done ? "bg-muted/50" : "bg-card hover:shadow-md",
           )}
         >
-          {done ? <Star className="h-5 w-5" /> : <Flag className="h-4 w-4" />}
-        </button>
-      </div>
-      <button
-        type="button"
-        onClick={() => setExpanded((e) => !e)}
-        className="mb-4 flex-1 rounded-xl bg-card p-4 text-left shadow-sm transition-shadow hover:shadow-md"
-      >
-        <div className="flex items-center justify-between">
-          <h3 className={cn("font-semibold", done ? "text-foreground" : "text-foreground")}>{label}</h3>
-          <ChevronRight
-            className={cn("h-4 w-4 text-muted-foreground transition-transform", expanded && "rotate-90")}
-          />
+          <div className="flex items-start justify-between gap-2">
+            <div className="flex-1 min-w-0">
+              <div className="flex flex-wrap items-center gap-1.5 mb-0.5">
+                <span className={cn("text-xs font-semibold uppercase tracking-wider", done ? "text-muted-foreground" : "text-primary")}>
+                  {TIER_LABELS[node.tier] ?? node.tier}
+                </span>
+                {node.category && (
+                  <Badge variant="outline" className={cn("text-xs py-0 h-4", CATEGORY_COLORS[node.category])}>
+                    {node.category}
+                  </Badge>
+                )}
+                {node.due_date && (
+                  <span className="text-xs text-muted-foreground">Due {node.due_date}</span>
+                )}
+              </div>
+              <p className={cn("text-sm font-medium leading-snug", done && "line-through text-muted-foreground")}>
+                {node.title}
+              </p>
+              {node.description && expanded && (
+                <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{node.description}</p>
+              )}
+            </div>
+            {hasChildren && (
+              <button
+                type="button"
+                onClick={() => setExpanded((e) => !e)}
+                className="shrink-0 rounded p-0.5 text-muted-foreground hover:text-foreground"
+                aria-label={expanded ? "Collapse" : "Expand"}
+              >
+                {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+              </button>
+            )}
+          </div>
         </div>
-        {expanded && <p className="mt-1 text-sm text-muted-foreground">Mark as complete when you’ve finished this step.</p>}
-      </button>
-    </div>
-  );
-}
+      </div>
 
-function GoalPicker({
-  goals,
-  currentGoalId,
-  onSelect,
-  disabled,
-}: {
-  goals: Goal[];
-  currentGoalId: string | null;
-  onSelect: (goalId: number) => void;
-  disabled: boolean;
-}) {
-  return (
-    <Card className="border-primary/30 bg-primary/5">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg">Choose your goal</CardTitle>
-        <p className="text-sm text-muted-foreground">Pick a path to start tracking milestones.</p>
-      </CardHeader>
-      <CardContent className="flex flex-wrap gap-2">
-        {goals.map((g) => (
-          <Button
-            key={g.goal_id}
-            variant={String(g.goal_id) === currentGoalId ? "default" : "outline"}
-            size="sm"
-            className="rounded-full"
-            disabled={disabled}
-            onClick={() => onSelect(Number(g.goal_id))}
-          >
-            {g.title}
-          </Button>
-        ))}
-      </CardContent>
-    </Card>
+      {hasChildren && expanded && (
+        <div>
+          {node.children
+            .slice()
+            .sort((a, b) => TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier))
+            .map((child) => (
+              <MilestoneRow
+                key={child.id}
+                node={child}
+                onToggle={onToggle}
+                disabled={disabled}
+                depth={depth + 1}
+              />
+            ))}
+        </div>
+      )}
+    </div>
   );
 }
 
 const Milestones = () => {
   const queryClient = useQueryClient();
   const { userId } = useDemoIdentity();
+  const navigate = useNavigate();
 
-  const { data: progressList = [], isLoading: progressLoading, isError: progressError } = useQuery({
-    queryKey: ["user-progress", userId],
-    queryFn: () => fetchUserProgress(userId!),
+  const {
+    data: treeData,
+    isLoading: treeLoading,
+    isError: treeError,
+  } = useQuery({
+    queryKey: ["milestone-tree", userId],
+    queryFn: () => fetchMilestoneTree(userId!),
     enabled: !!userId,
-  });
-
-  const { data: goals = [] } = useQuery({
-    queryKey: ["goals"],
-    queryFn: fetchGoals,
   });
 
   const { data: user } = useQuery({
@@ -134,46 +154,37 @@ const Milestones = () => {
     enabled: !!userId,
   });
 
-  const patchProgressMutation = useMutation({
-    mutationFn: ({
-      userId: uid,
-      goalId,
-      payload,
-    }: {
-      userId: string;
-      goalId: number;
-      payload: { milestone1_is_complete?: boolean; milestone2_is_complete?: boolean; milestone_n_is_complete?: boolean };
-    }) => patchProgress(uid, goalId, payload),
+  const { data: nextStepData } = useQuery({
+    queryKey: ["next-step", userId],
+    queryFn: () => fetchNextPlanStep(userId!),
+    enabled: !!userId,
+    retry: false,
+  });
+
+  const patchMutation = useMutation({
+    mutationFn: ({ milestoneId, status }: { milestoneId: number; status: "complete" | "pending" }) =>
+      patchMilestone(userId!, milestoneId, { status }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-progress", userId] });
-      toast.success("Progress updated");
+      queryClient.invalidateQueries({ queryKey: ["milestone-tree", userId] });
+      queryClient.invalidateQueries({ queryKey: ["user", userId] });
+      queryClient.invalidateQueries({ queryKey: ["next-step", userId] });
+      toast.success("Progress saved");
     },
     onError: (e: Error) => toast.error(e.message || "Failed to update"),
   });
 
-  const setGoalMutation = useMutation({
-    mutationFn: (goalId: number) => patchUserGoal(userId!, goalId),
+  const generateMutation = useMutation({
+    mutationFn: (selectedPath: string) => generateMilestones(userId!, selectedPath),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user", userId] });
-      queryClient.invalidateQueries({ queryKey: ["user-progress", userId] });
-      toast.success("Goal set");
+      queryClient.invalidateQueries({ queryKey: ["milestone-tree", userId] });
+      toast.success("Milestone plan created!");
     },
-    onError: (e: Error) => toast.error(e.message || "Failed to set goal"),
+    onError: (e: Error) => toast.error(e.message || "Failed to generate milestones"),
   });
 
-  const ensureProgressMutation = useMutation({
-    mutationFn: (goalId: number) => createUserProgress(userId!, goalId),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["user-progress", userId] });
-    },
-  });
-
-  const currentGoalId = user?.goal_id ?? null;
-  const primaryProgress = progressList.find((p) => String(p.goal_id) === String(currentGoalId));
-  const completedCount = primaryProgress
-    ? [primaryProgress.milestone1_is_complete, primaryProgress.milestone2_is_complete, primaryProgress.milestone_n_is_complete].filter(Boolean).length
-    : 0;
-  const progressPct = primaryProgress ? Math.round((completedCount / 3) * 100) : 0;
+  const handleToggle = (milestoneId: number, currentlyDone: boolean) => {
+    patchMutation.mutate({ milestoneId, status: currentlyDone ? "pending" : "complete" });
+  };
 
   if (!userId) {
     return (
@@ -184,20 +195,20 @@ const Milestones = () => {
     );
   }
 
-  if (progressError) {
+  if (treeError) {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-foreground">Your Journey</h1>
         <Alert variant="destructive">
           <AlertDescription>
-            We couldn’t load your progress. Check that the backend is running and the database is set up.
+            We couldn't load your milestones. Check that the backend is running and the database is set up.
           </AlertDescription>
         </Alert>
       </div>
     );
   }
 
-  if (progressLoading) {
+  if (treeLoading) {
     return (
       <div className="space-y-6">
         <div>
@@ -205,14 +216,32 @@ const Milestones = () => {
           <Skeleton className="mt-1 h-4 w-64" />
         </div>
         <Skeleton className="h-32 w-full rounded-xl" />
-        <div className="space-y-4">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-20 w-full rounded-xl" />
-          ))}
-        </div>
+        {[1, 2, 3].map((i) => (
+          <Skeleton key={i} className="h-20 w-full rounded-xl" />
+        ))}
       </div>
     );
   }
+
+  const tree = treeData?.tree ?? [];
+
+  // Compute progress from daily nodes
+  const allDailyNodes: MilestoneNode[] = [];
+  function collectDailies(nodes: MilestoneNode[]) {
+    for (const n of nodes) {
+      if (n.tier === "daily") allDailyNodes.push(n);
+      if (n.children.length > 0) collectDailies(n.children);
+    }
+  }
+  collectDailies(tree);
+
+  const completedDailies = allDailyNodes.filter((n) => n.status === "complete").length;
+  const progressPct = allDailyNodes.length > 0 ? Math.round((completedDailies / allDailyNodes.length) * 100) : 0;
+
+  const macroNode = tree.find((n) => n.tier === "macro");
+  const streakCount = user?.streak_count ?? 0;
+
+  const isEmpty = tree.length === 0;
 
   return (
     <div className="space-y-6">
@@ -221,88 +250,89 @@ const Milestones = () => {
         <p className="text-muted-foreground">Track your progress step by step</p>
       </div>
 
-      {!currentGoalId && goals.length > 0 && (
-        <GoalPicker
-          goals={goals}
-          currentGoalId={currentGoalId}
-          onSelect={(goalId) => setGoalMutation.mutate(goalId)}
-          disabled={setGoalMutation.isPending}
-        />
+      {/* Streak */}
+      {streakCount > 0 && (
+        <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5">
+          <Flame className="h-5 w-5 text-amber-500" />
+          <span className="text-sm font-medium text-amber-700">{streakCount} milestone{streakCount !== 1 ? "s" : ""} completed</span>
+        </div>
       )}
 
-      {currentGoalId && !primaryProgress && goals.length > 0 && (
-        <p className="text-sm text-muted-foreground">
-          Your goal is set.{" "}
-          <Button
-            variant="link"
-            className="p-0 h-auto text-primary"
-            disabled={ensureProgressMutation.isPending}
-            onClick={() => ensureProgressMutation.mutate(Number(currentGoalId))}
-          >
-            Start tracking
-          </Button>{" "}
-          to see milestones here.
-        </p>
+      {/* Next step from plan */}
+      {nextStepData?.next_step && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardHeader className="pb-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">Next action step</p>
+            <CardTitle className="text-base">{nextStepData.next_step.label}</CardTitle>
+          </CardHeader>
+          <CardContent className="text-sm text-muted-foreground">
+            {nextStepData.next_step.week}
+          </CardContent>
+        </Card>
       )}
 
-      {primaryProgress && (
-        <>
-          <Card className="border-primary/30 bg-primary/5">
-            <CardHeader className="pb-2">
-              <p className="text-xs font-semibold uppercase tracking-wider text-primary">Current goal</p>
-              <CardTitle className="text-lg">{primaryProgress.goal_title ?? "Goal"}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-3">
-              <div className="space-y-1">
-                <div className="flex items-center justify-between text-xs text-muted-foreground">
-                  <span>Overall progress</span>
-                  <span>{progressPct}%</span>
-                </div>
-                <Progress value={progressPct} className="h-2" />
+      {/* Progress header */}
+      {!isEmpty && (
+        <Card className="border-primary/30 bg-primary/5">
+          <CardHeader className="pb-2">
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+              {macroNode ? "North Star" : "Overall progress"}
+            </p>
+            <CardTitle className="text-base">{macroNode?.title ?? "Your Plan"}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-xs text-muted-foreground">
+                <span>Daily steps</span>
+                <span>{completedDailies} / {allDailyNodes.length} complete</span>
               </div>
-            </CardContent>
-          </Card>
+              <Progress value={progressPct} className="h-2" aria-label={`Progress ${progressPct} percent`} />
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
-          <div className="relative space-y-0">
-            {([1, 2, 3] as const).map((index, i) => (
-              <div key={index} className="relative">
-                <MilestoneRow
-                  label={milestoneLabel(primaryProgress, index)}
-                  done={completed(primaryProgress, index)}
-                  onToggle={() => {
-                    const next = !completed(primaryProgress, index);
-                    patchProgressMutation.mutate({
-                      userId: userId!,
-                      goalId: Number(primaryProgress.goal_id),
-                      payload:
-                        index === 1
-                          ? { milestone1_is_complete: next }
-                          : index === 2
-                            ? { milestone2_is_complete: next }
-                            : { milestone_n_is_complete: next },
-                    });
-                  }}
-                  disabled={patchProgressMutation.isPending}
-                />
-                {i < 2 && (
-                  <div
-                    className={cn(
-                      "ml-5 w-0.5 min-h-[1rem]",
-                      completed(primaryProgress, index) ? "bg-primary/40" : "bg-border"
-                    )}
-                  />
-                )}
-              </div>
+      {/* Empty state */}
+      {isEmpty && (
+        <Card className="border-dashed">
+          <CardContent className="pt-6 pb-6 text-center space-y-4">
+            <p className="text-sm text-muted-foreground">
+              No milestone plan yet. Generate one from the Explore page, or start from a career match.
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate("/explore")}>
+                Go to Explore
+              </Button>
+              <Button
+                size="sm"
+                className="rounded-full"
+                disabled={generateMutation.isPending}
+                onClick={() => generateMutation.mutate("")}
+              >
+                <Plus className="mr-1.5 h-3.5 w-3.5" />
+                {generateMutation.isPending ? "Generating…" : "Quick Start Plan"}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Milestone tree */}
+      {!isEmpty && (
+        <div className="space-y-1">
+          {tree
+            .slice()
+            .sort((a, b) => TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier))
+            .map((node) => (
+              <MilestoneRow
+                key={node.id}
+                node={node}
+                onToggle={handleToggle}
+                disabled={patchMutation.isPending}
+                depth={0}
+              />
             ))}
-          </div>
-        </>
-      )}
-
-      {currentGoalId && progressList.length > 0 && !primaryProgress && (
-        <p className="text-sm text-muted-foreground">
-          You have progress on other goals. Your current goal does not have progress yet—complete a milestone to see it
-          here, or switch goal above.
-        </p>
+        </div>
       )}
     </div>
   );

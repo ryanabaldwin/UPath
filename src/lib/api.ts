@@ -1,4 +1,52 @@
+import type {
+  AiProfileResponse,
+  AiThreadCreateResponse,
+  AiThreadMessageResponse,
+  GroundedResourceRecommendation,
+  GoalPath,
+  MilestoneNode,
+  MilestoneStatus,
+  MilestoneTier,
+  MilestoneCategory,
+  NorthStarFields,
+  RecommendationsResponse,
+  ResourceSearchFilters,
+  StudentProfileJson,
+} from "@/lib/aiTypes";
+
+export type { MilestoneNode, MilestoneStatus, MilestoneTier, MilestoneCategory, NorthStarFields };
+
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+
+interface ApiErrorPayload {
+  error?: string | { code?: string; message?: string; details?: Record<string, unknown> };
+}
+
+export class ApiError extends Error {
+  code?: string;
+  status: number;
+  details?: Record<string, unknown>;
+
+  constructor(message: string, options: { status: number; code?: string; details?: Record<string, unknown> }) {
+    super(message);
+    this.name = "ApiError";
+    this.status = options.status;
+    this.code = options.code;
+    this.details = options.details;
+  }
+}
+
+async function parseApiError(response: Response): Promise<ApiError> {
+  const payload = (await response.json().catch(() => ({}))) as ApiErrorPayload;
+  if (typeof payload.error === "string") {
+    return new ApiError(payload.error, { status: response.status });
+  }
+  return new ApiError(payload.error?.message ?? `API request failed: ${response.status}`, {
+    status: response.status,
+    code: payload.error?.code,
+    details: payload.error?.details,
+  });
+}
 
 export interface Goal {
   goal_id: string;
@@ -18,15 +66,12 @@ export interface User {
   goal_id: string | null;
   user_img_src: string | null;
   goal_title: string | null;
+  north_star_vision: string | null;
+  definition_of_success: string | null;
+  current_grade_level: string | null;
+  streak_count: number;
 }
 
-export interface ProgressStatus {
-  id: string;
-  goal_id: string;
-  milestone1_is_complete: boolean;
-  milestone2_is_complete: boolean;
-  milestone_n_is_complete: boolean;
-}
 
 export interface Mentor {
   mentor_id: number;
@@ -42,7 +87,7 @@ export interface Mentor {
 async function getJson<T>(path: string): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`);
   if (!response.ok) {
-    throw new Error(`API request failed: ${response.status}`);
+    throw await parseApiError(response);
   }
   return response.json() as Promise<T>;
 }
@@ -54,9 +99,19 @@ async function postJson<T>(path: string, body: unknown): Promise<T> {
     body: JSON.stringify(body),
   });
   if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    const message = (data as { error?: string })?.error ?? `API request failed: ${response.status}`;
-    throw new Error(message);
+    throw await parseApiError(response);
+  }
+  return response.json() as Promise<T>;
+}
+
+async function putJson<T>(path: string, body: unknown): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) {
+    throw await parseApiError(response);
   }
   return response.json() as Promise<T>;
 }
@@ -73,28 +128,56 @@ export function fetchGoals() {
   return getJson<Goal[]>("/api/goals");
 }
 
-export function fetchProgress() {
-  return getJson<ProgressStatus[]>("/api/progress");
-}
-
 export function fetchUser(id: string) {
   return getJson<User>(`/api/users/${id}`);
 }
 
-export interface UserProgressWithGoal {
-  id: string;
-  goal_id: string;
-  goal_title: string | null;
-  milestone1: string | null;
-  milestone2: string | null;
-  milestone_n: string | null;
-  milestone1_is_complete: boolean;
-  milestone2_is_complete: boolean;
-  milestone_n_is_complete: boolean;
+export function fetchMilestoneTree(userId: string) {
+  return getJson<{ tree: MilestoneNode[] }>(`/api/users/${userId}/milestones/tree`);
 }
 
-export function fetchUserProgress(userId: string) {
-  return getJson<UserProgressWithGoal[]>(`/api/users/${userId}/progress`);
+export interface CreateMilestoneInput {
+  title: string;
+  tier: MilestoneTier;
+  description?: string;
+  category?: MilestoneCategory;
+  status?: MilestoneStatus;
+  due_date?: string;
+  parent_id?: number;
+}
+
+export function createMilestone(userId: string, input: CreateMilestoneInput) {
+  return postJson<MilestoneNode>(`/api/users/${userId}/milestones`, input);
+}
+
+export interface PatchMilestoneInput {
+  title?: string;
+  description?: string;
+  status?: MilestoneStatus;
+  due_date?: string | null;
+  category?: MilestoneCategory;
+}
+
+export function patchMilestone(userId: string, milestoneId: number, input: PatchMilestoneInput) {
+  return patchJson<MilestoneNode>(`/api/users/${userId}/milestones/${milestoneId}`, input);
+}
+
+export function deleteMilestone(userId: string, milestoneId: number) {
+  return deleteJson<{ ok: boolean }>(`/api/users/${userId}/milestones/${milestoneId}`);
+}
+
+export function generateMilestones(userId: string, selectedPath: string) {
+  return postJson<{ macro_id: number; generated_count: number }>(
+    `/api/users/${userId}/milestones/generate`,
+    { selected_path: selectedPath }
+  );
+}
+
+export function patchNorthStar(userId: string, fields: NorthStarFields) {
+  return patchJson<{ id: string; north_star_vision: string | null; definition_of_success: string | null; current_grade_level: string | null; streak_count: number }>(
+    `/api/users/${userId}/north-star`,
+    fields
+  );
 }
 
 export interface Meeting {
@@ -115,20 +198,6 @@ export function patchUserGoal(userId: string, goalId: number) {
   return patchJson<{ id: string; goal_id: number }>(`/api/users/${userId}/goal`, { goal_id: goalId });
 }
 
-export function createUserProgress(userId: string, goalId: number) {
-  return postJson<ProgressStatus>(`/api/users/${userId}/progress`, { goal_id: goalId });
-}
-
-export interface ProgressUpdate {
-  milestone1_is_complete?: boolean;
-  milestone2_is_complete?: boolean;
-  milestone_n_is_complete?: boolean;
-}
-
-export function patchProgress(userId: string, goalId: number, body: ProgressUpdate) {
-  return patchJson<ProgressStatus>(`/api/progress/${userId}/${goalId}`, body);
-}
-
 async function patchJson<T>(path: string, body: unknown): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: "PATCH",
@@ -136,9 +205,15 @@ async function patchJson<T>(path: string, body: unknown): Promise<T> {
     body: JSON.stringify(body),
   });
   if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    const message = (data as { error?: string })?.error ?? `API request failed: ${response.status}`;
-    throw new Error(message);
+    throw await parseApiError(response);
+  }
+  return response.json() as Promise<T>;
+}
+
+async function deleteJson<T>(path: string): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, { method: "DELETE" });
+  if (!response.ok) {
+    throw await parseApiError(response);
   }
   return response.json() as Promise<T>;
 }
@@ -174,11 +249,67 @@ export function putUserPreferences(
     body: JSON.stringify(data),
   }).then(async (r) => {
     if (!r.ok) {
-      const data = await r.json().catch(() => ({}));
-      throw new Error((data as { error?: string })?.error ?? `Request failed: ${r.status}`);
+      throw await parseApiError(r);
     }
     return r.json() as Promise<StudentPreferences>;
   });
+}
+
+export function createAiThread(userId: string, explorationMode: string) {
+  return postJson<AiThreadCreateResponse>(`/api/users/${userId}/ai/threads`, {
+    exploration_mode: explorationMode,
+  });
+}
+
+export function sendAiThreadMessage(userId: string, threadId: string, message: string) {
+  return postJson<AiThreadMessageResponse>(
+    `/api/users/${userId}/ai/threads/${threadId}/messages`,
+    { message }
+  );
+}
+
+export function fetchUserProfile(userId: string) {
+  return getJson<AiProfileResponse>(`/api/users/${userId}/profile`);
+}
+
+export function putUserProfile(userId: string, data: { profile_json: StudentProfileJson; completeness?: number }) {
+  return putJson<AiProfileResponse>(`/api/users/${userId}/profile`, data);
+}
+
+export function createRecommendations(userId: string, body?: { intent?: string }) {
+  return postJson<RecommendationsResponse>(`/api/users/${userId}/recommendations`, body ?? {});
+}
+
+export function createGoalPath(userId: string, selectedPath: string) {
+  return postJson<{ goal_path_id: string; goal_path: GoalPath }>(`/api/users/${userId}/goal-paths`, {
+    selected_path: selectedPath,
+  });
+}
+
+export function fetchGoalPath(userId: string, goalPathId: string) {
+  return getJson<{ goal_path: GoalPath }>(`/api/users/${userId}/goal-paths/${goalPathId}`);
+}
+
+export function convertGoalPathToGoal(userId: string, goalPathId: string) {
+  return postJson<{ ok: boolean; macro_id: number; generated_count: number }>(
+    `/api/users/${userId}/goal-paths/${goalPathId}/convert-to-goal`,
+    {}
+  );
+}
+
+export function fetchNextPlanStep(userId: string) {
+  return getJson<{
+    next_step: {
+      label: string;
+      week: string;
+      estimated_hours: number;
+      estimated_cost_usd: number;
+    } | null;
+  }>(`/api/users/${userId}/next-step`);
+}
+
+export function trackUserEvent(userId: string, name: string, metadata?: Record<string, unknown>) {
+  return postJson<{ ok: boolean }>(`/api/users/${userId}/events`, { name, metadata: metadata ?? {} });
 }
 
 export interface Resource {
@@ -187,11 +318,28 @@ export interface Resource {
   description: string | null;
   category: string;
   link: string | null;
+  industry?: string | null;
+  education_level?: string | null;
+  format?: string | null;
+  location?: string | null;
+  deadline_date?: string | null;
+  cost_usd?: number | null;
+  eligibility_notes?: string | null;
 }
 
 export function fetchResources(category?: string) {
   const q = category ? `?category=${encodeURIComponent(category)}` : "";
   return getJson<Resource[]>(`/api/resources${q}`);
+}
+
+export function fetchResourcesSearch(filters: ResourceSearchFilters = {}) {
+  const params = new URLSearchParams();
+  if (filters.industry) params.set("industry", filters.industry);
+  if (filters.education_level) params.set("education_level", filters.education_level);
+  if (filters.format) params.set("format", filters.format);
+  if (filters.location) params.set("location", filters.location);
+  const q = params.toString();
+  return getJson<Resource[]>(`/api/resources/search${q ? `?${q}` : ""}`);
 }
 
 export function fetchUserBookmarks(userId: string) {
@@ -207,8 +355,7 @@ export async function removeBookmark(userId: string, resourceId: number): Promis
     method: "DELETE",
   });
   if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    throw new Error((data as { error?: string })?.error ?? `Request failed: ${response.status}`);
+    throw await parseApiError(response);
   }
 }
 
@@ -219,9 +366,17 @@ export async function unbookMentor(mentorId: number, menteeId: string): Promise<
     body: JSON.stringify({ mentee_id: menteeId }),
   });
   if (!response.ok) {
-    const data = await response.json().catch(() => ({}));
-    const message = (data as { error?: string })?.error ?? `API request failed: ${response.status}`;
-    throw new Error(message);
+    throw await parseApiError(response);
   }
   return response.json() as Promise<{ ok: boolean }>;
+}
+
+export function createResourceRecommendations(
+  userId: string,
+  body: { goal_path_id?: string; helps_step_number?: number; selected_path?: string; filters?: ResourceSearchFilters }
+) {
+  return postJson<{
+    citations: number[];
+    recommendations: GroundedResourceRecommendation[];
+  }>(`/api/users/${userId}/resource-recommendations`, body);
 }

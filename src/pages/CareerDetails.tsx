@@ -2,140 +2,131 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Briefcase, GraduationCap, Clock, DollarSign, Heart, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 import {
-  Briefcase,
-  GraduationCap,
-  TrendingUp,
-  Clock,
-  DollarSign,
-  Heart,
-  ArrowLeft,
-  ExternalLink,
-  BookOpen,
-  Users,
-} from "lucide-react";
-import { Link, useLocation } from "react-router-dom";
+  convertGoalPathToGoal,
+  createGoalPath,
+  createRecommendations,
+  createResourceRecommendations,
+  trackUserEvent,
+} from "@/lib/api";
+import { toast } from "sonner";
+import type { GoalPath, GroundedResourceRecommendation, RecommendationMatch } from "@/lib/aiTypes";
 
-interface CareerPath {
-  title: string;
-  emoji: string;
-  description: string;
-  salaryRange: string;
-  growthRate: string;
-  education: string;
-  timeToEntry: string;
-  matchScore: number;
-  skills: string[];
-  dayInLife: string[];
-  resources: { title: string; type: string }[];
-  mentorName: string;
-  mentorAvatar: string;
-  mentorRole: string;
-}
-
-const careers: CareerPath[] = [
+const FALLBACK_MATCHES: RecommendationMatch[] = [
   {
-    title: "Software Development",
+    path_title: "Software Development",
     emoji: "💻",
-    description:
-      "Build apps, websites, and tools that millions of people use every day. Software developers solve real-world problems with code and creativity.",
-    salaryRange: "$70K – $150K+",
-    growthRate: "25% growth",
-    education: "Bootcamp, Associate's, or Bachelor's",
-    timeToEntry: "6 months – 4 years",
-    matchScore: 92,
-    skills: ["Problem Solving", "JavaScript", "Teamwork", "Creativity", "Communication"],
-    dayInLife: [
-      "Morning standup with your team to plan the day",
-      "Write and review code for a new feature",
-      "Lunch & learn session on a cool new tool",
-      "Pair-program with a teammate to fix a tricky bug",
-      "Ship your code and see it live! 🎉",
-    ],
-    resources: [
-      { title: "freeCodeCamp", type: "Free Course" },
-      { title: "CS50 by Harvard", type: "Free Course" },
-      { title: "Google IT Support Certificate", type: "Certificate" },
-    ],
-    mentorName: "Sarah Johnson",
-    mentorAvatar: "SJ",
-    mentorRole: "Senior Engineer",
+    confidence: 88,
+    reasons: ["Strong fit for builder mindset", "High demand across many regions"],
+    tradeoffs: "Good long-term upside, but requires consistent project practice.",
+    what_to_verify: ["Entry role requirements", "Local bootcamp/school costs"],
+    stats: {
+      salary_range: "$70K - $150K+",
+      education: "Bootcamp, Associate's, or Bachelor's",
+      time_to_entry: "6 months - 4 years",
+    },
   },
   {
-    title: "Healthcare",
+    path_title: "Healthcare",
     emoji: "🩺",
-    description:
-      "Make a direct impact on people's lives by helping them stay healthy. Healthcare careers range from nursing to therapy to public health.",
-    salaryRange: "$45K – $120K+",
-    growthRate: "13% growth",
-    education: "Certificate, Associate's, or Bachelor's",
-    timeToEntry: "1 – 6 years",
-    matchScore: 85,
-    skills: ["Empathy", "Attention to Detail", "Science", "Communication", "Resilience"],
-    dayInLife: [
-      "Review patient charts and prepare for rounds",
-      "Check in with patients and update care plans",
-      "Collaborate with doctors and specialists",
-      "Educate a patient's family on recovery steps",
-      "Document notes and wrap up the shift",
-    ],
-    resources: [
-      { title: "Khan Academy – Health & Medicine", type: "Free Course" },
-      { title: "CNA Certification Programs", type: "Certificate" },
-      { title: "Pre-Med Pathway Guide", type: "Guide" },
-    ],
-    mentorName: "Priya Patel",
-    mentorAvatar: "PP",
-    mentorRole: "Nurse Practitioner",
-  },
-  {
-    title: "Business & Entrepreneurship",
-    emoji: "🚀",
-    description:
-      "Turn your ideas into reality. Whether you want to start your own business or lead teams at a company, this path is all about impact and innovation.",
-    salaryRange: "$50K – $130K+",
-    growthRate: "8% growth",
-    education: "Self-taught, Associate's, or Bachelor's",
-    timeToEntry: "Anytime – start now!",
-    matchScore: 78,
-    skills: ["Leadership", "Marketing", "Financial Literacy", "Negotiation", "Adaptability"],
-    dayInLife: [
-      "Plan your week and set priorities",
-      "Meet with a client or pitch a new idea",
-      "Analyze sales data and adjust strategy",
-      "Network at a community event",
-      "Brainstorm your next big product idea 💡",
-    ],
-    resources: [
-      { title: "SCORE Free Mentoring", type: "Mentorship" },
-      { title: "Coursera – Business Foundations", type: "Free Course" },
-      { title: "Young Entrepreneurs Academy", type: "Program" },
-    ],
-    mentorName: "Aaliyah Brooks",
-    mentorAvatar: "AB",
-    mentorRole: "Small Business Owner",
+    confidence: 82,
+    reasons: ["Great fit for helping-people goals", "Stable and growing demand"],
+    tradeoffs: "High impact roles often require licenses or certifications.",
+    what_to_verify: ["Certification timelines", "Shift schedule options"],
+    stats: {
+      salary_range: "$45K - $120K+",
+      education: "Certificate, Associate's, or Bachelor's",
+      time_to_entry: "1 - 6 years",
+    },
   },
 ];
 
 const CareerDetails = () => {
   const location = useLocation();
-  const state = location.state as { selectedPaths?: string[]; interests?: string } | null;
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { userId } = useDemoIdentity();
+  const state = location.state as
+    | {
+        selectedPaths?: string[];
+        interests?: string;
+        matches?: RecommendationMatch[];
+        runId?: string;
+      }
+    | null;
   const selectedPaths = state?.selectedPaths ?? [];
   const interests = state?.interests ?? "";
-  const orderedCareers = selectedPaths.length > 0
-    ? [...careers].sort((a, b) => {
-        const aMatch = selectedPaths.includes(a.title);
-        const bMatch = selectedPaths.includes(b.title);
-        if (aMatch && !bMatch) return -1;
-        if (!aMatch && bMatch) return 1;
-        return 0;
-      })
-    : careers;
+  const incomingMatches = state?.matches ?? FALLBACK_MATCHES;
+  const runId = state?.runId;
+
+  const recommendationMutation = useMutation({
+    mutationFn: (intent: string) => createRecommendations(userId!, { intent }),
+    onError: (e: Error) => toast.error(e.message || "Unable to refresh recommendations"),
+  });
+
+  const buildPlanMutation = useMutation({
+    mutationFn: (selectedPath: string) => createGoalPath(userId!, selectedPath),
+    onError: (e: Error) => toast.error(e.message || "Unable to build your plan"),
+  });
+
+  const convertMutation = useMutation({
+    mutationFn: (goalPathId: string) => convertGoalPathToGoal(userId!, goalPathId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["milestone-tree", userId] });
+      queryClient.invalidateQueries({ queryKey: ["next-step", userId] });
+      toast.success("Milestone plan created!");
+    },
+    onError: (e: Error) => toast.error(e.message || "Unable to build your milestone plan"),
+  });
+  const resourceRecommendationsMutation = useMutation({
+    mutationFn: (payload: { goal_path_id: string; selected_path: string }) =>
+      createResourceRecommendations(userId!, {
+        goal_path_id: payload.goal_path_id,
+        helps_step_number: 1,
+        selected_path: payload.selected_path,
+      }),
+    onError: (e: Error) => toast.error(e.message || "Unable to load grounded resources"),
+  });
+
+  const displayedMatches = recommendationMutation.data?.matches ?? incomingMatches;
+  const builtGoalPath = buildPlanMutation.data;
+
+  const handleRegenerate = async (intent: string) => {
+    if (!userId) return;
+    const res = await recommendationMutation.mutateAsync(intent);
+    await trackUserEvent(userId, "recommendation_generated", {
+      intent,
+      run_id: res.run_id,
+      previous_run_id: runId ?? null,
+    });
+  };
+
+  const handleBuildPlan = async (selectedPath: string) => {
+    if (!userId) return;
+    const res = await buildPlanMutation.mutateAsync(selectedPath);
+    await resourceRecommendationsMutation.mutateAsync({
+      goal_path_id: res.goal_path_id,
+      selected_path: selectedPath,
+    });
+    await trackUserEvent(userId, "goal_path_generated", {
+      goal_path_id: res.goal_path_id,
+      selected_path: selectedPath,
+    });
+  };
+
+  const handleSetAsGoal = async (goalPathId: string) => {
+    if (!userId) return;
+    await convertMutation.mutateAsync(goalPathId);
+    await trackUserEvent(userId, "milestone_plan_started", { goal_path_id: goalPathId });
+    navigate("/milestones");
+  };
 
   return (
     <div className="space-y-8">
-      {/* Header */}
       <div>
         <Link
           to="/explore"
@@ -147,141 +138,132 @@ const CareerDetails = () => {
         <h1 className="text-2xl font-bold text-foreground">Your Career Matches</h1>
         <p className="mt-1 text-muted-foreground">
           {selectedPaths.length > 0 || interests
-            ? "Based on your interests, here are some paths worth exploring ✨"
-            : "Here are some paths worth exploring ✨"}
+            ? "Based on your profile, here are explainable matches."
+            : "Explore these explainable matches and build your plan."}
         </p>
       </div>
 
-      {/* Career Cards */}
-      {orderedCareers.map((career) => (
-        <Card key={career.title} className="overflow-hidden">
-          {/* Title & Match */}
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant="outline"
+          className="rounded-full"
+          onClick={() => void handleRegenerate("more-like-this")}
+          disabled={!userId || recommendationMutation.isPending}
+        >
+          More like this
+        </Button>
+        <Button
+          variant="outline"
+          className="rounded-full"
+          onClick={() => void handleRegenerate("less-like-this")}
+          disabled={!userId || recommendationMutation.isPending}
+        >
+          Less like this
+        </Button>
+        <Button
+          variant="outline"
+          className="rounded-full"
+          onClick={() => void handleRegenerate("surprise")}
+          disabled={!userId || recommendationMutation.isPending}
+        >
+          Surprise me
+        </Button>
+      </div>
+
+      {displayedMatches.map((career) => (
+        <Card key={career.path_title} className="overflow-hidden">
           <CardHeader className="pb-3">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">{career.emoji}</span>
                 <div>
-                  <CardTitle className="text-lg">{career.title}</CardTitle>
-                  <p className="mt-1 text-sm text-muted-foreground">{career.description}</p>
+                  <CardTitle className="text-lg">{career.path_title}</CardTitle>
+                  <p className="mt-1 text-sm text-muted-foreground">{career.tradeoffs}</p>
                 </div>
               </div>
             </div>
-            {/* Match score */}
             <div className="mt-4 rounded-xl bg-primary/5 p-3">
               <div className="flex items-center justify-between text-sm">
                 <span className="flex items-center gap-1.5 font-medium text-foreground">
                   <Heart className="h-4 w-4 text-primary" />
-                  Match Score
+                  Confidence
                 </span>
-                <span className="font-bold text-primary">{career.matchScore}%</span>
+                <span className="font-bold text-primary">{career.confidence}%</span>
               </div>
-              <Progress value={career.matchScore} className="mt-2 h-2" />
+              <Progress value={career.confidence} className="mt-2 h-2" />
             </div>
           </CardHeader>
 
           <CardContent className="space-y-5">
-            {/* Quick Stats */}
-            <div className="grid grid-cols-2 gap-3">
-              {[
-                { icon: DollarSign, label: "Salary", value: career.salaryRange },
-                { icon: TrendingUp, label: "Job Growth", value: career.growthRate },
-                { icon: GraduationCap, label: "Education", value: career.education },
-                { icon: Clock, label: "Time to Entry", value: career.timeToEntry },
-              ].map(({ icon: Icon, label, value }) => (
-                <div
-                  key={label}
-                  className="rounded-xl border border-border bg-card p-3 text-center"
-                >
-                  <Icon className="mx-auto mb-1 h-5 w-5 text-primary" />
-                  <p className="text-xs text-muted-foreground">{label}</p>
-                  <p className="mt-0.5 text-sm font-semibold text-foreground">{value}</p>
-                </div>
-              ))}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="rounded-xl border border-border bg-card p-3 text-center">
+                <DollarSign className="mx-auto mb-1 h-5 w-5 text-primary" />
+                <p className="text-xs text-muted-foreground">Salary</p>
+                <p className="mt-0.5 text-sm font-semibold text-foreground">{career.stats.salary_range}</p>
+              </div>
+              <div className="rounded-xl border border-border bg-card p-3 text-center">
+                <GraduationCap className="mx-auto mb-1 h-5 w-5 text-primary" />
+                <p className="text-xs text-muted-foreground">Education</p>
+                <p className="mt-0.5 text-sm font-semibold text-foreground">{career.stats.education}</p>
+              </div>
+              <div className="rounded-xl border border-border bg-card p-3 text-center">
+                <Clock className="mx-auto mb-1 h-5 w-5 text-primary" />
+                <p className="text-xs text-muted-foreground">Time to entry</p>
+                <p className="mt-0.5 text-sm font-semibold text-foreground">{career.stats.time_to_entry}</p>
+              </div>
             </div>
 
-            {/* Skills */}
             <div>
-              <h4 className="mb-2 text-sm font-semibold text-foreground">Key Skills</h4>
+              <h4 className="mb-2 text-sm font-semibold text-foreground">Why this fits you</h4>
               <div className="flex flex-wrap gap-2">
-                {career.skills.map((skill) => (
-                  <Badge key={skill} variant="secondary" className="rounded-full text-xs">
-                    {skill}
+                {career.reasons.map((reason) => (
+                  <Badge key={reason} variant="secondary" className="rounded-full text-xs">
+                    {reason}
                   </Badge>
                 ))}
               </div>
             </div>
 
-            {/* Day in the Life */}
             <div>
-              <h4 className="mb-2 text-sm font-semibold text-foreground">
-                📅 A Day in the Life
-              </h4>
-              <ol className="space-y-2 pl-1">
-                {career.dayInLife.map((step, i) => (
-                  <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-bold text-primary">
-                      {i + 1}
-                    </span>
-                    {step}
-                  </li>
+              <h4 className="mb-2 text-sm font-semibold text-foreground">What to verify</h4>
+              <ul className="space-y-1 text-sm text-muted-foreground">
+                {career.what_to_verify.map((verify) => (
+                  <li key={verify}>• {verify}</li>
                 ))}
-              </ol>
+              </ul>
             </div>
 
-            {/* Resources */}
-            <div>
-              <h4 className="mb-2 flex items-center gap-1.5 text-sm font-semibold text-foreground">
-                <BookOpen className="h-4 w-4 text-primary" />
-                Get Started
-              </h4>
-              <div className="space-y-2">
-                {career.resources.map((r) => (
-                  <div
-                    key={r.title}
-                    className="flex items-center justify-between rounded-xl border border-border bg-card px-3 py-2.5"
-                  >
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{r.title}</p>
-                      <p className="text-xs text-muted-foreground">{r.type}</p>
-                    </div>
-                    <ExternalLink className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Mentor CTA */}
-            <div className="flex items-center gap-3 rounded-xl border border-border bg-primary/5 p-4">
-              <Avatar className="h-11 w-11 shrink-0">
-                <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                  {career.mentorAvatar}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-semibold text-foreground">{career.mentorName}</p>
-                <p className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Users className="h-3 w-3" />
-                  {career.mentorRole} · Available to mentor
-                </p>
-              </div>
-              <Button size="sm" className="shrink-0 rounded-full" asChild>
-                <Link to="/mentors">Connect</Link>
-              </Button>
-            </div>
+            <Button
+              className="rounded-full"
+              disabled={!userId || buildPlanMutation.isPending}
+              onClick={() => void handleBuildPlan(career.path_title)}
+            >
+              Build my plan
+            </Button>
           </CardContent>
         </Card>
       ))}
 
-      {/* Bottom CTA */}
+      {builtGoalPath && (
+        <GoalPathCard
+          goalPathId={builtGoalPath.goal_path_id}
+          goalPath={builtGoalPath.goal_path}
+          resourceRecommendations={resourceRecommendationsMutation.data?.recommendations ?? []}
+          citations={resourceRecommendationsMutation.data?.citations ?? []}
+          onSetAsGoal={() => void handleSetAsGoal(builtGoalPath.goal_path_id)}
+          isSettingGoal={convertMutation.isPending}
+        />
+      )}
+
       <div className="rounded-xl bg-primary/5 p-6 text-center">
         <Briefcase className="mx-auto mb-2 h-8 w-8 text-primary" />
         <h3 className="font-semibold text-foreground">Ready to take the next step?</h3>
         <p className="mt-1 text-sm text-muted-foreground">
-          Set a goal, connect with a mentor, or explore resources.
+          Build a plan from any match, then convert it into trackable milestones.
         </p>
         <div className="mt-4 flex flex-wrap justify-center gap-3">
           <Button className="rounded-full" asChild>
-            <Link to="/milestones">Set a Goal</Link>
+            <Link to="/milestones">Go to Milestones</Link>
           </Button>
           <Button variant="outline" className="rounded-full" asChild>
             <Link to="/resources">Browse Resources</Link>
@@ -291,5 +273,88 @@ const CareerDetails = () => {
     </div>
   );
 };
+
+function GoalPathCard({
+  goalPathId,
+  goalPath,
+  resourceRecommendations,
+  citations,
+  onSetAsGoal,
+  isSettingGoal,
+}: {
+  goalPathId: string;
+  goalPath: GoalPath;
+  resourceRecommendations: GroundedResourceRecommendation[];
+  citations: number[];
+  onSetAsGoal: () => void;
+  isSettingGoal: boolean;
+}) {
+  return (
+    <Card className="border-primary/30 bg-primary/5">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg">Your plan: {goalPath.selected_path}</CardTitle>
+        <p className="text-sm text-muted-foreground">{goalPath.long_term_goal}</p>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div>
+          <h4 className="mb-2 text-sm font-semibold text-foreground">Short-term goals</h4>
+          <ul className="space-y-1 text-sm text-muted-foreground">
+            {goalPath.short_term_goals.map((goal) => (
+              <li key={goal}>• {goal}</li>
+            ))}
+          </ul>
+        </div>
+        <div>
+          <h4 className="mb-2 text-sm font-semibold text-foreground">Top weekly steps</h4>
+          <div className="space-y-2">
+            {goalPath.weekly_steps.slice(0, 3).map((step) => (
+              <div key={step.id} className="rounded-lg border border-border bg-card p-3 text-sm">
+                <p className="font-medium text-foreground">
+                  {step.week}: {step.label}
+                </p>
+                <p className="text-muted-foreground">
+                  ~{step.estimated_hours} hrs, ${step.estimated_cost_usd} estimated
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="rounded-lg border border-border bg-card p-3 text-sm text-muted-foreground">
+          <p className="font-medium text-foreground">Alternates</p>
+          <p className="mt-1">Fast-entry: {goalPath.alternates.fast_entry}</p>
+          <p>Higher-ceiling: {goalPath.alternates.higher_ceiling}</p>
+        </div>
+        {resourceRecommendations.length > 0 && (
+          <div className="rounded-lg border border-border bg-card p-3 text-sm">
+            <p className="font-medium text-foreground">Resources for step 1 (grounded)</p>
+            <div className="mt-2 space-y-2">
+              {resourceRecommendations.map((resource) => (
+                <div key={resource.resource_id} className="rounded-md border border-border p-2">
+                  <p className="font-medium text-foreground">{resource.title}</p>
+                  <p className="text-muted-foreground">{resource.why_this_helps}</p>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Eligibility: {resource.eligibility.education_level ?? "Any level"}
+                    {" · "}
+                    {resource.eligibility.location ?? "Any location"}
+                    {" · "}
+                    {resource.eligibility.estimated_cost_usd == null
+                      ? "Cost varies"
+                      : `$${resource.eligibility.estimated_cost_usd}`}
+                  </p>
+                </div>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">Citations: {citations.join(", ")}</p>
+          </div>
+        )}
+        <Button className="rounded-full" onClick={onSetAsGoal} disabled={isSettingGoal}>
+          <CheckCircle2 className="mr-1 h-4 w-4" />
+          {isSettingGoal ? "Setting goal..." : "Set as my goal"}
+        </Button>
+        <p className="text-xs text-muted-foreground">Goal path ID: {goalPathId}</p>
+      </CardContent>
+    </Card>
+  );
+}
 
 export default CareerDetails;
