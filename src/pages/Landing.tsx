@@ -12,7 +12,9 @@ const Landing = () => (
       </div>
       <div className="flex gap-2">
         <Button variant="ghost" size="sm">Sign In</Button>
-        <Button size="sm">Register</Button>
+        <Link to="/onboarding">
+          <Button size="sm">Register</Button>
+        </Link>
       </div>
     </header>
 

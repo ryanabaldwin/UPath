@@ -371,6 +371,18 @@ export async function unbookMentor(mentorId: number, menteeId: string): Promise<
   return response.json() as Promise<{ ok: boolean }>;
 }
 
+export interface OnboardingData {
+  background: string;
+  goal: string;
+  interests: string[];
+  challenge: string;
+  weekly_time: string;
+}
+
+export function submitOnboarding(userId: string, data: OnboardingData) {
+  return putJson<{ ok: boolean }>(`/api/users/${userId}/onboarding`, data);
+}
+
 export function createResourceRecommendations(
   userId: string,
   body: { goal_path_id?: string; helps_step_number?: number; selected_path?: string; filters?: ResourceSearchFilters }
