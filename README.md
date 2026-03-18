@@ -58,7 +58,8 @@ Run these from the repo root. Replace `<user>` with your PostgreSQL username.
 
 ```sh
 # Create database and apply base schema
-psql -U <user> -f backend/db/schema.sql
+# Note: -d postgres is required so psql has a database to connect to before creating upath_db
+psql -U <user> -d postgres -f backend/db/schema.sql
 
 # Apply migrations in order
 psql -U <user> -d upath_db -f backend/db/migrations/001_add_mentor_fields.sql

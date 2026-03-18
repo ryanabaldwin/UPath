@@ -1,72 +1,80 @@
--- PostgreSQL seed data for UPath
--- Run schema first, then:
---   psql -U <user> -d upath_db -f db/seed.sql
+-- PostgreSQL seed data for UPath (ERD-aligned schema)
+-- Run schema + all migrations first, then:
+--   psql -U <user> -d upath_db -f backend/db/seed.sql
 
 \connect upath_db;
 
-INSERT INTO goals (title, milestone1, milestone2, milestone_n, image1_src, image_n_src)
+INSERT INTO goals (goalid, pi1, pi2, pi3, pi4, pi5)
+OVERRIDING SYSTEM VALUE
 VALUES
   (
+    1,
     'Become a Frontend Engineer',
     'Complete HTML/CSS fundamentals',
     'Build a React portfolio project',
     'Ship and deploy full portfolio site',
-    'https://example.com/images/goal-frontend-1.png',
-    'https://example.com/images/goal-frontend-n.png'
+    NULL
   ),
   (
+    2,
     'Become a Data Analyst',
     'Learn SQL basics',
     'Build first dashboard',
     'Present a data story with findings',
-    'https://example.com/images/goal-analyst-1.png',
-    'https://example.com/images/goal-analyst-n.png'
+    NULL
   );
 
-INSERT INTO users (id, user_first, user_last, user_region, goal_id, user_img_src)
+SELECT setval(pg_get_serial_sequence('goals', 'goalid'), (SELECT MAX(goalid) FROM goals));
+
+INSERT INTO users (id, username, password, role, region, ethnicity, incomebracket, first_name, last_name, email)
+OVERRIDING SYSTEM VALUE
 VALUES
   (
-    '11111111-1111-1111-1111-111111111111',
+    1,
+    'avery_coleman',
+    'DEMO_NO_LOGIN',
+    'student',
+    'West',
+    'unspecified',
+    0,
     'Avery',
     'Coleman',
-    'West',
-    1,
-    'https://example.com/images/users/avery.png'
+    'avery.coleman@example.com'
   ),
   (
-    '22222222-2222-2222-2222-222222222222',
+    2,
+    'jordan_nguyen',
+    'DEMO_NO_LOGIN',
+    'student',
+    'South',
+    'unspecified',
+    0,
     'Jordan',
     'Nguyen',
-    'South',
-    2,
-    'https://example.com/images/users/jordan.png'
+    'jordan.nguyen@example.com'
   );
 
-INSERT INTO progressstatus (
-  id,
-  goal_id,
-  milestone1_is_complete,
-  milestone2_is_complete,
-  milestone_n_is_complete
-)
+SELECT setval(pg_get_serial_sequence('users', 'id'), (SELECT MAX(id) FROM users));
+
+INSERT INTO usergoals (goalid, user_id, progress)
 VALUES
-  ('11111111-1111-1111-1111-111111111111', 1, TRUE, FALSE, FALSE),
-  ('22222222-2222-2222-2222-222222222222', 2, TRUE, TRUE, FALSE);
+  (1, 1, 33),
+  (2, 2, 66);
 
 INSERT INTO sponsor (sponsor_name, sponsor_type, sponsor_image_src)
 VALUES
-  ('PathForward Foundation', 'Nonprofit', 'https://example.com/images/sponsors/pathforward.png'),
-  ('TechLift', 'Corporate', 'https://example.com/images/sponsors/techlift.png');
+  ('PathForward Foundation', 'Nonprofit',  'https://example.com/images/sponsors/pathforward.png'),
+  ('TechLift',               'Corporate',  'https://example.com/images/sponsors/techlift.png');
 
 INSERT INTO mentors (mentor_first, mentor_last, mentor_region, mentor_img_src, specialty, description)
 VALUES
-  ('Sarah', 'Johnson', 'West', NULL, 'Software Engineering', 'Senior engineer at a tech company. Passionate about helping underrepresented youth break into tech.'),
-  ('Marcus', 'Williams', 'South', NULL, 'Product Management', 'PM lead who grew up in foster care. Knows firsthand the power of mentorship.'),
-  ('Priya', 'Patel', 'West', NULL, 'Healthcare', 'Nurse practitioner and first-gen college grad. Loves guiding students through college apps.'),
-  ('David', 'Chen', 'West', NULL, 'Computer Engineering', 'Hardware engineer who volunteers with coding bootcamps for youth.'),
-  ('Aaliyah', 'Brooks', 'South', NULL, 'Business & Entrepreneurship', 'Small business owner who mentors young entrepreneurs in her community.');
+  ('Sarah',  'Johnson', 'West',  NULL, 'Software Engineering',       'Senior engineer at a tech company. Passionate about helping underrepresented youth break into tech.'),
+  ('Marcus', 'Williams','South', NULL, 'Product Management',         'PM lead who grew up in foster care. Knows firsthand the power of mentorship.'),
+  ('Priya',  'Patel',   'West',  NULL, 'Healthcare',                 'Nurse practitioner and first-gen college grad. Loves guiding students through college apps.'),
+  ('David',  'Chen',    'West',  NULL, 'Computer Engineering',       'Hardware engineer who volunteers with coding bootcamps for youth.'),
+  ('Aaliyah','Brooks',  'South', NULL, 'Business & Entrepreneurship','Small business owner who mentors young entrepreneurs in her community.');
 
 INSERT INTO meetings (mentor_id, mentee_id, "time", meetingstatus)
 VALUES
-  (1, '11111111-1111-1111-1111-111111111111', '2026-03-01 10:00:00', 'scheduled'),
-  (2, '22222222-2222-2222-2222-222222222222', '2026-03-02 14:30:00', 'completed');
+  (1, 1, '2026-03-01 10:00:00', 'scheduled'),
+  (2, 2, '2026-03-02 14:30:00', 'completed');

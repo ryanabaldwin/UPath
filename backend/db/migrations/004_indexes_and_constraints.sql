@@ -5,8 +5,13 @@
 CREATE UNIQUE INDEX IF NOT EXISTS idx_meetings_one_scheduled_per_mentor
   ON meetings (mentor_id) WHERE meetingstatus = 'scheduled';
 
--- Lookup progress by user (id is first in PK but explicit index can help for user-scoped queries)
-CREATE INDEX IF NOT EXISTS idx_progressstatus_id ON progressstatus(id);
+-- Lookup progress by user (only exists on legacy schema with progressstatus table)
+DO $$
+BEGIN
+  IF to_regclass('public.progressstatus') IS NOT NULL THEN
+    CREATE INDEX IF NOT EXISTS idx_progressstatus_id ON progressstatus(id);
+  END IF;
+END $$;
 
 -- Lookup meetings by mentee for "My sessions"
 CREATE INDEX IF NOT EXISTS idx_meetings_mentee_status ON meetings(mentee_id, meetingstatus);
