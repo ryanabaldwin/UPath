@@ -1,24 +1,61 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+# ── .NET ─────────────────────────────────────────────────────────────────────
+bin/
+obj/
+*.user
+*.suo
+.vs/
 
-node_modules
-dist
-dist-ssr
-*.local
+# Local developer secrets — never commit DB credentials
+backend/UPath.Api/appsettings.Development.json
+backend/UPath.Api/appsettings.*.Local.json
 
-# Editor directories and files
+# .NET user secrets store (dotnet user-secrets)
+backend/UPath.Api/*.pfx
+
+# ── Node.js / Frontend ────────────────────────────────────────────────────────
+node_modules/
+frontend/node_modules/
+backend/_legacy/node_modules/
+
+# Vite / build output
+dist/
+frontend/dist/
+frontend/.vite/
+
+# ── Environment files ─────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+# Keep .env.example files — they are safe templates with no real values
+!.env.example
+!frontend/.env.example
+
+# ── Test / Coverage ───────────────────────────────────────────────────────────
+coverage/
+frontend/coverage/
+TestResults/
+
+# ── IDEs ─────────────────────────────────────────────────────────────────────
+# JetBrains Rider / IntelliJ
+.idea/
+*.iml
+
+# VS Code (keep shared settings, ignore personal overrides)
 .vscode/*
 !.vscode/extensions.json
-.idea
+!.vscode/settings.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# ── OS ───────────────────────────────────────────────────────────────────────
+# macOS
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
+.AppleDouble
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# ── Misc ─────────────────────────────────────────────────────────────────────
+*.log
+*.tmp
