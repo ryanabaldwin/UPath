@@ -11,8 +11,10 @@ const Landing = () => (
         <span className="text-lg font-bold text-foreground">PathFinder</span>
       </div>
       <div className="flex gap-2">
-        <Button variant="ghost" size="sm">Sign In</Button>
-        <Link to="/onboarding">
+        <Link to="/login">
+          <Button variant="ghost" size="sm">Login</Button>
+        </Link>
+        <Link to="/register">
           <Button size="sm">Register</Button>
         </Link>
       </div>
