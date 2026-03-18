@@ -56,6 +56,13 @@ TestResults/
 Thumbs.db
 Desktop.ini
 
+# ── Docker / deployment secrets ──────────────────────────────────────────────
+# Let's Encrypt certs are managed by certbot on the server — ignore contents, keep dirs
+nginx/certbot/conf/*
+nginx/certbot/www/*
+!nginx/certbot/conf/.gitkeep
+!nginx/certbot/www/.gitkeep
+
 # ── Misc ─────────────────────────────────────────────────────────────────────
 *.log
 *.tmp
