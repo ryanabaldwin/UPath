@@ -1,129 +1,163 @@
 # UPath
 
-## App Summary
-
-UPath helps youth and underrepresented communities navigate career paths and connect with mentors. The application provides a single platform to explore careers, track personal milestones, and book one-on-one meetings with experienced mentors. In **demo mode** you select a student profile from the app bar; goals, progress, mentor sessions, and saved preferences are then scoped to that profile. Features include: dashboard with onboarding checklist, goal and milestone tracking (DB-backed), mentor browse/book/cancel and "My sessions," Explore with persisted interests and career-path selections, career match details, and Resources with optional bookmarks. The stack is fully wired from React through Express to PostgreSQL.
+UPath helps underprivileged youth navigate career paths and connect with mentors. The platform provides tools to explore careers, track personal milestones, book mentor sessions, and discover resources — all in one place. In **demo mode** you select a student profile from the app bar; goals, progress, mentor sessions, and saved preferences are scoped to that profile.
 
 ## Tech Stack
 
 | Layer | Technologies |
-| ----- | ------------ |
-| **Frontend** | React 18, TypeScript, [Vite](https://vitejs.dev/), Tailwind CSS, [shadcn/ui](https://ui.shadcn.com/) (Radix), React Router, [TanStack Query](https://tanstack.com/query/latest) |
-| **Backend** | Node.js, [Express](https://expressjs.com/), CORS, [dotenv](https://www.npmjs.com/package/dotenv) |
-| **Database** | [PostgreSQL](https://www.postgresql.org/), [pg](https://node-postgres.com/) client |
-| **Auth** | None; uses a default mentee ID for demo purposes |
-| **External services** | None |
+|-------|-------------|
+| **Frontend** | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui, React Router, TanStack Query |
+| **Backend** | ASP.NET Core 10 Web API, EF Core 10, Npgsql |
+| **Database** | PostgreSQL 14+ |
+| **Auth** | None — demo profile selector for development |
 
-## Architecture Diagram
+## Architecture
 
-```mermaid
-flowchart LR
-    subgraph client [Client]
-        User[User]
-        Browser[Browser]
-    end
-    subgraph frontend [Frontend]
-        React[Vite + React<br>localhost:8080]
-    end
-    subgraph backend [Backend]
-        Express[Express API<br>localhost:4000]
-    end
-    subgraph data [Data]
-        PostgreSQL[(PostgreSQL<br>upath_db)]
-    end
-    User --> Browser
-    Browser -->|HTTP/REST| React
-    React -->|fetch API| Express
-    Express -->|pg client| PostgreSQL
+```
+Browser (localhost:8080)
+    │
+    │  HTTP / REST
+    ▼
+Vite + React  ──────────────────► ASP.NET Core 10 API (localhost:4000)
+  frontend/                              backend/UPath.Api/
+                                               │
+                                               │  EF Core + Npgsql
+                                               ▼
+                                        PostgreSQL (upath_db)
 ```
 
 ## Prerequisites
 
-Install the following before running the project locally:
+Install all of the following before running locally:
 
-- **Node.js** (v18+) — [nodejs.org](https://nodejs.org/) or [nvm](https://github.com/nvm-sh/nvm#installing-and-updating)  
-  Verify: `node --version` and `npm --version`
-- **PostgreSQL** (14+) — [postgresql.org/download](https://www.postgresql.org/download/)  
-  Verify: `psql --version`
-- **psql** in system PATH (included with PostgreSQL)  
-  Verify: `which psql` or `psql --version`
+| Tool | Version | Notes |
+|------|---------|-------|
+| [.NET SDK](https://dotnet.microsoft.com/download) | 10.x | Required for the backend |
+| [Node.js](https://nodejs.org/) | 18+ | Required for the frontend |
+| [PostgreSQL](https://www.postgresql.org/download/) | 14+ | Must have `psql` in PATH |
 
-## Installation and Setup
+Verify:
+```sh
+dotnet --version
+node --version
+psql --version
+```
 
-1. Clone the repository and navigate into it:
-   ```sh
-   git clone <YOUR_GIT_URL>
-   cd UPath
-   ```
+## Setup
 
-2. Install frontend dependencies (project root):
-   ```sh
-   npm install
-   ```
+### 1 — Clone the repository
 
-3. Install backend dependencies:
-   ```sh
-   cd backend && npm install && cd ..
-   ```
+```sh
+git clone <YOUR_GIT_URL>
+cd UPath
+```
 
-4. Create the database:
-   ```sh
-   psql -U <your_username> -f db/schema.sql
-   ```
-   Use `-h localhost` if connecting to a remote host.
+### 2 — Database
 
-5. Run migrations (for preferences, resources, and indexes):
-   ```sh
-   psql -U <your_username> -d upath_db -f db/migrations/001_add_mentor_fields.sql
-   psql -U <your_username> -d upath_db -f db/migrations/002_student_preferences.sql
-   psql -U <your_username> -d upath_db -f db/migrations/003_resources_and_bookmarks.sql
-   psql -U <your_username> -d upath_db -f db/migrations/004_indexes_and_constraints.sql
-   ```
+Run these from the `backend/` directory. Replace `<user>` with your PostgreSQL username.
 
-6. Seed the database:
-   ```sh
-   psql -U <your_username> -d upath_db -f db/seed.sql
-   psql -U <your_username> -d upath_db -f db/seed-resources.sql
-   ```
-   Run `seed-resources.sql` only if you applied the resources migration (step 5).
+```sh
+# Create database and apply base schema
+psql -U <user> -f db/schema.sql
 
-7. Configure environment variables:
-   - **Root**: Copy `.env.example` to `.env`. Set `VITE_API_BASE_URL=http://localhost:4000` (default).
-   - **Backend**: Copy `backend/.env.example` to `backend/.env`. Set `PGUSER`, `PGPASSWORD`, `PGHOST`, `PGPORT`, `PGDATABASE`, and `FRONTEND_ORIGIN=http://localhost:8080`.
+# Apply migrations in order
+psql -U <user> -d upath_db -f db/migrations/001_add_mentor_fields.sql
+psql -U <user> -d upath_db -f db/migrations/002_student_preferences.sql
+psql -U <user> -d upath_db -f db/migrations/003_resources_and_bookmarks.sql
+psql -U <user> -d upath_db -f db/migrations/004_indexes_and_constraints.sql
+psql -U <user> -d upath_db -f db/migrations/005_resources_filters_and_eligibility.sql
+psql -U <user> -d upath_db -f db/migrations/006_hierarchical_milestones.sql
+
+# Seed demo data
+psql -U <user> -d upath_db -f db/seed.sql
+psql -U <user> -d upath_db -f db/seed-resources.sql
+```
+
+### 3 — Backend configuration
+
+Create `backend/UPath.Api/appsettings.Development.json` (gitignored — do not commit):
+
+```json
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Host=localhost;Port=5432;Database=upath_db;Username=YOUR_USER;Password=YOUR_PASSWORD"
+  }
+}
+```
+
+### 4 — Frontend configuration
+
+```sh
+cd frontend
+cp .env.example .env
+```
+
+The default `VITE_API_BASE_URL=http://localhost:4000` matches the backend's dev port — no changes needed for local development.
+
+### 5 — Install dependencies
+
+```sh
+# Frontend
+cd frontend && npm install
+
+# Backend (.NET restore)
+cd ../backend/UPath.Api && dotnet restore
+```
 
 ## Running the Application
 
-1. Start the backend (in one terminal):
-   ```sh
-   cd backend && npm run dev
-   ```
-   The API listens on port 4000.
+Open **two terminals** from the repo root.
 
-2. Start the frontend (in another terminal, from project root):
-   ```sh
-   npm run dev
-   ```
-   The app is served at port 8080.
-
-3. Open [http://localhost:8080](http://localhost:8080) in your browser.
-
-4. (Optional) Run tests:
-   - Frontend: `npm test` (from project root)
-   - Backend: `cd backend && npm test` (requires DB and env)
-
-## Verifying the Vertical Slice
-
-The app uses **demo mode**: pick a student profile from the "Demo profile" dropdown in the app bar to see user-specific goals, progress, and mentor sessions.
-
-1. Open [http://localhost:8080](http://localhost:8080) and click **Go to my dashboard** (or go to `/dashboard`).
-2. Select a demo profile (e.g. Avery Coleman or Jordan Nguyen) from the dropdown.
-3. **Dashboard**: See current goal, progress, and next mentor session. Use the onboarding checklist to set a goal, connect with a mentor, or explore careers.
-4. **Milestones** (`/milestones`): View and mark milestones complete for your goal. Use "Choose a goal" if none is set.
-5. **Mentors** (`/mentors`): Book or cancel a mentor; "My sessions" lists your scheduled meetings.
-6. **Explore** → **Find My Path**: Select career paths and interests; they are saved when you have a profile. **Careers** shows matches (ordered by your selections).
-7. **Resources**: Browse and (with a profile) bookmark resources. Uses DB if migrations and `seed-resources.sql` were run; otherwise falls back to static data.
-
-To verify mentor booking in the database:
-```sql
-SELECT mentor_id, mentee_id, "time", meetingstatus FROM meetings WHERE meetingstatus = 'scheduled';
+**Terminal 1 — Backend:**
+```sh
+cd backend/UPath.Api
+dotnet run
+# API: http://localhost:4000
+# OpenAPI spec: http://localhost:4000/openapi/v1.json
 ```
+
+**Terminal 2 — Frontend:**
+```sh
+cd frontend
+npm run dev
+# App: http://localhost:8080
+```
+
+Open [http://localhost:8080](http://localhost:8080) in your browser.
+
+## Verifying the Setup
+
+1. Hit the health endpoint to confirm the API and database are up:
+   ```sh
+   curl http://localhost:4000/api/health
+   # {"status":"ok","database":"connected","timestamp":"..."}
+   ```
+
+2. Open the frontend, select a demo profile from the dropdown, and navigate through **Dashboard**, **Milestones**, **Mentors**, **Explore**, and **Resources**.
+
+## Repository Structure
+
+```
+UPath/
+├── frontend/               # Vite + React TypeScript app
+│   ├── src/
+│   │   ├── components/     # Layout + shadcn/ui components
+│   │   ├── pages/          # Route-level page components
+│   │   ├── contexts/       # React contexts (demo identity, etc.)
+│   │   ├── hooks/          # Custom hooks
+│   │   └── lib/            # API client + type definitions
+│   └── ...
+└── backend/
+    ├── UPath.Api/          # ASP.NET Core 10 Web API project
+    │   ├── Controllers/    # HTTP controllers
+    │   ├── Data/           # EF Core DbContext
+    │   └── Models/         # Entity classes
+    ├── db/                 # PostgreSQL schema, migrations, and seeds (source of truth)
+    └── _legacy/            # Original Express/Node.js implementation (reference only)
+```
+
+## Key Development Notes
+
+- **Schema changes**: Edit the SQL files in `backend/db/migrations/` and run `psql` manually. EF Core migrations (`dotnet ef migrations add`) are **not** used — the hand-written SQL files are the source of truth.
+- **Adding a new endpoint**: Create a controller in `backend/UPath.Api/Controllers/`. See `HealthController.cs` as a starting template and `_legacy/src/server.js` for the original request/response shapes.
+- **Frontend API calls**: All fetch logic lives in `frontend/src/lib/api.ts`. The base URL comes from the `VITE_API_BASE_URL` environment variable.
