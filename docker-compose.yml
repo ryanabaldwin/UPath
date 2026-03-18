@@ -1,5 +1,4 @@
 services:
-  # ── PostgreSQL database ─────────────────────────────────────────────────────
   db:
     image: postgres:16-alpine
     restart: unless-stopped
@@ -18,12 +17,13 @@ services:
       timeout: 5s
       retries: 5
 
-  # ── ASP.NET Core API ────────────────────────────────────────────────────────
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     restart: unless-stopped
+    ports:
+      - "127.0.0.1:4001:4000"
     environment:
       ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=upath_db;Username=${DB_USER:-upath};Password=${DB_PASSWORD}"
       AllowedOrigins: "https://upath.tannernielson.com"
@@ -35,7 +35,6 @@ services:
     networks:
       - internal
 
-  # ── React/Vite frontend (served by nginx) ───────────────────────────────────
   frontend:
     build:
       context: ./frontend
@@ -43,33 +42,17 @@ services:
       args:
         VITE_API_BASE_URL: ${VITE_API_BASE_URL:-https://upath.tannernielson.com}
     restart: unless-stopped
-    networks:
-      - internal
-
-  # ── Nginx reverse proxy (public-facing) ─────────────────────────────────────
-  nginx:
-    image: nginx:alpine
-    restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./nginx/certbot/conf:/etc/letsencrypt:ro
-      - ./nginx/certbot/www:/var/www/certbot:ro
-    depends_on:
-      - frontend
-      - backend
+      - "127.0.0.1:7001:80"
     networks:
       - internal
 
-  # ── Certbot (SSL cert renewal) ───────────────────────────────────────────────
   certbot:
     image: certbot/certbot
     restart: unless-stopped
     volumes:
       - ./nginx/certbot/conf:/etc/letsencrypt
-      - ./nginx/certbot/www:/var/www/certbot
+      - /var/www/certbot:/var/www/certbot
     entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 volumes:
