@@ -11,41 +11,33 @@ CREATE DATABASE upath_db;
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 CREATE TABLE goals (
-  goalid INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  pi1 VARCHAR(255) NOT NULL,
-  pi2 VARCHAR(255) NOT NULL,
-  pi3 VARCHAR(255),
-  pi4 VARCHAR(255),
-  pi5 VARCHAR(255),
-  pi6 VARCHAR(255),
-  pi7 VARCHAR(255),
-  pi8 VARCHAR(255),
-  pi9 VARCHAR(255),
-  pi10 VARCHAR(255)
+  goal_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  milestone1 VARCHAR(255),
+  milestone2 VARCHAR(255),
+  milestone_n VARCHAR(255),
+  image1_src VARCHAR(500),
+  image_n_src VARCHAR(500)
 );
 
 CREATE TABLE users (
-  id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  username VARCHAR(50) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  role VARCHAR(50) NOT NULL,
-  region VARCHAR(100),
-  ethnicity VARCHAR(100),
-  incomebracket INT,
-  first_name VARCHAR(100) NOT NULL,
-  last_name VARCHAR(100) NOT NULL,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  date_of_birth DATE
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_first VARCHAR(100) NOT NULL,
+  user_last VARCHAR(100) NOT NULL,
+  user_region VARCHAR(100),
+  goal_id BIGINT REFERENCES goals(goal_id),
+  user_img_src VARCHAR(500)
 );
 
-CREATE TABLE usergoals (
-  goalid INT NOT NULL,
-  user_id INT NOT NULL,
-  progress INT NOT NULL DEFAULT 0,
-  PRIMARY KEY (goalid, user_id),
-  CONSTRAINT fk_usergoals_goal FOREIGN KEY (goalid) REFERENCES goals(goalid) ON DELETE CASCADE,
-  CONSTRAINT fk_usergoals_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  CONSTRAINT ck_usergoals_progress_range CHECK (progress >= 0 AND progress <= 100)
+CREATE TABLE progressstatus (
+  id UUID NOT NULL,
+  goal_id BIGINT NOT NULL,
+  milestone1_is_complete BOOLEAN NOT NULL DEFAULT FALSE,
+  milestone2_is_complete BOOLEAN NOT NULL DEFAULT FALSE,
+  milestone_n_is_complete BOOLEAN NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (id, goal_id),
+  CONSTRAINT fk_progress_user FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_progress_goal FOREIGN KEY (goal_id) REFERENCES goals(goal_id) ON DELETE CASCADE
 );
 
 CREATE TABLE sponsor (
@@ -67,7 +59,7 @@ CREATE TABLE mentors (
 
 CREATE TABLE meetings (
   mentor_id BIGINT NOT NULL,
-  mentee_id INT NOT NULL,
+  mentee_id UUID NOT NULL,
   "time" TIMESTAMP NOT NULL,
   meetingstatus VARCHAR(100) NOT NULL,
   PRIMARY KEY (mentor_id, mentee_id),

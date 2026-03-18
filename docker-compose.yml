@@ -19,16 +19,20 @@ services:
 
   backend:
     build:
-      context: ./backend
+      context: ./backend/_legacy
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
       - "127.0.0.1:4001:4000"
     environment:
-      ConnectionStrings__DefaultConnection: "Host=db;Port=5432;Database=upath_db;Username=${DB_USER:-upath};Password=${DB_PASSWORD}"
-      AllowedOrigins: "https://upath.tannernielson.com"
-      ASPNETCORE_ENVIRONMENT: Production
-      ASPNETCORE_URLS: http://+:4000
+      PORT: 4000
+      FRONTEND_ORIGIN: "https://upath.tannernielson.com"
+      PGHOST: db
+      PGPORT: 5432
+      PGDATABASE: upath_db
+      PGUSER: ${DB_USER:-upath}
+      PGPASSWORD: ${DB_PASSWORD}
+      AI_COACH_ENABLED: "false"
     depends_on:
       db:
         condition: service_healthy

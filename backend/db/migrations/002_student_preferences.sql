@@ -2,7 +2,7 @@
 -- Run: psql -U <user> -d upath_db -f db/migrations/002_student_preferences.sql
 
 CREATE TABLE IF NOT EXISTS student_preferences (
-  user_id INT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
   interests TEXT,
   selected_career_paths JSONB NOT NULL DEFAULT '[]'::jsonb,
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()

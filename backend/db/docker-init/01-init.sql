@@ -7,41 +7,33 @@ CREATE EXTENSION IF NOT EXISTS pgcrypto;
 -- ─── Base schema ─────────────────────────────────────────────────────────────
 
 CREATE TABLE IF NOT EXISTS goals (
-  goalid INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  pi1 VARCHAR(255) NOT NULL,
-  pi2 VARCHAR(255) NOT NULL,
-  pi3 VARCHAR(255),
-  pi4 VARCHAR(255),
-  pi5 VARCHAR(255),
-  pi6 VARCHAR(255),
-  pi7 VARCHAR(255),
-  pi8 VARCHAR(255),
-  pi9 VARCHAR(255),
-  pi10 VARCHAR(255)
+  goal_id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  title VARCHAR(255) NOT NULL,
+  milestone1 VARCHAR(255),
+  milestone2 VARCHAR(255),
+  milestone_n VARCHAR(255),
+  image1_src VARCHAR(500),
+  image_n_src VARCHAR(500)
 );
 
 CREATE TABLE IF NOT EXISTS users (
-  id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  username VARCHAR(50) NOT NULL UNIQUE,
-  password VARCHAR(255) NOT NULL,
-  role VARCHAR(50) NOT NULL,
-  region VARCHAR(100),
-  ethnicity VARCHAR(100),
-  incomebracket INT,
-  first_name VARCHAR(100) NOT NULL,
-  last_name VARCHAR(100) NOT NULL,
-  email VARCHAR(255) NOT NULL UNIQUE,
-  date_of_birth DATE
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_first VARCHAR(100) NOT NULL,
+  user_last VARCHAR(100) NOT NULL,
+  user_region VARCHAR(100),
+  goal_id BIGINT REFERENCES goals(goal_id),
+  user_img_src VARCHAR(500)
 );
 
-CREATE TABLE IF NOT EXISTS usergoals (
-  goalid INT NOT NULL,
-  user_id INT NOT NULL,
-  progress INT NOT NULL DEFAULT 0,
-  PRIMARY KEY (goalid, user_id),
-  CONSTRAINT fk_usergoals_goal FOREIGN KEY (goalid) REFERENCES goals(goalid) ON DELETE CASCADE,
-  CONSTRAINT fk_usergoals_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-  CONSTRAINT ck_usergoals_progress_range CHECK (progress >= 0 AND progress <= 100)
+CREATE TABLE IF NOT EXISTS progressstatus (
+  id UUID NOT NULL,
+  goal_id BIGINT NOT NULL,
+  milestone1_is_complete BOOLEAN NOT NULL DEFAULT FALSE,
+  milestone2_is_complete BOOLEAN NOT NULL DEFAULT FALSE,
+  milestone_n_is_complete BOOLEAN NOT NULL DEFAULT FALSE,
+  PRIMARY KEY (id, goal_id),
+  CONSTRAINT fk_progress_user FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE,
+  CONSTRAINT fk_progress_goal FOREIGN KEY (goal_id) REFERENCES goals(goal_id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS sponsor (
@@ -63,7 +55,7 @@ CREATE TABLE IF NOT EXISTS mentors (
 
 CREATE TABLE IF NOT EXISTS meetings (
   mentor_id BIGINT NOT NULL,
-  mentee_id INT NOT NULL,
+  mentee_id UUID NOT NULL,
   "time" TIMESTAMP NOT NULL,
   meetingstatus VARCHAR(100) NOT NULL,
   PRIMARY KEY (mentor_id, mentee_id),
@@ -74,7 +66,7 @@ CREATE TABLE IF NOT EXISTS meetings (
 -- ─── Migration 002: student preferences ──────────────────────────────────────
 
 CREATE TABLE IF NOT EXISTS student_preferences (
-  user_id INT PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
   interests TEXT,
   selected_career_paths JSONB NOT NULL DEFAULT '[]'::jsonb,
   updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
@@ -94,7 +86,7 @@ CREATE TABLE IF NOT EXISTS resources (
 );
 
 CREATE TABLE IF NOT EXISTS resource_bookmarks (
-  user_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   resource_id BIGINT NOT NULL REFERENCES resources(resource_id) ON DELETE CASCADE,
   created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
   PRIMARY KEY (user_id, resource_id)
@@ -108,7 +100,7 @@ CREATE INDEX IF NOT EXISTS idx_resources_category ON resources(category);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_meetings_one_scheduled_per_mentor
   ON meetings (mentor_id) WHERE meetingstatus = 'scheduled';
 
-CREATE INDEX IF NOT EXISTS idx_usergoals_user_id ON usergoals(user_id);
+CREATE INDEX IF NOT EXISTS idx_progressstatus_id ON progressstatus(id);
 CREATE INDEX IF NOT EXISTS idx_meetings_mentee_status ON meetings(mentee_id, meetingstatus);
 
 -- ─── Migration 005: resource filters and eligibility ─────────────────────────
@@ -125,11 +117,16 @@ CREATE INDEX IF NOT EXISTS idx_resources_industry ON resources(industry);
 CREATE INDEX IF NOT EXISTS idx_resources_education_level ON resources(education_level);
 CREATE INDEX IF NOT EXISTS idx_resources_location ON resources(location);
 
--- ─── Migration 006: hierarchical milestones ───────────────────────────────────
+-- ─── Migration 006: hierarchical milestones + north star ─────────────────────
+
+ALTER TABLE users ADD COLUMN IF NOT EXISTS north_star_vision TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS definition_of_success TEXT;
+ALTER TABLE users ADD COLUMN IF NOT EXISTS current_grade_level VARCHAR(50);
+ALTER TABLE users ADD COLUMN IF NOT EXISTS streak_count INT NOT NULL DEFAULT 0;
 
 CREATE TABLE IF NOT EXISTS milestones (
   id          BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  user_id     INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  user_id     UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   parent_id   BIGINT NULL REFERENCES milestones(id) ON DELETE CASCADE,
   title       VARCHAR(255) NOT NULL,
   description TEXT NULL,
@@ -148,24 +145,22 @@ CREATE INDEX IF NOT EXISTS idx_milestones_user_tier_status ON milestones(user_id
 
 -- ─── Seed data ────────────────────────────────────────────────────────────────
 
-INSERT INTO goals (goalid, pi1, pi2, pi3, pi4, pi5, pi6, pi7, pi8, pi9, pi10)
-OVERRIDING SYSTEM VALUE
+INSERT INTO goals (title, milestone1, milestone2, milestone_n, image1_src, image_n_src)
 VALUES
-  (1, 'Become a Frontend Engineer', 'Complete HTML/CSS fundamentals', 'Build a React portfolio project', 'Ship and deploy full portfolio site', NULL, NULL, NULL, NULL, NULL, NULL),
-  (2, 'Become a Data Analyst', 'Learn SQL basics', 'Build first dashboard', 'Present a data story with findings', NULL, NULL, NULL, NULL, NULL, NULL)
+  ('Become a Frontend Engineer', 'Complete HTML/CSS fundamentals', 'Build a React portfolio project', 'Ship and deploy full portfolio site', 'https://example.com/images/goal-frontend-1.png', 'https://example.com/images/goal-frontend-n.png'),
+  ('Become a Data Analyst', 'Learn SQL basics', 'Build first dashboard', 'Present a data story with findings', 'https://example.com/images/goal-analyst-1.png', 'https://example.com/images/goal-analyst-n.png')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO users (id, username, password, role, region, ethnicity, incomebracket, first_name, last_name, email, date_of_birth)
-OVERRIDING SYSTEM VALUE
+INSERT INTO users (id, user_first, user_last, user_region, goal_id, user_img_src)
 VALUES
-  (1, 'avery.coleman', 'TEMP_PASSWORD', 'student', 'West', 'Black', 1, 'Avery', 'Coleman', 'avery.coleman@example.com', '2007-05-15'),
-  (2, 'jordan.nguyen', 'TEMP_PASSWORD', 'student', 'South', 'Asian', 2, 'Jordan', 'Nguyen', 'jordan.nguyen@example.com', '2006-11-02')
+  ('11111111-1111-1111-1111-111111111111', 'Avery', 'Coleman', 'West', 1, 'https://example.com/images/users/avery.png'),
+  ('22222222-2222-2222-2222-222222222222', 'Jordan', 'Nguyen', 'South', 2, 'https://example.com/images/users/jordan.png')
 ON CONFLICT (id) DO NOTHING;
 
-INSERT INTO usergoals (goalid, user_id, progress)
+INSERT INTO progressstatus (id, goal_id, milestone1_is_complete, milestone2_is_complete, milestone_n_is_complete)
 VALUES
-  (1, 1, 33),
-  (2, 2, 66)
+  ('11111111-1111-1111-1111-111111111111', 1, TRUE, FALSE, FALSE),
+  ('22222222-2222-2222-2222-222222222222', 2, TRUE, TRUE, FALSE)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO sponsor (sponsor_name, sponsor_type, sponsor_image_src)
@@ -185,8 +180,8 @@ ON CONFLICT DO NOTHING;
 
 INSERT INTO meetings (mentor_id, mentee_id, "time", meetingstatus)
 VALUES
-  (1, 1, '2026-03-01 10:00:00', 'scheduled'),
-  (2, 2, '2026-03-02 14:30:00', 'completed')
+  (1, '11111111-1111-1111-1111-111111111111', '2026-03-01 10:00:00', 'scheduled'),
+  (2, '22222222-2222-2222-2222-222222222222', '2026-03-02 14:30:00', 'completed')
 ON CONFLICT DO NOTHING;
 
 INSERT INTO resources (title, description, category, link, industry, education_level, format, location, cost_usd, eligibility_notes)
