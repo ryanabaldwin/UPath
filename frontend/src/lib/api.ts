@@ -173,6 +173,20 @@ export function generateMilestones(userId: string, selectedPath: string) {
   );
 }
 
+export interface UpdateUserInput {
+  user_first?: string;
+  user_last?: string;
+  user_region?: string | null;
+  user_img_src?: string | null;
+  north_star_vision?: string | null;
+  definition_of_success?: string | null;
+  current_grade_level?: string | null;
+}
+
+export function patchUser(userId: string, data: UpdateUserInput) {
+  return patchJson<User>(`/api/users/${userId}`, data);
+}
+
 export function patchNorthStar(userId: string, fields: NorthStarFields) {
   return patchJson<{ id: string; north_star_vision: string | null; definition_of_success: string | null; current_grade_level: string | null; streak_count: number }>(
     `/api/users/${userId}/north-star`,
