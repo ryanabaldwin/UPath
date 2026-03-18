@@ -9,7 +9,7 @@ public class AppDbContext : DbContext
 
     public DbSet<Goal> Goals => Set<Goal>();
     public DbSet<User> Users => Set<User>();
-    public DbSet<ProgressStatus> ProgressStatuses => Set<ProgressStatus>();
+    public DbSet<UserGoal> UserGoals => Set<UserGoal>();
     public DbSet<Sponsor> Sponsors => Set<Sponsor>();
     public DbSet<Mentor> Mentors => Set<Mentor>();
     public DbSet<Meeting> Meetings => Set<Meeting>();
@@ -28,29 +28,21 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<User>()
             .HasKey(u => u.Id);
 
-        modelBuilder.Entity<User>()
-            .HasOne(u => u.Goal)
-            .WithMany(g => g.Users)
-            .HasForeignKey(u => u.GoalId)
-            .HasPrincipalKey(g => g.GoalId)
-            .OnDelete(DeleteBehavior.SetNull);
+        // ── UserGoals (composite PK: goalid + user_id) ────────────────────────
+        modelBuilder.Entity<UserGoal>()
+            .HasKey(ug => new { ug.GoalId, ug.UserId });
 
-        // ── ProgressStatus (composite PK: id + goal_id) ──────────────────────
-        // The "id" column in progressstatus is a FK to users.id (UUID).
-        modelBuilder.Entity<ProgressStatus>()
-            .HasKey(p => new { p.UserId, p.GoalId });
-
-        modelBuilder.Entity<ProgressStatus>()
-            .HasOne(p => p.User)
-            .WithMany(u => u.ProgressStatuses)
-            .HasForeignKey(p => p.UserId)
+        modelBuilder.Entity<UserGoal>()
+            .HasOne(ug => ug.User)
+            .WithMany(u => u.UserGoals)
+            .HasForeignKey(ug => ug.UserId)
             .HasPrincipalKey(u => u.Id)
             .OnDelete(DeleteBehavior.Cascade);
 
-        modelBuilder.Entity<ProgressStatus>()
-            .HasOne(p => p.Goal)
-            .WithMany(g => g.ProgressStatuses)
-            .HasForeignKey(p => p.GoalId)
+        modelBuilder.Entity<UserGoal>()
+            .HasOne(ug => ug.Goal)
+            .WithMany(g => g.UserGoals)
+            .HasForeignKey(ug => ug.GoalId)
             .HasPrincipalKey(g => g.GoalId)
             .OnDelete(DeleteBehavior.Cascade);
 

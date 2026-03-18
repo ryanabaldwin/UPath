@@ -7,7 +7,7 @@ namespace UPath.Api.Models;
 public class StudentPreference
 {
     [Column("user_id")]
-    public Guid UserId { get; set; }
+    public int UserId { get; set; }
 
     // Free-text interests string
     [Column("interests")]

@@ -15,7 +15,7 @@ public class Milestone
     public long Id { get; set; }
 
     [Column("user_id")]
-    public Guid UserId { get; set; }
+    public int UserId { get; set; }
 
     [Column("parent_id")]
     public long? ParentId { get; set; }

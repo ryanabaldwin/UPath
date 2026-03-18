@@ -7,29 +7,40 @@ namespace UPath.Api.Models;
 public class Goal
 {
     [Key]
-    [Column("goal_id")]
+    [Column("goalid")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public long GoalId { get; set; }
+    public int GoalId { get; set; }
 
-    [Column("title")]
-    public string Title { get; set; } = string.Empty;
+    [Column("pi1")]
+    public string Pi1 { get; set; } = string.Empty;
 
-    [Column("milestone1")]
-    public string? Milestone1 { get; set; }
+    [Column("pi2")]
+    public string Pi2 { get; set; } = string.Empty;
 
-    [Column("milestone2")]
-    public string? Milestone2 { get; set; }
+    [Column("pi3")]
+    public string? Pi3 { get; set; }
 
-    [Column("milestone_n")]
-    public string? MilestoneN { get; set; }
+    [Column("pi4")]
+    public string? Pi4 { get; set; }
 
-    [Column("image1_src")]
-    public string? Image1Src { get; set; }
+    [Column("pi5")]
+    public string? Pi5 { get; set; }
 
-    [Column("image_n_src")]
-    public string? ImageNSrc { get; set; }
+    [Column("pi6")]
+    public string? Pi6 { get; set; }
+
+    [Column("pi7")]
+    public string? Pi7 { get; set; }
+
+    [Column("pi8")]
+    public string? Pi8 { get; set; }
+
+    [Column("pi9")]
+    public string? Pi9 { get; set; }
+
+    [Column("pi10")]
+    public string? Pi10 { get; set; }
 
     // Navigation
-    public ICollection<User> Users { get; set; } = [];
-    public ICollection<ProgressStatus> ProgressStatuses { get; set; } = [];
+    public ICollection<UserGoal> UserGoals { get; set; } = [];
 }

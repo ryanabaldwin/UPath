@@ -7,7 +7,7 @@ namespace UPath.Api.Models;
 public class ResourceBookmark
 {
     [Column("user_id")]
-    public Guid UserId { get; set; }
+    public int UserId { get; set; }
 
     [Column("resource_id")]
     public long ResourceId { get; set; }

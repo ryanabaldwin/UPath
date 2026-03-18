@@ -11,7 +11,7 @@ public class Meeting
     public long MentorId { get; set; }
 
     [Column("mentee_id")]
-    public Guid MenteeId { get; set; }
+    public int MenteeId { get; set; }
 
     // Column name is "time" (quoted keyword in PostgreSQL)
     [Column("time")]
