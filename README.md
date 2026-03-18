@@ -7,7 +7,7 @@ UPath helps underprivileged youth navigate career paths and connect with mentors
 | Layer | Technologies |
 |-------|-------------|
 | **Frontend** | React 18, TypeScript, Vite, Tailwind CSS, shadcn/ui, React Router, TanStack Query |
-| **Backend** | ASP.NET Core 10 Web API, EF Core 10, Npgsql |
+| **Backend** | ASP.NET Core Web API, EF Core, Npgsql |
 | **Database** | PostgreSQL 14+ |
 | **Auth** | None — demo profile selector for development |
 
@@ -18,7 +18,7 @@ Browser (localhost:8080)
     │
     │  HTTP / REST
     ▼
-Vite + React  ──────────────────► ASP.NET Core 10 API (localhost:4000)
+Vite + React  ──────────────────► ASP.NET Core API (localhost:4000)
   frontend/                              backend/UPath.Api/
                                                │
                                                │  EF Core + Npgsql
@@ -54,28 +54,35 @@ cd UPath
 
 ### 2 — Database
 
-Run these from the `backend/` directory. Replace `<user>` with your PostgreSQL username.
+Run these from the repo root. Replace `<user>` with your PostgreSQL username.
 
 ```sh
 # Create database and apply base schema
-psql -U <user> -f db/schema.sql
+psql -U <user> -f backend/db/schema.sql
 
 # Apply migrations in order
-psql -U <user> -d upath_db -f db/migrations/001_add_mentor_fields.sql
-psql -U <user> -d upath_db -f db/migrations/002_student_preferences.sql
-psql -U <user> -d upath_db -f db/migrations/003_resources_and_bookmarks.sql
-psql -U <user> -d upath_db -f db/migrations/004_indexes_and_constraints.sql
-psql -U <user> -d upath_db -f db/migrations/005_resources_filters_and_eligibility.sql
-psql -U <user> -d upath_db -f db/migrations/006_hierarchical_milestones.sql
+psql -U <user> -d upath_db -f backend/db/migrations/001_add_mentor_fields.sql
+psql -U <user> -d upath_db -f backend/db/migrations/002_student_preferences.sql
+psql -U <user> -d upath_db -f backend/db/migrations/003_resources_and_bookmarks.sql
+psql -U <user> -d upath_db -f backend/db/migrations/004_indexes_and_constraints.sql
+psql -U <user> -d upath_db -f backend/db/migrations/005_resources_filters_and_eligibility.sql
+psql -U <user> -d upath_db -f backend/db/migrations/006_hierarchical_milestones.sql
+psql -U <user> -d upath_db -f backend/db/migrations/007_erd_alignment_users_goals_usergoals.sql
 
 # Seed demo data
-psql -U <user> -d upath_db -f db/seed.sql
-psql -U <user> -d upath_db -f db/seed-resources.sql
+psql -U <user> -d upath_db -f backend/db/seed.sql
+psql -U <user> -d upath_db -f backend/db/seed-resources.sql
 ```
 
 ### 3 — Backend configuration
 
-Create `backend/UPath.Api/appsettings.Development.json` (gitignored — do not commit):
+The default credentials in `backend/UPath.Api/appsettings.json` are:
+
+```
+Host=localhost;Port=5432;Database=upath_db;Username=postgres;Password=admin
+```
+
+To override without editing tracked files, create `backend/UPath.Api/appsettings.Development.json` (gitignored):
 
 ```json
 {
@@ -85,16 +92,7 @@ Create `backend/UPath.Api/appsettings.Development.json` (gitignored — do not c
 }
 ```
 
-### 4 — Frontend configuration
-
-```sh
-cd frontend
-cp .env.example .env
-```
-
-The default `VITE_API_BASE_URL=http://localhost:4000` matches the backend's dev port — no changes needed for local development.
-
-### 5 — Install dependencies
+### 4 — Install dependencies
 
 ```sh
 # Frontend
@@ -111,9 +109,8 @@ Open **two terminals** from the repo root.
 **Terminal 1 — Backend:**
 ```sh
 cd backend/UPath.Api
-dotnet run
+dotnet run --launch-profile http
 # API: http://localhost:4000
-# OpenAPI spec: http://localhost:4000/openapi/v1.json
 ```
 
 **Terminal 2 — Frontend:**
@@ -148,16 +145,38 @@ UPath/
 │   │   └── lib/            # API client + type definitions
 │   └── ...
 └── backend/
-    ├── UPath.Api/          # ASP.NET Core 10 Web API project
+    ├── UPath.Api/          # ASP.NET Core Web API project
     │   ├── Controllers/    # HTTP controllers
     │   ├── Data/           # EF Core DbContext
-    │   └── Models/         # Entity classes
+    │   └── Models/         # Entity classes (User, Goal, Mentor, etc.)
     ├── db/                 # PostgreSQL schema, migrations, and seeds (source of truth)
     └── _legacy/            # Original Express/Node.js implementation (reference only)
 ```
 
+## Requirements (EARS Format)
+
+### Ubiquitous Requirements
+
+- The system shall ask questions about the user to understand their situation and goals.
+- The system shall log completion of goals and milestones.
+- The system shall list programs, scholarships, and guides in an intuitive way.
+
+### Event-Driven Requirements
+
+- When a student completes their profile setup, the system shall generate a list of recommended mentors.
+- When a student selects a recommended mentor or path, the system shall notify the mentor and provide the student an introduction to the platform.
+- When a student updates the progress towards a milestone, the student's mentor shall be notified and the student shall be taken to the next steps.
+- When a student selects a specific career pathway, the system shall display personalized connections to relevant financial aid opportunities.
+- When the student answers a question in the profile setup, the system shall ask related follow-up questions.
+
+### State-Driven Requirements
+
+- While the student is viewing the milestone dashboard, the system shall highlight overdue milestones.
+- While the student browses the career resource library, the system shall allow filtering of content by industry, education level, and format.
+
 ## Key Development Notes
 
 - **Schema changes**: Edit the SQL files in `backend/db/migrations/` and run `psql` manually. EF Core migrations (`dotnet ef migrations add`) are **not** used — the hand-written SQL files are the source of truth.
-- **Adding a new endpoint**: Create a controller in `backend/UPath.Api/Controllers/`. See `HealthController.cs` as a starting template and `_legacy/src/server.js` for the original request/response shapes.
-- **Frontend API calls**: All fetch logic lives in `frontend/src/lib/api.ts`. The base URL comes from the `VITE_API_BASE_URL` environment variable.
+- **Adding a new endpoint**: Create a controller in `backend/UPath.Api/Controllers/`. See `HealthController.cs` as a starting template.
+- **Frontend API calls**: All fetch logic lives in `frontend/src/lib/api.ts`. The base URL comes from the `VITE_API_BASE_URL` environment variable (default: `http://localhost:4000`).
+- **CORS**: Allowed origins are configured in `appsettings.json` under `AllowedOrigins`.
