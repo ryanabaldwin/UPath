@@ -33,10 +33,10 @@ public class UsersController : ControllerBase
                     .OrderByDescending(ug => ug.GoalId)
                     .Select(ug => ug.Goal.Pi1)
                     .FirstOrDefault(),
-                north_star_vision = (string?)null,
-                definition_of_success = (string?)null,
-                current_grade_level = (string?)null,
-                streak_count = 0
+                north_star_vision = u.NorthStarVision,
+                definition_of_success = u.DefinitionOfSuccess,
+                current_grade_level = u.CurrentGradeLevel,
+                streak_count = u.StreakCount
             })
             .ToListAsync();
 
@@ -64,10 +64,10 @@ public class UsersController : ControllerBase
                     .OrderByDescending(ug => ug.GoalId)
                     .Select(ug => ug.Goal.Pi1)
                     .FirstOrDefault(),
-                north_star_vision = (string?)null,
-                definition_of_success = (string?)null,
-                current_grade_level = (string?)null,
-                streak_count = 0
+                north_star_vision = u.NorthStarVision,
+                definition_of_success = u.DefinitionOfSuccess,
+                current_grade_level = u.CurrentGradeLevel,
+                streak_count = u.StreakCount
             })
             .FirstOrDefaultAsync();
 

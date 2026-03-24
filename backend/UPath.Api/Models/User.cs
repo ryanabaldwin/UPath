@@ -41,6 +41,18 @@ public class User
     [Column("date_of_birth")]
     public DateOnly? DateOfBirth { get; set; }
 
+    [Column("north_star_vision")]
+    public string? NorthStarVision { get; set; }
+
+    [Column("definition_of_success")]
+    public string? DefinitionOfSuccess { get; set; }
+
+    [Column("current_grade_level")]
+    public string? CurrentGradeLevel { get; set; }
+
+    [Column("streak_count")]
+    public int StreakCount { get; set; }
+
     // Navigation
     public ICollection<UserGoal> UserGoals { get; set; } = [];
     public StudentPreference? StudentPreference { get; set; }

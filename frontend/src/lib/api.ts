@@ -152,10 +152,10 @@ export function createMilestone(userId: string, input: CreateMilestoneInput) {
 
 export interface PatchMilestoneInput {
   title?: string;
-  description?: string;
+  description?: string | null;
   status?: MilestoneStatus;
   due_date?: string | null;
-  category?: MilestoneCategory;
+  category?: MilestoneCategory | null;
 }
 
 export function patchMilestone(userId: string, milestoneId: number, input: PatchMilestoneInput) {
