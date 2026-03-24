@@ -59,4 +59,80 @@ export const careerPaths = [
   "Education",
   "Creative Arts & Design",
   "Trades & Technical Skills",
+  "Science",
+];
+
+// new mock data from Sarah for career exploration
+export interface Career {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  averageSalary?: number;
+}
+
+export const careers: Career[] = [
+  {
+    id: 1,
+    title: "Software Engineer",
+    description: "Design and build applications, websites, and systems.",
+    category: "Software Development",
+    averageSalary: 90000,
+  },
+  {
+    id: 2,
+    title: "Nurse",
+    description: "Provide care and support to patients in healthcare settings.",
+    category: "Healthcare",
+    averageSalary: 70000,
+  },
+  {
+    id: 3,
+    title: "Product Manager",
+    description: "Guide product development and work with teams to build solutions.",
+    category: "Product Management",
+    averageSalary: 85000,
+  },
+  {
+    id: 4,
+    title: "Electrician",
+    description: "Install and repair electrical systems in homes and buildings.",
+    category: "Trades & Technical Skills",
+    averageSalary: 60000,
+  },
+  {
+    id: 5,
+    title: "Computer Hardware Engineer",
+    description: "Design and test computer hardware like processors, circuit boards, and devices.",
+    category: "Computer Engineering",
+    averageSalary: 95000,
+  },
+  {
+    id: 6,
+    title: "Entrepreneur",
+    description: "Start and run your own business, turning ideas into real products or services.",
+    category: "Business & Entrepreneurship",
+    averageSalary: 60000,
+  },
+  {
+    id: 7,
+    title: "Teacher",
+    description: "Educate and inspire students in subjects like math, science, or language arts.",
+    category: "Education",
+    averageSalary: 55000,
+  },
+  {
+    id: 8,
+    title: "Graphic Designer",
+    description: "Create visual content like logos, websites, and social media graphics.",
+    category: "Creative Arts & Design",
+    averageSalary: 50000,
+  },
+  {
+    id: 9,
+    title: "Environmental Scientist",
+    description: "Study the environment and help solve problems like pollution and climate change.",
+    category: "Science",
+    averageSalary: 65000,
+  },
 ];
