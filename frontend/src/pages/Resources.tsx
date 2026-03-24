@@ -5,11 +5,17 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Search, ExternalLink, Bookmark, BookmarkCheck } from "lucide-react";
 import { resources as mockResources } from "@/data/mockData";
 import {
   fetchResources,
-  fetchResourcesSearch,
   fetchUserBookmarks,
   addBookmark,
   removeBookmark,
@@ -17,47 +23,32 @@ import {
 } from "@/lib/api";
 import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 import { toast } from "sonner";
+import {
+  PARTICIPANT_INTEREST_OPTIONS,
+  type ParticipantCareerArea,
+} from "@/constants/participantInterests";
 
-const categories = ["All", "Scholarships", "Jobs", "College"] as const;
+/** Resource category values for API / DB alignment (tabs also use "All"). */
+export type ResourceCategory = "Scholarships" | "Jobs" | "Internships" | "College";
 
-type ResourceItem =
-  | ApiResource
-  | {
-      resource_id: number;
-      title: string;
-      description: string;
-      category: string;
-      link: string;
-      education_level?: string | null;
-      location?: string | null;
-      cost_usd?: number | null;
-    };
+export type { ParticipantCareerArea };
+
+const categories = ["All", "Scholarships", "Jobs", "Internships", "College"] as const;
+
+type ResourceItem = ApiResource & {
+  career_areas?: ParticipantCareerArea[];
+};
 
 const Resources = () => {
   const queryClient = useQueryClient();
   const { userId } = useDemoIdentity();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<string>("All");
-  const [industryFilter, setIndustryFilter] = useState("");
-  const [educationFilter, setEducationFilter] = useState("");
-  const [formatFilter, setFormatFilter] = useState("");
-  const [locationFilter, setLocationFilter] = useState("");
+  const [careerFilter, setCareerFilter] = useState<"all" | ParticipantCareerArea>("all");
 
   const { data: apiResources, isError: apiError } = useQuery({
-    queryKey: ["resources", industryFilter, educationFilter, formatFilter, locationFilter],
-    queryFn: () => {
-      const hasAdvancedFilters =
-        industryFilter.trim() || educationFilter.trim() || formatFilter.trim() || locationFilter.trim();
-      if (hasAdvancedFilters) {
-        return fetchResourcesSearch({
-          industry: industryFilter.trim() || undefined,
-          education_level: educationFilter.trim() || undefined,
-          format: formatFilter.trim() || undefined,
-          location: locationFilter.trim() || undefined,
-        });
-      }
-      return fetchResources();
-    },
+    queryKey: ["resources"],
+    queryFn: () => fetchResources(),
     retry: false,
   });
 
@@ -93,8 +84,9 @@ const Resources = () => {
         description: r.description,
         category: r.category,
         link: r.link,
+        career_areas: r.career_areas,
       }))
-    : apiResources;
+    : (apiResources as ResourceItem[]);
 
   const bookmarkIds = new Set(bookmarks.map((b) => b.resource_id));
 
@@ -104,7 +96,13 @@ const Resources = () => {
       r.title.toLowerCase().includes(search.toLowerCase()) ||
       desc.toLowerCase().includes(search.toLowerCase());
     const matchesTab = tab === "All" || r.category === tab;
-    return matchesSearch && matchesTab;
+    // Items with no career_areas still show for any career filter until the API sends tags.
+    const hasAreas = r.career_areas && r.career_areas.length > 0;
+    const matchesCareer =
+      careerFilter === "all" ||
+      !hasAreas ||
+      r.career_areas!.includes(careerFilter);
+    return matchesSearch && matchesTab && matchesCareer;
   });
 
   return (
@@ -112,7 +110,7 @@ const Resources = () => {
       <div>
         <h1 className="text-2xl font-bold text-foreground">Resources</h1>
         <p className="text-muted-foreground">
-          Scholarships, jobs, and college info — all in one place
+          Scholarships, internships, jobs, and college info — all in one place
         </p>
       </div>
 
@@ -126,35 +124,33 @@ const Resources = () => {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-2">
-        <Input
-          placeholder="Industry (e.g. tech)"
-          value={industryFilter}
-          onChange={(e) => setIndustryFilter(e.target.value)}
-          className="rounded-xl"
-        />
-        <Input
-          placeholder="Education level"
-          value={educationFilter}
-          onChange={(e) => setEducationFilter(e.target.value)}
-          className="rounded-xl"
-        />
-        <Input
-          placeholder="Format (online/in-person)"
-          value={formatFilter}
-          onChange={(e) => setFormatFilter(e.target.value)}
-          className="rounded-xl"
-        />
-        <Input
-          placeholder="Location"
-          value={locationFilter}
-          onChange={(e) => setLocationFilter(e.target.value)}
-          className="rounded-xl"
-        />
+      <div>
+        <label htmlFor="resources-career-area" className="mb-2 block text-sm font-medium text-foreground">
+          Career area
+        </label>
+        <Select
+          value={careerFilter}
+          onValueChange={(v) => setCareerFilter(v as "all" | ParticipantCareerArea)}
+        >
+          <SelectTrigger id="resources-career-area" className="w-full max-w-md rounded-xl">
+            <SelectValue placeholder="Filter by area" />
+          </SelectTrigger>
+          <SelectContent className="rounded-xl">
+            <SelectItem value="all" className="rounded-lg">
+              All areas
+            </SelectItem>
+            {PARTICIPANT_INTEREST_OPTIONS.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value} className="rounded-lg">
+                <span className="mr-2">{opt.icon}</span>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <Tabs value={tab} onValueChange={setTab}>
-        <TabsList className="w-full justify-start rounded-xl">
+        <TabsList className="h-auto w-full flex-wrap justify-start gap-1 rounded-xl p-1">
           {categories.map((c) => (
             <TabsTrigger key={c} value={c} className="rounded-lg text-xs">
               {c}
@@ -199,9 +195,16 @@ const Resources = () => {
                             {r.cost_usd == null ? "Cost: varies" : `Cost: $${r.cost_usd}`}
                           </p>
                         )}
-                        <Badge variant="outline" className="mt-2 text-xs">
-                          {r.category}
-                        </Badge>
+                        <div className="mt-2 flex flex-wrap gap-1.5">
+                          <Badge variant="outline" className="text-xs">
+                            {r.category}
+                          </Badge>
+                          {r.career_areas?.map((area) => (
+                            <Badge key={area} variant="secondary" className="text-xs font-normal">
+                              {area}
+                            </Badge>
+                          ))}
+                        </div>
                       </div>
                       {userId && (
                         <Button
