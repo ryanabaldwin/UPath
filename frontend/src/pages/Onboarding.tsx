@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Compass, ArrowRight, ArrowLeft, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 import { submitOnboarding } from "@/lib/api";
 import { toast } from "sonner";
+import { PARTICIPANT_INTEREST_OPTIONS } from "@/constants/participantInterests";
 
 interface StepOption {
   value: string;
@@ -55,16 +56,11 @@ const STEPS: Step[] = [
     subtitle: "Pick up to 3 areas that excite you.",
     type: "multi",
     maxSelect: 3,
-    options: [
-      { value: "Technology", label: "Technology", icon: "💻" },
-      { value: "Healthcare", label: "Healthcare", icon: "🏥" },
-      { value: "Business & Finance", label: "Business & Finance", icon: "📈" },
-      { value: "Arts & Creative", label: "Arts & Creative", icon: "🎨" },
-      { value: "Science & Research", label: "Science & Research", icon: "🔬" },
-      { value: "Education", label: "Education", icon: "📚" },
-      { value: "Social Impact", label: "Social Impact", icon: "🌍" },
-      { value: "Engineering", label: "Engineering", icon: "⚙️" },
-    ],
+    options: PARTICIPANT_INTEREST_OPTIONS.map((o) => ({
+      value: o.value,
+      label: o.label,
+      icon: o.icon,
+    })),
   },
   {
     id: "challenge",
