@@ -69,6 +69,7 @@ psql -U <user> -d upath_db -f backend/db/migrations/004_indexes_and_constraints.
 psql -U <user> -d upath_db -f backend/db/migrations/005_resources_filters_and_eligibility.sql
 psql -U <user> -d upath_db -f backend/db/migrations/006_hierarchical_milestones.sql
 psql -U <user> -d upath_db -f backend/db/migrations/007_erd_alignment_users_goals_usergoals.sql
+psql -U <user> -d upath_db -f backend/db/migrations/008_onboarding_fields.sql
 
 # Seed demo data
 psql -U <user> -d upath_db -f backend/db/seed.sql

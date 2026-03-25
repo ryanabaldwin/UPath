@@ -390,11 +390,61 @@ export interface OnboardingData {
   goal: string;
   interests: string[];
   challenge: string;
-  weekly_time: string;
+  weeklyTime: string;
 }
 
 export function submitOnboarding(userId: string, data: OnboardingData) {
   return putJson<{ ok: boolean }>(`/api/users/${userId}/onboarding`, data);
+}
+
+// Auth types and functions
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  id: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  username?: string;
+}
+
+export interface CreateAccountRequest {
+  registration: RegisterRequest;
+  onboarding: OnboardingData;
+}
+
+export interface AccountResponse {
+  id: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  onboardingComplete: boolean;
+}
+
+export function login(data: LoginRequest) {
+  return postJson<LoginResponse>("/api/auth/login", data);
+}
+
+export function register(data: CreateAccountRequest) {
+  return postJson<AccountResponse>("/api/account/register", data);
+}
+
+export function registerSimple(data: RegisterRequest) {
+  return postJson<AccountResponse>("/api/account/register-simple", data);
 }
 
 export function createResourceRecommendations(

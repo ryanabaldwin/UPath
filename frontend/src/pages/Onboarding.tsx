@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Compass, ArrowRight, ArrowLeft, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 import { submitOnboarding } from "@/lib/api";
 import { toast } from "sonner";
@@ -76,7 +77,7 @@ const STEPS: Step[] = [
     ],
   },
   {
-    id: "weekly_time",
+    id: "weeklyTime",
     question: "How much time can you commit weekly?",
     subtitle: "We'll adjust your plan to fit your schedule.",
     type: "single",
@@ -94,7 +95,7 @@ type Answers = {
   goal: string;
   interests: string[];
   challenge: string;
-  weekly_time: string;
+  weeklyTime: string;
 };
 
 const emptyAnswers: Answers = {
@@ -102,16 +103,28 @@ const emptyAnswers: Answers = {
   goal: "",
   interests: [],
   challenge: "",
-  weekly_time: "",
+  weeklyTime: "",
 };
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const { userId, user, users, setUserId, isLoading } = useDemoIdentity();
+  const { getPendingRegistration, register, clearPendingRegistration, isAuthenticated } = useAuth();
+  const { userId, users, setUserId, isLoading: isDemoLoading, refetchUsers } = useDemoIdentity();
+  
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>(emptyAnswers);
   const [visible, setVisible] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const pendingRegistration = getPendingRegistration();
+  const isNewRegistration = !!pendingRegistration;
+
+  useEffect(() => {
+    if (!isNewRegistration && !userId && !isDemoLoading && users.length === 0) {
+      toast.error("Please start from the registration page");
+      navigate("/register");
+    }
+  }, [isNewRegistration, userId, isDemoLoading, users.length, navigate]);
 
   const currentStep = STEPS[step];
   const totalSteps = STEPS.length;
@@ -173,36 +186,49 @@ export default function Onboarding() {
 
   const handleBack = () => {
     if (step === 0) {
-      navigate("/");
+      if (isNewRegistration) {
+        navigate("/register");
+      } else {
+        navigate("/");
+      }
       return;
     }
     animateTransition(() => setStep((s) => s - 1));
   };
 
   const handleSubmit = async () => {
-    if (!userId) {
-      toast.error("Please select a profile to continue.");
-      return;
-    }
     setIsSubmitting(true);
+    
+    const onboardingData = {
+      background: answers.background,
+      goal: answers.goal,
+      interests: answers.interests,
+      challenge: answers.challenge,
+      weeklyTime: answers.weeklyTime,
+    };
+
     try {
-      await submitOnboarding(userId, {
-        background: answers.background,
-        goal: answers.goal,
-        interests: answers.interests,
-        challenge: answers.challenge,
-        weekly_time: answers.weekly_time,
-      });
-      toast.success("Welcome! Your profile is set up.");
-      navigate("/dashboard");
-    } catch {
-      toast.error("Something went wrong. Please try again.");
+      if (isNewRegistration && pendingRegistration) {
+        await register(pendingRegistration, onboardingData);
+        refetchUsers();
+        toast.success("Welcome! Your account is ready.");
+        navigate("/dashboard");
+      } else if (userId) {
+        await submitOnboarding(userId, onboardingData);
+        toast.success("Welcome! Your profile is set up.");
+        navigate("/dashboard");
+      } else {
+        toast.error("Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Something went wrong. Please try again.";
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (isLoading) {
+  if (isDemoLoading && !isNewRegistration) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
@@ -218,8 +244,14 @@ export default function Onboarding() {
           <Compass className="h-6 w-6 text-primary" />
           <span className="text-base font-bold text-foreground">PathFinder</span>
         </div>
-        {/* Demo profile selector */}
-        {users.length > 0 && (
+        {/* Show greeting for new registration */}
+        {isNewRegistration && pendingRegistration && (
+          <span className="text-sm text-muted-foreground">
+            Hi, {pendingRegistration.firstName}!
+          </span>
+        )}
+        {/* Demo profile selector for existing users */}
+        {!isNewRegistration && users.length > 0 && (
           <div className="flex items-center gap-2">
             <span className="text-xs text-muted-foreground hidden sm:inline">Demo profile:</span>
             <select
@@ -341,7 +373,7 @@ export default function Onboarding() {
               className="gap-1.5 text-muted-foreground"
             >
               <ArrowLeft className="h-4 w-4" />
-              {step === 0 ? "Back to home" : "Back"}
+              {step === 0 ? (isNewRegistration ? "Back" : "Back to home") : "Back"}
             </Button>
 
             <Button
@@ -353,11 +385,11 @@ export default function Onboarding() {
               {isSubmitting ? (
                 <>
                   <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-                  Saving...
+                  {isNewRegistration ? "Creating account..." : "Saving..."}
                 </>
               ) : step === totalSteps - 1 ? (
                 <>
-                  Let's go
+                  {isNewRegistration ? "Create account" : "Let's go"}
                   <ArrowRight className="h-4 w-4" />
                 </>
               ) : (
