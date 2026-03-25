@@ -1,21 +1,42 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Star, Flag, ChevronRight, ChevronDown, Flame, Plus } from "lucide-react";
+import { Star, Flag, ChevronRight, ChevronDown, Flame, Plus, Pencil } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 import {
   fetchMilestoneTree,
   patchMilestone,
+  createMilestone,
   generateMilestones,
-  fetchUser,
   fetchNextPlanStep,
   type MilestoneNode,
+  type CreateMilestoneInput,
+  type PatchMilestoneInput,
 } from "@/lib/api";
-import { useState } from "react";
+import type { MilestoneTier, MilestoneCategory } from "@/lib/aiTypes";
+import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
@@ -27,7 +48,16 @@ const TIER_LABELS: Record<string, string> = {
   daily: "Action Step",
 };
 
-const TIER_ORDER = ["macro", "checkpoint", "domain", "daily"];
+const TIER_ORDER = ["macro", "checkpoint", "domain", "daily"] as const;
+
+const CATEGORY_OPTIONS: { value: MilestoneCategory; label: string }[] = [
+  { value: "school", label: "School" },
+  { value: "work", label: "Work" },
+  { value: "life", label: "Life" },
+  { value: "finance", label: "Finance" },
+];
+
+const NONE_CATEGORY = "__none__";
 
 const CATEGORY_COLORS: Record<string, string> = {
   school: "bg-blue-100 text-blue-700 border-blue-200",
@@ -36,14 +66,39 @@ const CATEGORY_COLORS: Record<string, string> = {
   finance: "bg-amber-100 text-amber-700 border-amber-200",
 };
 
+function defaultChildTier(parentTier: MilestoneTier): MilestoneTier {
+  const i = TIER_ORDER.indexOf(parentTier);
+  const next = i < 0 ? 0 : Math.min(i + 1, TIER_ORDER.length - 1);
+  return TIER_ORDER[next];
+}
+
+function countCompleteInTree(nodes: MilestoneNode[]): number {
+  let total = 0;
+  for (const n of nodes) {
+    if (n.status === "complete") total++;
+    if (n.children.length > 0) total += countCompleteInTree(n.children);
+  }
+  return total;
+}
+
+type MilestoneDialog =
+  | { mode: "add"; parent: MilestoneNode }
+  | { mode: "add-root" }
+  | { mode: "edit"; node: MilestoneNode }
+  | null;
+
 function MilestoneRow({
   node,
   onToggle,
+  onAddChild,
+  onEdit,
   disabled,
   depth = 0,
 }: {
   node: MilestoneNode;
   onToggle: (id: number, done: boolean) => void;
+  onAddChild: (node: MilestoneNode) => void;
+  onEdit: (node: MilestoneNode) => void;
   disabled: boolean;
   depth?: number;
 }) {
@@ -99,16 +154,36 @@ function MilestoneRow({
                 <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{node.description}</p>
               )}
             </div>
-            {hasChildren && (
+            <div className="flex shrink-0 items-start gap-0.5">
               <button
                 type="button"
-                onClick={() => setExpanded((e) => !e)}
-                className="shrink-0 rounded p-0.5 text-muted-foreground hover:text-foreground"
-                aria-label={expanded ? "Collapse" : "Expand"}
+                onClick={() => onAddChild(node)}
+                disabled={disabled}
+                className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50"
+                aria-label="Add sub-step"
               >
-                {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                <Plus className="h-4 w-4" />
               </button>
-            )}
+              <button
+                type="button"
+                onClick={() => onEdit(node)}
+                disabled={disabled}
+                className="rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground disabled:opacity-50"
+                aria-label="Edit milestone"
+              >
+                <Pencil className="h-4 w-4" />
+              </button>
+              {hasChildren && (
+                <button
+                  type="button"
+                  onClick={() => setExpanded((e) => !e)}
+                  className="rounded p-0.5 text-muted-foreground hover:text-foreground"
+                  aria-label={expanded ? "Collapse" : "Expand"}
+                >
+                  {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -123,6 +198,8 @@ function MilestoneRow({
                 key={child.id}
                 node={child}
                 onToggle={onToggle}
+                onAddChild={onAddChild}
+                onEdit={onEdit}
                 disabled={disabled}
                 depth={depth + 1}
               />
@@ -138,6 +215,27 @@ const Milestones = () => {
   const { userId } = useDemoIdentity();
   const navigate = useNavigate();
 
+  const [dialog, setDialog] = useState<MilestoneDialog>(null);
+  const [formTitle, setFormTitle] = useState("");
+  const [formDescription, setFormDescription] = useState("");
+  const [formCategory, setFormCategory] = useState<string>(NONE_CATEGORY);
+  const [formDue, setFormDue] = useState("");
+
+  useEffect(() => {
+    if (!dialog) return;
+    if (dialog.mode === "edit") {
+      setFormTitle(dialog.node.title);
+      setFormDescription(dialog.node.description ?? "");
+      setFormCategory(dialog.node.category ?? NONE_CATEGORY);
+      setFormDue(dialog.node.due_date ?? "");
+    } else {
+      setFormTitle("");
+      setFormDescription("");
+      setFormCategory(NONE_CATEGORY);
+      setFormDue("");
+    }
+  }, [dialog]);
+
   const {
     data: treeData,
     isLoading: treeLoading,
@@ -148,12 +246,6 @@ const Milestones = () => {
     enabled: !!userId,
   });
 
-  const { data: user } = useQuery({
-    queryKey: ["user", userId],
-    queryFn: () => fetchUser(userId!),
-    enabled: !!userId,
-  });
-
   const { data: nextStepData } = useQuery({
     queryKey: ["next-step", userId],
     queryFn: () => fetchNextPlanStep(userId!),
@@ -161,16 +253,41 @@ const Milestones = () => {
     retry: false,
   });
 
+  const invalidateMilestoneQueries = () => {
+    queryClient.invalidateQueries({ queryKey: ["milestone-tree", userId] });
+    queryClient.invalidateQueries({ queryKey: ["next-step", userId] });
+  };
+
   const patchMutation = useMutation({
     mutationFn: ({ milestoneId, status }: { milestoneId: number; status: "complete" | "pending" }) =>
       patchMilestone(userId!, milestoneId, { status }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["milestone-tree", userId] });
+      invalidateMilestoneQueries();
       queryClient.invalidateQueries({ queryKey: ["user", userId] });
-      queryClient.invalidateQueries({ queryKey: ["next-step", userId] });
       toast.success("Progress saved");
     },
     onError: (e: Error) => toast.error(e.message || "Failed to update"),
+  });
+
+  const createMutation = useMutation({
+    mutationFn: (input: CreateMilestoneInput) => createMilestone(userId!, input),
+    onSuccess: () => {
+      invalidateMilestoneQueries();
+      setDialog(null);
+      toast.success("Milestone added");
+    },
+    onError: (e: Error) => toast.error(e.message || "Failed to add milestone"),
+  });
+
+  const editMutation = useMutation({
+    mutationFn: ({ id, patch }: { id: number; patch: PatchMilestoneInput }) =>
+      patchMilestone(userId!, id, patch),
+    onSuccess: () => {
+      invalidateMilestoneQueries();
+      setDialog(null);
+      toast.success("Milestone updated");
+    },
+    onError: (e: Error) => toast.error(e.message || "Failed to update milestone"),
   });
 
   const generateMutation = useMutation({
@@ -185,6 +302,71 @@ const Milestones = () => {
   const handleToggle = (milestoneId: number, currentlyDone: boolean) => {
     patchMutation.mutate({ milestoneId, status: currentlyDone ? "pending" : "complete" });
   };
+
+  const formBusy = createMutation.isPending || editMutation.isPending;
+  const rowBusy = patchMutation.isPending || formBusy;
+
+  const submitDialog = () => {
+    if (!dialog || !userId) return;
+    const title = formTitle.trim();
+    if (!title) {
+      toast.error("Title is required");
+      return;
+    }
+    const description = formDescription.trim();
+    const descPayload = description.length > 0 ? description : undefined;
+    const categoryPayload: MilestoneCategory | undefined =
+      formCategory === NONE_CATEGORY ? undefined : (formCategory as MilestoneCategory);
+    const duePayload = formDue.trim() === "" ? undefined : formDue.trim();
+
+    if (dialog.mode === "add-root") {
+      const payload: CreateMilestoneInput = {
+        title,
+        tier: "macro",
+        ...(descPayload !== undefined && { description: descPayload }),
+        ...(categoryPayload !== undefined && { category: categoryPayload }),
+        ...(duePayload !== undefined && { due_date: duePayload }),
+      };
+      createMutation.mutate(payload);
+      return;
+    }
+
+    if (dialog.mode === "add") {
+      const tier = defaultChildTier(dialog.parent.tier);
+      const payload: CreateMilestoneInput = {
+        parent_id: dialog.parent.id,
+        title,
+        tier,
+        ...(descPayload !== undefined && { description: descPayload }),
+        ...(categoryPayload !== undefined && { category: categoryPayload }),
+        ...(duePayload !== undefined && { due_date: duePayload }),
+      };
+      createMutation.mutate(payload);
+      return;
+    }
+
+    const patch: PatchMilestoneInput = {
+      title,
+      description: description.length > 0 ? description : null,
+      category: formCategory === NONE_CATEGORY ? null : (formCategory as MilestoneCategory),
+      due_date: formDue.trim() === "" ? null : formDue.trim(),
+    };
+    editMutation.mutate({ id: dialog.node.id, patch });
+  };
+
+  const dialogTitle =
+    dialog?.mode === "edit"
+      ? "Edit milestone"
+      : dialog?.mode === "add-root"
+        ? "Add North Star"
+        : "Add sub-step";
+
+  const dialogTierLabel =
+    dialog?.mode === "add"
+      ? TIER_LABELS[defaultChildTier(dialog.parent.tier)] ?? defaultChildTier(dialog.parent.tier)
+      : dialog?.mode === "add-root"
+        ? TIER_LABELS.macro
+        : null;
 
   if (!userId) {
     return (
@@ -243,7 +425,7 @@ const Milestones = () => {
   const progressPct = allDailyNodes.length > 0 ? Math.round((completedDailies / allDailyNodes.length) * 100) : 0;
 
   const macroNode = tree.find((n) => n.tier === "macro");
-  const streakCount = user?.streak_count ?? 0;
+  const completedMilestoneCount = countCompleteInTree(tree);
 
   const isEmpty = tree.length === 0;
 
@@ -254,11 +436,85 @@ const Milestones = () => {
         <p className="text-muted-foreground">Track your progress step by step</p>
       </div>
 
+      <Dialog open={dialog !== null} onOpenChange={(open) => !open && setDialog(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>{dialogTitle}</DialogTitle>
+            <DialogDescription>
+              {dialog?.mode === "add" && (
+                <>Adding under “{dialog.parent.title}”. New step type: {dialogTierLabel}.</>
+              )}
+              {dialog?.mode === "add-root" && <>Create a top-level North Star milestone for your plan.</>}
+              {dialog?.mode === "edit" && <>Update title, details, category, or due date.</>}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-3 py-2">
+            <div className="grid gap-1.5">
+              <Label htmlFor="ms-title">Title</Label>
+              <Input
+                id="ms-title"
+                value={formTitle}
+                onChange={(e) => setFormTitle(e.target.value)}
+                placeholder="What will you accomplish?"
+                disabled={formBusy}
+              />
+            </div>
+            <div className="grid gap-1.5">
+              <Label htmlFor="ms-desc">Description (optional)</Label>
+              <Textarea
+                id="ms-desc"
+                value={formDescription}
+                onChange={(e) => setFormDescription(e.target.value)}
+                placeholder="Add context or success criteria"
+                disabled={formBusy}
+                rows={3}
+              />
+            </div>
+            <div className="grid gap-1.5">
+              <Label>Category</Label>
+              <Select value={formCategory} onValueChange={setFormCategory} disabled={formBusy}>
+                <SelectTrigger>
+                  <SelectValue placeholder="None" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value={NONE_CATEGORY}>None</SelectItem>
+                  {CATEGORY_OPTIONS.map((c) => (
+                    <SelectItem key={c.value} value={c.value}>
+                      {c.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="grid gap-1.5">
+              <Label htmlFor="ms-due">Due date (optional)</Label>
+              <Input
+                id="ms-due"
+                type="date"
+                value={formDue}
+                onChange={(e) => setFormDue(e.target.value)}
+                disabled={formBusy}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={() => setDialog(null)} disabled={formBusy}>
+              Cancel
+            </Button>
+            <Button type="button" onClick={submitDialog} disabled={formBusy}>
+              {dialog?.mode === "edit" ? "Save" : "Add"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Streak */}
-      {streakCount > 0 && (
+      {completedMilestoneCount > 0 && (
         <div className="flex items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5">
           <Flame className="h-5 w-5 text-amber-500" />
-          <span className="text-sm font-medium text-amber-700">{streakCount} milestone{streakCount !== 1 ? "s" : ""} completed</span>
+          <span className="text-sm font-medium text-amber-700">
+            {completedMilestoneCount} milestone{completedMilestoneCount !== 1 ? "s" : ""} completed
+          </span>
         </div>
       )}
 
@@ -301,11 +557,20 @@ const Milestones = () => {
         <Card className="border-dashed">
           <CardContent className="pt-6 pb-6 text-center space-y-4">
             <p className="text-sm text-muted-foreground">
-              No milestone plan yet. Generate one from the Explore page, or start from a career match.
+              No milestone plan yet. Generate one from the Explore page, start from a career match, or add a North Star manually.
             </p>
             <div className="flex flex-wrap justify-center gap-2">
               <Button variant="outline" size="sm" className="rounded-full" onClick={() => navigate("/explore")}>
                 Go to Explore
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+                onClick={() => setDialog({ mode: "add-root" })}
+              >
+                <Plus className="mr-1.5 h-3.5 w-3.5" />
+                Add North Star
               </Button>
               <Button
                 size="sm"
@@ -332,7 +597,9 @@ const Milestones = () => {
                 key={node.id}
                 node={node}
                 onToggle={handleToggle}
-                disabled={patchMutation.isPending}
+                onAddChild={(n) => setDialog({ mode: "add", parent: n })}
+                onEdit={(n) => setDialog({ mode: "edit", node: n })}
+                disabled={rowBusy}
                 depth={0}
               />
             ))}

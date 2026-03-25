@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using UPath.Api.Data;
+using UPath.Api.Models;
 
 namespace UPath.Api.Controllers;
 
@@ -9,6 +11,21 @@ namespace UPath.Api.Controllers;
 [Route("api/users/{userId:int}/milestones")]
 public class UserMilestonesController : ControllerBase
 {
+    private static readonly HashSet<string> ValidTiers = new(StringComparer.Ordinal)
+    {
+        "macro", "checkpoint", "domain", "daily"
+    };
+
+    private static readonly HashSet<string> ValidCategories = new(StringComparer.Ordinal)
+    {
+        "school", "work", "life", "finance"
+    };
+
+    private static readonly HashSet<string> ValidStatuses = new(StringComparer.Ordinal)
+    {
+        "pending", "in_progress", "complete", "skipped"
+    };
+
     private readonly AppDbContext _db;
 
     public UserMilestonesController(AppDbContext db) => _db = db;
@@ -55,6 +72,255 @@ public class UserMilestonesController : ControllerBase
         return Ok(new { tree = roots });
     }
 
+    [HttpPost]
+    public async Task<IActionResult> Create([FromRoute] int userId, [FromBody] CreateMilestoneRequest? body)
+    {
+        if (body is null)
+            return BadRequest(new { error = "body is required" });
+
+        if (!await _db.Users.AnyAsync(u => u.Id == userId))
+            return NotFound(new { error = "User not found" });
+
+        var title = (body.Title ?? "").Trim();
+        if (title.Length == 0)
+            return BadRequest(new { error = "title is required" });
+        if (title.Length > 255)
+            title = title[..255];
+
+        var tier = (body.Tier ?? "").Trim();
+        if (!ValidTiers.Contains(tier))
+            return BadRequest(new { error = "tier must be one of: macro, checkpoint, domain, daily" });
+
+        long? parentId = null;
+        if (body.ParentId is int pid)
+        {
+            var parent = await _db.Milestones.AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id == pid && m.UserId == userId);
+            if (parent is null)
+                return BadRequest(new { error = "parent_id not found for this user" });
+            parentId = parent.Id;
+        }
+
+        var description = NormalizeDescription(body.Description);
+        var category = NormalizeCategory(body.Category);
+        var status = NormalizeStatus(body.Status) ?? "pending";
+
+        DateOnly? dueDate = null;
+        if (body.DueDate is { } ds && !string.IsNullOrWhiteSpace(ds))
+        {
+            if (!DateOnly.TryParse(ds.Trim(), out var parsed))
+                return BadRequest(new { error = "invalid due_date" });
+            dueDate = parsed;
+        }
+
+        var now = DateTimeOffset.UtcNow;
+        var entity = new Milestone
+        {
+            UserId = userId,
+            ParentId = parentId,
+            Title = title,
+            Description = description,
+            Tier = tier,
+            Category = category,
+            Status = status,
+            DueDate = dueDate,
+            CreatedAt = now,
+            UpdatedAt = now
+        };
+
+        _db.Milestones.Add(entity);
+
+        var userForCount = await _db.Users.FirstAsync(u => u.Id == userId);
+        var completeInDb = await _db.Milestones.AsNoTracking()
+            .CountAsync(m => m.UserId == userId && m.Status == "complete");
+        userForCount.StreakCount = completeInDb + (entity.Status == "complete" ? 1 : 0);
+
+        await _db.SaveChangesAsync();
+
+        return StatusCode(201, ToFlatDto(entity));
+    }
+
+    [HttpPatch("{milestoneId:long}")]
+    public async Task<IActionResult> Patch([FromRoute] int userId, [FromRoute] long milestoneId, [FromBody] JsonElement body)
+    {
+        if (body.ValueKind is JsonValueKind.Undefined or JsonValueKind.Null)
+            return BadRequest(new { error = "body is required" });
+
+        var milestone = await _db.Milestones.FirstOrDefaultAsync(m => m.Id == milestoneId && m.UserId == userId);
+        if (milestone is null)
+            return NotFound(new { error = "Milestone not found" });
+
+        var changed = false;
+
+        if (body.TryGetProperty("title", out var titleProp))
+        {
+            if (titleProp.ValueKind == JsonValueKind.Null)
+                return BadRequest(new { error = "title cannot be null" });
+            if (titleProp.ValueKind != JsonValueKind.String)
+                return BadRequest(new { error = "invalid title" });
+            var t = titleProp.GetString()?.Trim() ?? "";
+            if (t.Length == 0)
+                return BadRequest(new { error = "title cannot be empty" });
+            if (t.Length > 255)
+                t = t[..255];
+            milestone.Title = t;
+            changed = true;
+        }
+
+        if (body.TryGetProperty("description", out var descProp))
+        {
+            if (descProp.ValueKind == JsonValueKind.Null)
+                milestone.Description = null;
+            else if (descProp.ValueKind == JsonValueKind.String)
+                milestone.Description = NormalizeDescription(descProp.GetString());
+            else
+                return BadRequest(new { error = "invalid description" });
+            changed = true;
+        }
+
+        if (body.TryGetProperty("status", out var stProp))
+        {
+            if (stProp.ValueKind == JsonValueKind.Null)
+                return BadRequest(new { error = "status cannot be null" });
+            if (stProp.ValueKind != JsonValueKind.String)
+                return BadRequest(new { error = "invalid status" });
+            var s = stProp.GetString()?.Trim();
+            if (s is null || !ValidStatuses.Contains(s))
+                return BadRequest(new { error = "invalid status" });
+            milestone.Status = s;
+            changed = true;
+        }
+
+        if (body.TryGetProperty("category", out var catProp))
+        {
+            if (catProp.ValueKind == JsonValueKind.Null)
+                milestone.Category = null;
+            else if (catProp.ValueKind == JsonValueKind.String)
+                milestone.Category = NormalizeCategory(catProp.GetString());
+            else
+                return BadRequest(new { error = "invalid category" });
+            changed = true;
+        }
+
+        if (body.TryGetProperty("due_date", out var dueProp))
+        {
+            if (dueProp.ValueKind == JsonValueKind.Null)
+                milestone.DueDate = null;
+            else if (dueProp.ValueKind == JsonValueKind.String)
+            {
+                var ds = dueProp.GetString();
+                if (string.IsNullOrWhiteSpace(ds))
+                    milestone.DueDate = null;
+                else if (DateOnly.TryParse(ds.Trim(), out var dd))
+                    milestone.DueDate = dd;
+                else
+                    return BadRequest(new { error = "invalid due_date" });
+            }
+            else
+                return BadRequest(new { error = "invalid due_date" });
+            changed = true;
+        }
+
+        if (!changed)
+            return BadRequest(new { error = "no valid fields to update" });
+
+        milestone.UpdatedAt = DateTimeOffset.UtcNow;
+
+        var statusWasPatched = body.TryGetProperty("status", out _);
+        if (statusWasPatched)
+        {
+            var user = await _db.Users.FirstAsync(u => u.Id == userId);
+            var othersComplete = await _db.Milestones.AsNoTracking()
+                .CountAsync(m => m.UserId == userId && m.Id != milestone.Id && m.Status == "complete");
+            user.StreakCount = othersComplete + (milestone.Status == "complete" ? 1 : 0);
+        }
+
+        await _db.SaveChangesAsync();
+
+        return Ok(ToFlatDto(milestone));
+    }
+
+    [HttpDelete("{milestoneId:long}")]
+    public async Task<IActionResult> Delete([FromRoute] int userId, [FromRoute] long milestoneId)
+    {
+        var milestone = await _db.Milestones.FirstOrDefaultAsync(m => m.Id == milestoneId && m.UserId == userId);
+        if (milestone is null)
+            return NotFound(new { error = "Milestone not found" });
+
+        var deletedId = milestone.Id;
+        _db.Milestones.Remove(milestone);
+
+        var userForCount = await _db.Users.FirstAsync(u => u.Id == userId);
+        userForCount.StreakCount = await _db.Milestones.AsNoTracking()
+            .CountAsync(m => m.UserId == userId && m.Id != deletedId && m.Status == "complete");
+
+        await _db.SaveChangesAsync();
+
+        return Ok(new { ok = true });
+    }
+
+    private static MilestoneNodeDto ToFlatDto(Milestone m) => new()
+    {
+        Id = (int)m.Id,
+        UserId = m.UserId.ToString(),
+        ParentId = m.ParentId == null ? null : (int?)m.ParentId.Value,
+        Title = m.Title,
+        Description = m.Description,
+        Tier = m.Tier,
+        Category = m.Category,
+        Status = m.Status,
+        DueDate = m.DueDate == null ? null : m.DueDate.Value.ToString("yyyy-MM-dd"),
+        CreatedAt = m.CreatedAt.ToString("O"),
+        UpdatedAt = m.UpdatedAt.ToString("O"),
+        Children = new List<MilestoneNodeDto>()
+    };
+
+    private static string? NormalizeDescription(string? raw)
+    {
+        if (raw is null) return null;
+        var t = raw.Trim();
+        if (t.Length == 0) return null;
+        return t.Length > 1000 ? t[..1000] : t;
+    }
+
+    private static string? NormalizeCategory(string? raw)
+    {
+        if (raw is null) return null;
+        var c = raw.Trim();
+        return ValidCategories.Contains(c) ? c : null;
+    }
+
+    private static string? NormalizeStatus(string? raw)
+    {
+        if (raw is null) return null;
+        var s = raw.Trim();
+        return ValidStatuses.Contains(s) ? s : null;
+    }
+
+    public sealed class CreateMilestoneRequest
+    {
+        [JsonPropertyName("title")]
+        public string? Title { get; set; }
+
+        [JsonPropertyName("tier")]
+        public string? Tier { get; set; }
+
+        [JsonPropertyName("description")]
+        public string? Description { get; set; }
+
+        [JsonPropertyName("category")]
+        public string? Category { get; set; }
+
+        [JsonPropertyName("status")]
+        public string? Status { get; set; }
+
+        [JsonPropertyName("due_date")]
+        public string? DueDate { get; set; }
+
+        [JsonPropertyName("parent_id")]
+        public int? ParentId { get; set; }
+    }
+
     private sealed class MilestoneNodeDto
     {
         [JsonPropertyName("id")]
@@ -94,4 +360,3 @@ public class UserMilestonesController : ControllerBase
         public required List<MilestoneNodeDto> Children { get; init; }
     }
 }
-
