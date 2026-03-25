@@ -1,4 +1,4 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, Link } from "react-router-dom";
 import { UserCircle, LogOut } from "lucide-react";
 import BottomNav from "./BottomNav";
 import DesktopNav from "./DesktopNav";
@@ -35,7 +35,7 @@ const AppLayout = () => {
                 {user.user_first} {user.user_last}
               </NavLink>
             )}
-            {isAuthenticated && (
+            {isAuthenticated ? (
               <Button
                 variant="ghost"
                 size="sm"
@@ -45,6 +45,12 @@ const AppLayout = () => {
               >
                 <LogOut className="h-4 w-4" />
               </Button>
+            ) : (
+              <Link to="/login">
+                <Button variant="ghost" size="sm">
+                  Sign in
+                </Button>
+              </Link>
             )}
           </div>
         </div>

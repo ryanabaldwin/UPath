@@ -1,6 +1,7 @@
-import { Map, Users, Compass, BookOpen, Home, Briefcase } from "lucide-react";
+import { Map, Users, Compass, BookOpen, Home, Briefcase, LogIn, LogOut } from "lucide-react";
 import { NavLink, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/contexts/AuthContext";
 
 const links = [
   { to: "/dashboard", icon: Home, label: "Dashboard" },
@@ -11,33 +12,56 @@ const links = [
   { to: "/resources", icon: BookOpen, label: "Resources" },
 ];
 
-const DesktopNav = () => (
-  <aside className="fixed inset-y-0 left-0 z-40 hidden w-56 border-r border-border bg-card md:flex md:flex-col" aria-label="Side navigation">
-    <Link to="/" className="flex items-center gap-2 px-5 py-5 hover:opacity-80 transition-opacity">
-      <Compass className="h-7 w-7 text-primary" />
-      <span className="text-lg font-bold text-foreground">PathFinder</span>
-    </Link>
-    <nav className="flex flex-1 flex-col gap-1 px-3">
-      {links.map(({ to, icon: Icon, label }) => (
-        <NavLink
-          key={to}
-          to={to}
-          end={to === "/dashboard"}
-          className={({ isActive }) =>
-            cn(
-              "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
-              isActive
-                ? "bg-primary/10 text-primary"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
-            )
-          }
-        >
-          <Icon className="h-5 w-5" />
-          {label}
-        </NavLink>
-      ))}
-    </nav>
-  </aside>
-);
+const DesktopNav = () => {
+  const { isAuthenticated, logout } = useAuth();
+
+  return (
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-56 border-r border-border bg-card md:flex md:flex-col" aria-label="Side navigation">
+      <Link to="/" className="flex items-center gap-2 px-5 py-5 hover:opacity-80 transition-opacity">
+        <Compass className="h-7 w-7 text-primary" />
+        <span className="text-lg font-bold text-foreground">PathFinder</span>
+      </Link>
+      <nav className="flex flex-1 flex-col gap-1 px-3">
+        {links.map(({ to, icon: Icon, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={to === "/dashboard"}
+            className={({ isActive }) =>
+              cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                isActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )
+            }
+          >
+            <Icon className="h-5 w-5" />
+            {label}
+          </NavLink>
+        ))}
+      </nav>
+      <div className="border-t border-border px-3 py-3">
+        {isAuthenticated ? (
+          <button
+            onClick={logout}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <LogOut className="h-5 w-5" />
+            Sign out
+          </button>
+        ) : (
+          <Link
+            to="/login"
+            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+          >
+            <LogIn className="h-5 w-5" />
+            Sign in
+          </Link>
+        )}
+      </div>
+    </aside>
+  );
+};
 
 export default DesktopNav;
