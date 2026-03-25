@@ -1,8 +1,29 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Compass, Users, Sparkles, ArrowRight } from "lucide-react";
+import { Compass, Users, Sparkles, ArrowRight, Search, Map } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
+
+const HOW_IT_WORKS = [
+  {
+    step: "1",
+    icon: Search,
+    title: "Tell us about yourself",
+    description: "Answer 5 quick questions about your background, goals, and interests. Takes about 2 minutes.",
+  },
+  {
+    step: "2",
+    icon: Sparkles,
+    title: "Get matched to careers",
+    description: "Our AI finds career paths that fit your situation — with real data on salary, education, and timelines.",
+  },
+  {
+    step: "3",
+    icon: Map,
+    title: "Build your plan",
+    description: "Turn a career match into a step-by-step milestone plan and connect with a mentor who's been there.",
+  },
+];
 
 const Landing = () => {
   const { isAuthenticated } = useAuth();
@@ -25,10 +46,10 @@ const Landing = () => {
           ) : (
             <>
               <Link to="/login">
-                <Button variant="ghost" size="sm">Login</Button>
+                <Button variant="ghost" size="sm">Sign in</Button>
               </Link>
               <Link to="/register">
-                <Button size="sm">Register</Button>
+                <Button size="sm">Get started</Button>
               </Link>
             </>
           )}
@@ -36,15 +57,15 @@ const Landing = () => {
       </header>
 
       {/* Hero */}
-      <section className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+      <section className="flex flex-col items-center justify-center px-6 pt-16 pb-12 text-center">
         <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
           <Sparkles className="h-10 w-10 text-primary" />
         </div>
         <h1 className="mb-3 text-4xl font-bold leading-tight text-foreground md:text-5xl">
-          Find Your Path
+          Your career path,<br className="hidden sm:block" /> made clear
         </h1>
         <p className="mb-8 max-w-md text-lg text-muted-foreground">
-          Make your dreams a reality. Explore careers, connect with mentors, and unlock opportunities — all in one place.
+          Free career guidance for students and young adults. Explore options, build a real plan, and connect with mentors who care.
         </p>
         <div className="flex flex-wrap justify-center gap-3">
           {isLoggedIn ? (
@@ -64,7 +85,7 @@ const Landing = () => {
             <>
               <Link to="/register">
                 <Button size="lg" className="rounded-full px-8 text-base gap-2">
-                  Get started <ArrowRight className="h-5 w-5" />
+                  Get started — it's free <ArrowRight className="h-5 w-5" />
                 </Button>
               </Link>
               <Link to="/login">
@@ -75,20 +96,40 @@ const Landing = () => {
             </>
           )}
         </div>
+        {!isLoggedIn && (
+          <p className="mt-4 text-xs text-muted-foreground">No credit card required · Takes 3 minutes to set up</p>
+        )}
       </section>
 
-      {/* Steps Preview */}
-      <section className="mx-auto grid max-w-2xl gap-6 px-6 pb-16 md:grid-cols-2">
-        <div className="flex flex-col items-center rounded-2xl bg-card p-8 text-center shadow-sm">
-          <Compass className="mb-4 h-12 w-12 text-primary" />
-          <h3 className="mb-2 text-lg font-semibold text-foreground">Find Your Passion</h3>
-          <p className="text-sm text-muted-foreground">Take a quiz, explore paths, and discover what excites you most.</p>
+      {/* How it works */}
+      <section className="mx-auto w-full max-w-2xl px-6 pb-16">
+        <h2 className="mb-8 text-center text-sm font-semibold uppercase tracking-widest text-muted-foreground">
+          How it works
+        </h2>
+        <div className="flex flex-col gap-4">
+          {HOW_IT_WORKS.map(({ step, icon: Icon, title, description }) => (
+            <div key={step} className="flex items-start gap-4 rounded-2xl bg-card p-6 shadow-sm">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary/10">
+                <Icon className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-primary mb-0.5">Step {step}</p>
+                <h3 className="text-base font-semibold text-foreground">{title}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{description}</p>
+              </div>
+            </div>
+          ))}
         </div>
-        <div className="flex flex-col items-center rounded-2xl bg-card p-8 text-center shadow-sm">
-          <Users className="mb-4 h-12 w-12 text-secondary" />
-          <h3 className="mb-2 text-lg font-semibold text-foreground">Connect with a Mentor</h3>
-          <p className="text-sm text-muted-foreground">Get guidance from real people who've walked in your shoes.</p>
-        </div>
+
+        {!isLoggedIn && (
+          <div className="mt-8 text-center">
+            <Link to="/register">
+              <Button size="lg" className="rounded-full px-8 gap-2">
+                Start now <ArrowRight className="h-5 w-5" />
+              </Button>
+            </Link>
+          </div>
+        )}
       </section>
     </div>
   );

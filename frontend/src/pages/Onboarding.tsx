@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Compass, ArrowRight, ArrowLeft, Check } from "lucide-react";
+import { Compass, ArrowRight, ArrowLeft, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -110,7 +110,9 @@ export default function Onboarding() {
   const navigate = useNavigate();
   const { getPendingRegistration, register, clearPendingRegistration, isAuthenticated } = useAuth();
   const { userId, users, setUserId, isLoading: isDemoLoading, refetchUsers } = useDemoIdentity();
-  
+
+  const [showIntro, setShowIntro] = useState(true);
+  const [isDone, setIsDone] = useState(false);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>(emptyAnswers);
   const [visible, setVisible] = useState(true);
@@ -118,6 +120,11 @@ export default function Onboarding() {
 
   const pendingRegistration = getPendingRegistration();
   const isNewRegistration = !!pendingRegistration;
+
+  // For existing demo users, skip the intro
+  useEffect(() => {
+    if (!isNewRegistration) setShowIntro(false);
+  }, [isNewRegistration]);
 
   useEffect(() => {
     if (!isNewRegistration && !userId && !isDemoLoading && users.length === 0) {
@@ -187,7 +194,7 @@ export default function Onboarding() {
   const handleBack = () => {
     if (step === 0) {
       if (isNewRegistration) {
-        navigate("/register");
+        setShowIntro(true);
       } else {
         navigate("/");
       }
@@ -198,7 +205,7 @@ export default function Onboarding() {
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
-    
+
     const onboardingData = {
       background: answers.background,
       goal: answers.goal,
@@ -211,12 +218,12 @@ export default function Onboarding() {
       if (isNewRegistration && pendingRegistration) {
         await register(pendingRegistration, onboardingData);
         refetchUsers();
-        toast.success("Welcome! Your account is ready.");
-        navigate("/dashboard");
+        setIsDone(true);
+        setTimeout(() => navigate("/dashboard"), 2500);
       } else if (userId) {
         await submitOnboarding(userId, onboardingData);
-        toast.success("Welcome! Your profile is set up.");
-        navigate("/dashboard");
+        setIsDone(true);
+        setTimeout(() => navigate("/dashboard"), 2500);
       } else {
         toast.error("Something went wrong. Please try again.");
       }
@@ -236,6 +243,103 @@ export default function Onboarding() {
     );
   }
 
+  // ── Success screen ──────────────────────────────────────────
+  if (isDone) {
+    const firstName = pendingRegistration?.firstName ?? users.find((u) => u.id === userId)?.user_first ?? "there";
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center">
+        <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">
+          <Check className="h-10 w-10 text-primary" />
+        </div>
+        <h1 className="text-3xl font-bold text-foreground">You're all set, {firstName}!</h1>
+        <p className="mt-3 max-w-sm text-muted-foreground">
+          Your personalized career path is ready. Taking you to your dashboard…
+        </p>
+        <div className="mt-6 h-6 w-6 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+        <button
+          className="mt-6 text-sm text-primary hover:underline"
+          onClick={() => navigate("/dashboard")}
+        >
+          Go now →
+        </button>
+      </div>
+    );
+  }
+
+  // ── Welcome intro screen (new registrations only) ──────────
+  if (showIntro && isNewRegistration) {
+    const firstName = pendingRegistration?.firstName ?? "";
+    return (
+      <div className="flex min-h-screen flex-col bg-background">
+        <header className="flex items-center justify-between px-5 py-4 border-b border-border/50">
+          <div className="flex items-center gap-2">
+            <Compass className="h-6 w-6 text-primary" />
+            <span className="text-base font-bold text-foreground">PathFinder</span>
+          </div>
+          {firstName && (
+            <span className="text-sm text-muted-foreground">Hi, {firstName}!</span>
+          )}
+        </header>
+
+        {/* Step indicator showing we're on step 2 of 2 */}
+        <div className="flex justify-center gap-2 px-5 pt-5">
+          <div className="h-1.5 w-12 rounded-full bg-primary" />
+          <div className="h-1.5 w-12 rounded-full bg-primary/40" />
+        </div>
+        <p className="mt-2 text-center text-xs font-semibold uppercase tracking-widest text-primary">
+          Step 2 of 2
+        </p>
+
+        <main className="flex flex-1 flex-col items-center justify-center px-6 text-center">
+          <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
+            <Sparkles className="h-8 w-8 text-primary" />
+          </div>
+          <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
+            Let's personalize your path
+          </h1>
+          <p className="mt-3 max-w-sm text-muted-foreground">
+            5 quick questions — takes about 2 minutes. Your answers help us match you to the right careers, resources, and mentors.
+          </p>
+
+          <div className="mt-8 w-full max-w-xs space-y-3 text-left">
+            {[
+              "Your background and situation",
+              "What you're trying to achieve",
+              "Fields that interest you",
+              "What's holding you back",
+              "How much time you have",
+            ].map((item, i) => (
+              <div key={i} className="flex items-center gap-3 text-sm text-foreground">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
+                  {i + 1}
+                </span>
+                {item}
+              </div>
+            ))}
+          </div>
+
+          <Button
+            size="lg"
+            className="mt-10 rounded-full px-10 gap-2"
+            onClick={() => setShowIntro(false)}
+          >
+            Let's go <ArrowRight className="h-5 w-5" />
+          </Button>
+        </main>
+
+        <footer className="pb-6 text-center">
+          <button
+            onClick={() => navigate("/register")}
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            ← Back to registration
+          </button>
+        </footer>
+      </div>
+    );
+  }
+
+  // ── Main question steps ─────────────────────────────────────
   return (
     <div className="flex min-h-screen flex-col bg-background">
       {/* Header */}
@@ -244,7 +348,6 @@ export default function Onboarding() {
           <Compass className="h-6 w-6 text-primary" />
           <span className="text-base font-bold text-foreground">PathFinder</span>
         </div>
-        {/* Show greeting for new registration */}
         {isNewRegistration && pendingRegistration && (
           <span className="text-sm text-muted-foreground">
             Hi, {pendingRegistration.firstName}!
@@ -371,7 +474,7 @@ export default function Onboarding() {
               className="gap-1.5 text-muted-foreground"
             >
               <ArrowLeft className="h-4 w-4" />
-              {step === 0 ? (isNewRegistration ? "Back to registration" : "Back to home") : "Back"}
+              Back
             </Button>
 
             <Button
@@ -401,7 +504,6 @@ export default function Onboarding() {
         </div>
       </main>
 
-      {/* Footer note */}
       <footer className="pb-6 text-center">
         <p className="text-xs text-muted-foreground">
           Your answers help us build a personalized path just for you.

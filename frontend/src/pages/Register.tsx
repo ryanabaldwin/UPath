@@ -87,11 +87,14 @@ export default function Register() {
       <main className="flex flex-1 flex-col items-center justify-center px-4 py-8">
         <div className="w-full max-w-sm">
           <div className="mb-8 text-center">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-primary">
+              Step 1 of 2
+            </p>
             <h1 className="text-2xl font-bold text-foreground sm:text-3xl">
               Create your account
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Start building your personalized path today
+              Next you'll answer 5 quick questions to personalize your path.
             </p>
           </div>
 
@@ -180,7 +183,7 @@ export default function Register() {
                   Please wait...
                 </>
               ) : (
-                "Continue"
+                "Continue to profile setup →"
               )}
             </Button>
           </form>
