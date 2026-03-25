@@ -84,7 +84,9 @@ const Dashboard = () => {
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-foreground">Your Dashboard</h1>
         <p className="text-muted-foreground">
-          Select a profile to see your goals, progress, and next steps.
+          Choose a profile from the dropdown above, or{" "}
+          <a href="/login" className="text-primary hover:underline">sign in</a>{" "}
+          to see your personalized goals and progress.
         </p>
       </div>
     );

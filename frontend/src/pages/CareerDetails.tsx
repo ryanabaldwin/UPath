@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,6 +16,8 @@ import {
 } from "@/lib/api";
 import { toast } from "sonner";
 import type { GoalPath, GroundedResourceRecommendation, RecommendationMatch } from "@/lib/aiTypes";
+
+const CAREER_SESSION_KEY = "upath_career_state";
 
 const FALLBACK_MATCHES: RecommendationMatch[] = [
   {
@@ -50,7 +53,9 @@ const CareerDetails = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { userId } = useDemoIdentity();
-  const state = location.state as
+
+  // Persist state to sessionStorage so page survives refresh / direct URL access
+  const locationState = location.state as
     | {
         selectedPaths?: string[];
         interests?: string;
@@ -58,6 +63,24 @@ const CareerDetails = () => {
         runId?: string;
       }
     | null;
+
+  useEffect(() => {
+    if (locationState) {
+      sessionStorage.setItem(CAREER_SESSION_KEY, JSON.stringify(locationState));
+    }
+  }, [locationState]);
+
+  const restoredState = (() => {
+    try {
+      const s = sessionStorage.getItem(CAREER_SESSION_KEY);
+      return s ? JSON.parse(s) : null;
+    } catch {
+      return null;
+    }
+  })();
+
+  const state = locationState ?? restoredState;
+
   const selectedPaths = state?.selectedPaths ?? [];
   const interests = state?.interests ?? "";
   const incomingMatches = state?.matches ?? FALLBACK_MATCHES;

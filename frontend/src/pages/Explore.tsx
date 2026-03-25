@@ -1,13 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { careerPaths } from "@/data/mockData";
-import { Sparkles, MessageCircle } from "lucide-react";
+import { Sparkles, MessageCircle, WifiOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
+import { toast } from "sonner";
 import {
+  API_BASE_URL,
   ApiError,
   createAiThread,
   createRecommendations,
@@ -36,7 +38,6 @@ const EXPLORATION_MODES = [
 
 const Explore = () => {
   const { userId } = useDemoIdentity();
-  console.log("USER ID:", userId);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [selected, setSelected] = useState<string[]>([]);
@@ -52,6 +53,15 @@ const Explore = () => {
   const [chatState, setChatState] = useState<"idle" | "sending" | "blocked" | "error" | "ready">("idle");
   const [chatError, setChatError] = useState<string | null>(null);
   const [savedMessage, setSavedMessage] = useState(false);
+
+  // Auto-scroll chat to latest message
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  // Derived: true when a mode is active but the backend didn't create a thread (mock mode)
+  const isUsingMockAi = mode !== null && !threadId;
 
   const { data: prefs } = useQuery({
     queryKey: ["preferences", userId],
@@ -115,186 +125,172 @@ const Explore = () => {
       prev.includes(path) ? prev.filter((p) => p !== path) : [...prev, path]
     );
 
-    const handleStartMode = async (explorationMode: string) => {
-      setMode(explorationMode);
-      setChatError(null);
-      setChatState("sending");
-    
-      const kickoff = `I want to explore with the "${explorationMode}" mode.`;
-    
-      try {
-        //  Try backend first
-        if (userId) {
-          const created = await startThreadMutation.mutateAsync(explorationMode);
-          setThreadId(created.thread_id);
-    
-          const reply = await messageMutation.mutateAsync({
-            threadId: created.thread_id,
-            message: kickoff,
-          });
-    
-          setMessages([
-            { id: crypto.randomUUID(), role: "user", text: kickoff },
-            {
-              id: crypto.randomUUID(),
-              role: "assistant",
-              text: reply.assistant_message,
-            },
-          ]);
-    
-          setChatState("ready");
-          return;
-        }
-      } catch (error) {
-        console.warn("Backend failed, using mock AI", error);
-      }
-    
-      //  FALLBACK: mock AI
-      setMessages([
-        { id: crypto.randomUUID(), role: "user", text: kickoff },
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          text: "Let’s explore your future together! What kinds of things do you enjoy?",
-        },
-      ]);
-    
-      setChatState("ready");
-    };
+  const handleStartMode = async (explorationMode: string) => {
+    setMode(explorationMode);
+    setChatError(null);
+    setChatState("sending");
 
-    const saveUserResponse = async (response: string) => {
-      try {
-        // ✅ FUTURE: backend call
-        if (userId) {
-          await fetch("http://localhost:4000/api/responses", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              userId,
-              response,
-            }),
-          });
-        }
-      } catch (error) {
-        console.warn("Backend not available, saving locally", error);
-      }
-  
-      console.log("Response saved for user:", userId);
-    
-      // FALLBACK: store locally for now
-      console.log("Saved response:", response);
-    
-      const saved = JSON.parse(localStorage.getItem("responses") || "[]");
-      saved.push(response);
-      localStorage.setItem("responses", JSON.stringify(saved));
-    };
+    const kickoff = `I want to explore with the "${explorationMode}" mode.`;
 
-    const handleSend = async () => {
-      if (!chatInput.trim()) return;
-    
-      const text = chatInput.trim();
-      saveUserResponse(text);
-      setChatInput("");
-    
-      const userMessage : Message = { id: crypto.randomUUID(), role: "user", text };
-      setMessages((prev) => [...prev, userMessage]);
-    
-      try {
-        // ✅ Try REAL backend
-        if (userId && threadId) {
-          const reply = await messageMutation.mutateAsync({
-            threadId,
-            message: text,
-          });
-    
-          setMessages((prev) => [
-            ...prev,
-            {
-              id: crypto.randomUUID(),
-              role: "assistant",
-              text: reply.assistant_message,
-            },
-          ]);
-    
-          return;
-        }
-      } catch (error) {
-        console.warn("Backend failed, using mock response", error);
-      }
-    
-      // 🟡 FALLBACK AI response
-      let response = "That’s really interesting! Let’s explore some careers that match that.";
-      let categories: string[] = [];
-    
-      if (text.toLowerCase().includes("help") || text.toLowerCase().includes("people")) {
-        response = "You might enjoy careers in healthcare, education, or social work.";
-        categories.push("Healthcare", "Education");
-      } else if (text.toLowerCase().includes("tech") || text.toLowerCase().includes("computer")) {
-        response = "Technology careers like software engineering or computer engineering could be a great fit.";
-        categories.push("Software Development", "Computer Engineering");
-      } else if (text.toLowerCase().includes("money") || text.toLowerCase().includes("business")) {
-        response = "Careers in tech, business, and engineering often have high earning potential.";
-        categories.push("Business & Entrepreneurship", "Software Development", "Computer Engineering");
-      } else if (text.toLowerCase().includes("building") || text.toLowerCase().includes("creating")) {
-          response = "Careers in engineering, construction, or interior design could be a good fit.";
-          categories.push("Trades & Technical Skills");
-      }
+    try {
+      if (userId) {
+        const created = await startThreadMutation.mutateAsync(explorationMode);
+        setThreadId(created.thread_id);
 
-      // added for category filtering
-      if (categories.length > 0) {
-        setRecommendedCategories((prev) => [
-          ...new Set([...prev, ...categories]),
-        ]);; // FIX THIS
+        const reply = await messageMutation.mutateAsync({
+          threadId: created.thread_id,
+          message: kickoff,
+        });
+
+        setMessages([
+          { id: crypto.randomUUID(), role: "user", text: kickoff },
+          {
+            id: crypto.randomUUID(),
+            role: "assistant",
+            text: reply.assistant_message,
+          },
+        ]);
+
+        setChatState("ready");
+        return;
       }
-    
-      setTimeout(() => {
+    } catch (error) {
+      console.warn("Backend failed, using mock AI", error);
+    }
+
+    // FALLBACK: mock AI
+    setMessages([
+      { id: crypto.randomUUID(), role: "user", text: kickoff },
+      {
+        id: crypto.randomUUID(),
+        role: "assistant",
+        text: "Let's explore your future together! What kinds of things do you enjoy?",
+      },
+    ]);
+
+    setChatState("ready");
+  };
+
+  const saveUserResponse = async (response: string) => {
+    try {
+      if (userId) {
+        await fetch(`${API_BASE_URL}/api/responses`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId,
+            response,
+          }),
+        });
+      }
+    } catch (error) {
+      console.warn("Backend not available, saving locally", error);
+    }
+
+    const saved = JSON.parse(localStorage.getItem("responses") || "[]");
+    saved.push(response);
+    localStorage.setItem("responses", JSON.stringify(saved));
+  };
+
+  const handleSend = async () => {
+    if (!chatInput.trim()) return;
+
+    const text = chatInput.trim();
+    saveUserResponse(text);
+    setChatInput("");
+
+    const userMessage: Message = { id: crypto.randomUUID(), role: "user", text };
+    setMessages((prev) => [...prev, userMessage]);
+
+    try {
+      if (userId && threadId) {
+        const reply = await messageMutation.mutateAsync({
+          threadId,
+          message: text,
+        });
+
         setMessages((prev) => [
           ...prev,
           {
             id: crypto.randomUUID(),
             role: "assistant",
-            text: response,
+            text: reply.assistant_message,
           },
         ]);
-      }, 500);
-    };
-  const handleFindPath = async () => {
-      // show saving state
-      setSavedMessage(true);
 
-      if (!userId) {
-        setTimeout(() => {
-          navigate("/careers", { state: { selectedPaths: selected, interests } });
-        }, 1000);
         return;
       }
+    } catch (error) {
+      console.warn("Backend failed, using mock response", error);
+    }
 
-      await saveMutation.mutateAsync();
+    // FALLBACK AI response
+    let response = "That's really interesting! Let's explore some careers that match that.";
+    const categories: string[] = [];
 
-      const recs = await recommendationsMutation.mutateAsync(undefined);
+    if (text.toLowerCase().includes("help") || text.toLowerCase().includes("people")) {
+      response = "You might enjoy careers in healthcare, education, or social work.";
+      categories.push("Healthcare", "Education");
+    } else if (text.toLowerCase().includes("tech") || text.toLowerCase().includes("computer")) {
+      response = "Technology careers like software engineering or computer engineering could be a great fit.";
+      categories.push("Software Development", "Computer Engineering");
+    } else if (text.toLowerCase().includes("money") || text.toLowerCase().includes("business")) {
+      response = "Careers in tech, business, and engineering often have high earning potential.";
+      categories.push("Business & Entrepreneurship", "Software Development", "Computer Engineering");
+    } else if (text.toLowerCase().includes("building") || text.toLowerCase().includes("creating")) {
+      response = "Careers in engineering, construction, or interior design could be a good fit.";
+      categories.push("Trades & Technical Skills");
+    }
 
-      await trackUserEvent(userId, "profile_completed", {
-        selected_count: selected.length,
-        has_interests: Boolean(interests.trim()),
-        mode,
-      });
+    if (categories.length > 0) {
+      setRecommendedCategories((prev) => [...new Set([...prev, ...categories])]);
+    }
 
-      // delay navigation so user sees confirmation
+    setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: crypto.randomUUID(),
+          role: "assistant",
+          text: response,
+        },
+      ]);
+    }, 500);
+  };
+
+  const handleFindPath = async () => {
+    setSavedMessage(true);
+
+    if (!userId) {
       setTimeout(() => {
-        navigate("/careers", {
-          state: {
-            selectedPaths: selected,
-            interests,
-            matches: recs.matches,
-            runId: recs.run_id,
-          },
-        });
+        navigate("/careers", { state: { selectedPaths: selected, interests } });
       }, 1000);
+      return;
+    }
 
+    await saveMutation.mutateAsync();
 
-    };
+    const recs = await recommendationsMutation.mutateAsync(undefined);
+
+    await trackUserEvent(userId, "profile_completed", {
+      selected_count: selected.length,
+      has_interests: Boolean(interests.trim()),
+      mode,
+    });
+
+    setTimeout(() => {
+      navigate("/careers", {
+        state: {
+          selectedPaths: selected,
+          interests,
+          matches: recs.matches,
+          runId: recs.run_id,
+        },
+      });
+    }, 1000);
+  };
 
   return (
     <div className="space-y-8">
@@ -334,6 +330,12 @@ const Explore = () => {
           {profile && (
             <span className="ml-auto rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
               {profile.completeness}% complete
+            </span>
+          )}
+          {isUsingMockAi && (
+            <span className="ml-auto flex items-center gap-1 rounded-full bg-amber-100 px-2 py-1 text-xs font-medium text-amber-700">
+              <WifiOff className="h-3 w-3" />
+              Demo mode
             </span>
           )}
         </div>
@@ -384,12 +386,19 @@ const Explore = () => {
               )}
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </div>
         <div className="flex gap-2">
           <Textarea
             placeholder="Type your answer..."
             value={chatInput}
             onChange={(e) => setChatInput(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                void handleSend();
+              }
+            }}
             className="min-h-[70px] resize-none"
             disabled={messageMutation.isPending || startThreadMutation.isPending}
           />
@@ -416,12 +425,8 @@ const Explore = () => {
         )}
       </div>
 
-      <br></br>
-
-      <div className="text-center mt-6">
-      <h2 className="text-lg font-semibold text-foreground">
-        Select Your Career Interests
-      </h2>
+      <div className="text-center">
+        <h2 className="text-lg font-semibold text-foreground">Select Your Career Interests</h2>
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">
@@ -441,26 +446,23 @@ const Explore = () => {
         ))}
       </div>
 
-      <br></br>
-
-      <div className="text-center mt-6">
-        <h2 className="text-lg font-semibold text-foreground">Career Examples </h2>
+      <div className="text-center">
+        <h2 className="text-lg font-semibold text-foreground">Career Examples</h2>
       </div>
 
       {recommendedCategories.length > 0 && (
-    <p className="text-center text-sm text-primary font-medium mt-2">
-      Showing careers related to: {recommendedCategories.join(", ")}
-    </p>
-  )}
+        <p className="text-center text-sm text-primary font-medium">
+          Showing careers related to: {recommendedCategories.join(", ")}
+        </p>
+      )}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      
-      {careersData.map((career) => (
+        {careersData.map((career) => (
           <div
             key={career.career_id}
             className={cn(
               "p-4 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all",
-              recommendedCategories.includes(career.category) || 
+              recommendedCategories.includes(career.category) ||
               selected.includes(career.category)
                 ? "border-primary ring-2 ring-primary scale-105"
                 : ""
@@ -490,9 +492,9 @@ const Explore = () => {
       </div>
 
       {savedMessage && (
-      <p className="text-green-600 text-sm text-center mt-2">
-        ✅ Your response has been saved!
-      </p>
+        <p className="text-green-600 text-sm text-center">
+          ✅ Your response has been saved!
+        </p>
       )}
 
       <div className="flex justify-center">

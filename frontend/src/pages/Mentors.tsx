@@ -145,6 +145,12 @@ const Mentors = () => {
 
   const canBook = !!userId;
 
+  const handleCancelBooking = (mentorId: number) => {
+    if (window.confirm("Are you sure you want to cancel this booking?")) {
+      unbookMutation.mutate(mentorId);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -170,7 +176,7 @@ const Mentors = () => {
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => unbookMutation.mutate(m.mentor_id)}
+                  onClick={() => handleCancelBooking(m.mentor_id)}
                   disabled={unbookMutation.isPending}
                 >
                   Cancel
@@ -190,7 +196,7 @@ const Mentors = () => {
               key={m.mentor_id}
               mentor={m}
               onBook={(id) => bookMutation.mutate(id)}
-              onUnbook={(id) => unbookMutation.mutate(id)}
+              onUnbook={(id) => handleCancelBooking(id)}
               isBooking={bookMutation.isPending}
               isUnbooking={unbookMutation.isPending}
               canBook={canBook}

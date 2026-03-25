@@ -190,7 +190,11 @@ const Milestones = () => {
     return (
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-foreground">Your Journey</h1>
-        <p className="text-muted-foreground">Select a profile to track milestones.</p>
+        <p className="text-muted-foreground">
+          Choose a profile from the dropdown above, or{" "}
+          <a href="/login" className="text-primary hover:underline">sign in</a>{" "}
+          to track your milestones.
+        </p>
       </div>
     );
   }

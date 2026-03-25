@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Select,
   SelectContent,
@@ -12,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Search, ExternalLink, Bookmark, BookmarkCheck } from "lucide-react";
+import { Search, ExternalLink, Bookmark, BookmarkCheck, Info } from "lucide-react";
 import { resources as mockResources } from "@/data/mockData";
 import {
   fetchResources,
@@ -77,7 +78,9 @@ const Resources = () => {
     onError: (e: Error) => toast.error(e.message),
   });
 
-  const resources: ResourceItem[] = apiError || !apiResources?.length
+  const isUsingMockData = apiError || !apiResources?.length;
+
+  const resources: ResourceItem[] = isUsingMockData
     ? mockResources.map((r) => ({
         resource_id: r.id,
         title: r.title,
@@ -113,6 +116,15 @@ const Resources = () => {
           Scholarships, internships, jobs, and college info — all in one place
         </p>
       </div>
+
+      {isUsingMockData && (
+        <Alert className="border-amber-200 bg-amber-50 text-amber-800">
+          <Info className="h-4 w-4 text-amber-600" />
+          <AlertDescription className="text-amber-700">
+            Showing example resources — the live database isn't connected. Refresh or check your backend to load real data.
+          </AlertDescription>
+        </Alert>
+      )}
 
       <div className="relative">
         <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />

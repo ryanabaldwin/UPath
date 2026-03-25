@@ -1,9 +1,10 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { UserCircle } from "lucide-react";
+import { UserCircle, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
 import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
@@ -136,14 +137,23 @@ const EditProfile = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        <UserCircle className="h-8 w-8 text-primary" />
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Edit Profile</h1>
-          <p className="text-sm text-muted-foreground">
-            Update your personal information and goals.
-          </p>
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <UserCircle className="h-8 w-8 text-primary" />
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">Edit Profile</h1>
+            <p className="text-sm text-muted-foreground">
+              Update your personal information and goals.
+            </p>
+          </div>
         </div>
+        <Link
+          to="/dashboard"
+          className="flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Dashboard
+        </Link>
       </div>
 
       <Form {...form}>

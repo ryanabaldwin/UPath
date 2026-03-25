@@ -1,13 +1,21 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Compass, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
+import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 import { toast } from "sonner";
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, isAuthenticated, isLoading: authLoading } = useAuth();
+  const { userId, isLoading: demoLoading } = useDemoIdentity();
+
+  useEffect(() => {
+    if (!authLoading && !demoLoading && (isAuthenticated || userId)) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [isAuthenticated, userId, authLoading, demoLoading, navigate]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);

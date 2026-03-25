@@ -128,7 +128,7 @@ export default function Onboarding() {
 
   const currentStep = STEPS[step];
   const totalSteps = STEPS.length;
-  const progress = ((step) / totalSteps) * 100;
+  const progress = ((step + 1) / totalSteps) * 100;
 
   const getCurrentValue = (): string | string[] => {
     const id = currentStep.id as keyof Answers;
@@ -371,7 +371,7 @@ export default function Onboarding() {
               className="gap-1.5 text-muted-foreground"
             >
               <ArrowLeft className="h-4 w-4" />
-              {step === 0 ? (isNewRegistration ? "Back" : "Back to home") : "Back"}
+              {step === 0 ? (isNewRegistration ? "Back to registration" : "Back to home") : "Back"}
             </Button>
 
             <Button
@@ -387,7 +387,7 @@ export default function Onboarding() {
                 </>
               ) : step === totalSteps - 1 ? (
                 <>
-                  {isNewRegistration ? "Create account" : "Let's go"}
+                  {isNewRegistration ? "Create account" : "Finish setup"}
                   <ArrowRight className="h-4 w-4" />
                 </>
               ) : (
