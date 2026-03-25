@@ -356,6 +356,19 @@ export function fetchResourcesSearch(filters: ResourceSearchFilters = {}) {
   return getJson<Resource[]>(`/api/resources/search${q ? `?${q}` : ""}`);
 }
 
+export interface Career {
+  career_id: number;
+  title: string;
+  description: string | null;
+  category: string;
+  average_salary: number | null;
+}
+
+export function fetchCareers(category?: string) {
+  const q = category ? `?category=${encodeURIComponent(category)}` : "";
+  return getJson<Career[]>(`/api/careers${q}`);
+}
+
 export function fetchUserBookmarks(userId: string) {
   return getJson<Resource[]>(`/api/users/${userId}/bookmarks`);
 }

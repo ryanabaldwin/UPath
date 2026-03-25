@@ -84,7 +84,7 @@ const Dashboard = () => {
       <div className="space-y-6">
         <h1 className="text-2xl font-bold text-foreground">Your Dashboard</h1>
         <p className="text-muted-foreground">
-          Select a demo profile above to see your goals, progress, and next steps.
+          Select a profile to see your goals, progress, and next steps.
         </p>
       </div>
     );

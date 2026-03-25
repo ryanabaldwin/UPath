@@ -11,14 +11,13 @@ import {
   ApiError,
   createAiThread,
   createRecommendations,
+  fetchCareers,
   fetchUserPreferences,
   fetchUserProfile,
   putUserPreferences,
   sendAiThreadMessage,
   trackUserEvent,
 } from "@/lib/api";
-import { toast } from "sonner";
-import { careers } from "@/data/mockData"; //get new mock data
 
 // added types for AI messages
 type Message = {
@@ -66,6 +65,11 @@ const Explore = () => {
     queryFn: () => fetchUserProfile(userId!),
     enabled: !!userId,
     retry: false,
+  });
+
+  const { data: careersData = [] } = useQuery({
+    queryKey: ["careers"],
+    queryFn: () => fetchCareers(),
   });
 
   useEffect(() => {
@@ -451,9 +455,9 @@ const Explore = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
       
-      {careers.map((career) => (
+      {careersData.map((career) => (
           <div
-            key={career.id}
+            key={career.career_id}
             className={cn(
               "p-4 rounded-xl border bg-card shadow-sm hover:shadow-md transition-all",
               recommendedCategories.includes(career.category) || 
