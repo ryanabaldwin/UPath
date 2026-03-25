@@ -18,7 +18,7 @@ interface AuthContextValue {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (username: string, password: string) => Promise<void>;
-  register: (registration: RegisterRequest, onboarding: OnboardingData) => Promise<void>;
+  register: (registration: RegisterRequest, onboarding: OnboardingData) => Promise<string>;
   logout: () => void;
   setPendingRegistration: (data: RegisterRequest) => void;
   getPendingRegistration: () => RegisterRequest | null;
@@ -57,7 +57,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authUser));
   }, []);
 
-  const register = useCallback(async (registration: RegisterRequest, onboarding: OnboardingData) => {
+  const register = useCallback(async (registration: RegisterRequest, onboarding: OnboardingData): Promise<string> => {
     const response = await apiRegister({ registration, onboarding });
     const authUser: AuthUser = {
       id: response.id,
@@ -70,6 +70,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(authUser);
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authUser));
     localStorage.removeItem(PENDING_REG_KEY);
+    return authUser.id;
   }, []);
 
   const logout = useCallback(() => {

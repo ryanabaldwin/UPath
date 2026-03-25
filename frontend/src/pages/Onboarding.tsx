@@ -108,11 +108,12 @@ const emptyAnswers: Answers = {
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const { getPendingRegistration, register, clearPendingRegistration, isAuthenticated } = useAuth();
-  const { userId, users, setUserId, isLoading: isDemoLoading, refetchUsers } = useDemoIdentity();
+  const { getPendingRegistration, register } = useAuth();
+  const { userId, users, isLoading: isDemoLoading, refetchUsers } = useDemoIdentity();
 
   const [showIntro, setShowIntro] = useState(true);
   const [isDone, setIsDone] = useState(false);
+  const [doneFirstName, setDoneFirstName] = useState("");
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>(emptyAnswers);
   const [visible, setVisible] = useState(true);
@@ -127,11 +128,11 @@ export default function Onboarding() {
   }, [isNewRegistration]);
 
   useEffect(() => {
-    if (!isNewRegistration && !userId && !isDemoLoading && users.length === 0) {
+    if (!isDone && !isNewRegistration && !userId && !isDemoLoading && users.length === 0) {
       toast.error("Please start from the registration page");
       navigate("/register");
     }
-  }, [isNewRegistration, userId, isDemoLoading, users.length, navigate]);
+  }, [isDone, isNewRegistration, userId, isDemoLoading, users.length, navigate]);
 
   const currentStep = STEPS[step];
   const totalSteps = STEPS.length;
@@ -216,8 +217,10 @@ export default function Onboarding() {
 
     try {
       if (isNewRegistration && pendingRegistration) {
-        await register(pendingRegistration, onboardingData);
-        refetchUsers();
+        const firstName = pendingRegistration.firstName;
+        const newUserId = await register(pendingRegistration, onboardingData);
+        await refetchUsers(newUserId);
+        setDoneFirstName(firstName);
         setIsDone(true);
         setTimeout(() => navigate("/dashboard"), 2500);
       } else if (userId) {
@@ -245,7 +248,7 @@ export default function Onboarding() {
 
   // ── Success screen ──────────────────────────────────────────
   if (isDone) {
-    const firstName = pendingRegistration?.firstName ?? users.find((u) => u.id === userId)?.user_first ?? "there";
+    const firstName = doneFirstName || users.find((u) => u.id === userId)?.user_first || "there";
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center">
         <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">

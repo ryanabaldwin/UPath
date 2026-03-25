@@ -9,7 +9,7 @@ interface DemoIdentityContextValue {
   users: User[];
   setUserId: (id: string | null) => void;
   isLoading: boolean;
-  refetchUsers: () => void;
+  refetchUsers: (keepUserId?: string) => Promise<void>;
 }
 
 const DemoIdentityContext = createContext<DemoIdentityContextValue | null>(null);
@@ -21,10 +21,16 @@ export function DemoIdentityProvider({ children }: { children: React.ReactNode }
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const refetchUsers = useCallback(async () => {
+  const refetchUsers = useCallback(async (keepUserId?: string) => {
     try {
       const list = await fetchUsers();
       setUsers(list);
+      // If a specific userId was passed (e.g. after registration), use it and skip auto-select
+      if (keepUserId) {
+        setUserIdState(keepUserId);
+        localStorage.setItem(STORAGE_KEY, keepUserId);
+        return;
+      }
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored && !list.some((u) => u.id === stored)) {
         localStorage.removeItem(STORAGE_KEY);
