@@ -250,10 +250,8 @@ export default function Onboarding() {
             Hi, {pendingRegistration.firstName}!
           </span>
         )}
-        {/* Demo profile selector for existing users */}
         {!isNewRegistration && users.length > 0 && (
           <div className="flex items-center gap-2">
-            <span className="text-xs text-muted-foreground hidden sm:inline">Demo profile:</span>
             <select
               value={userId ?? ""}
               onChange={(e) => setUserId(e.target.value || null)}

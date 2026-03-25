@@ -117,7 +117,7 @@ const EditProfile = () => {
       <div className="space-y-4">
         <h1 className="text-2xl font-bold text-foreground">Edit Profile</h1>
         <p className="text-muted-foreground">
-          Select a demo profile above to edit.
+          Select a profile to edit.
         </p>
       </div>
     );
