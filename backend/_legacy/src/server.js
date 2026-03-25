@@ -274,6 +274,105 @@ async function logEvent(userId, name, metadata = {}) {
   );
 }
 
+// ── Auth: register ──────────────────────────────────────────────────────────
+app.post("/api/account/register", async (req, res, next) => {
+  try {
+    const { registration, onboarding } = req.body ?? {};
+    const { email, password, firstName, lastName, username: rawUsername } = registration ?? {};
+
+    if (!email?.trim()) return res.status(400).json({ error: "Email is required" });
+    if (!password || password.length < 8) return res.status(400).json({ error: "Password must be at least 8 characters" });
+    if (!firstName?.trim()) return res.status(400).json({ error: "First name is required" });
+    if (!lastName?.trim()) return res.status(400).json({ error: "Last name is required" });
+
+    const emailLower = email.trim().toLowerCase();
+    const emailExists = await query("SELECT 1 FROM users WHERE email = $1", [emailLower]);
+    if (emailExists.rows.length > 0) {
+      return res.status(409).json({ error: "An account with this email already exists" });
+    }
+
+    // Generate username from first+last if not provided; ensure uniqueness
+    let username = (rawUsername?.trim() || `${firstName.trim().toLowerCase().replace(/\s+/g, "")}.${lastName.trim().toLowerCase().replace(/\s+/g, "")}`);
+    const baseUsername = username;
+    let counter = 1;
+    while ((await query("SELECT 1 FROM users WHERE username = $1", [username])).rows.length > 0) {
+      username = `${baseUsername}${counter++}`;
+    }
+
+    const insertResult = await query(
+      `INSERT INTO users (user_first, user_last, email, password, username, role)
+       VALUES ($1, $2, $3, $4, $5, 'student')
+       RETURNING id`,
+      [firstName.trim(), lastName.trim(), emailLower, password, username]
+    );
+    const userId = insertResult.rows[0].id;
+
+    // Apply onboarding data if provided
+    if (onboarding && typeof onboarding === "object") {
+      const { background, goal, interests, challenge, weeklyTime } = onboarding;
+      if (background) {
+        await query("UPDATE users SET current_grade_level = $1 WHERE id = $2", [String(background).trim().slice(0, 50), userId]);
+      }
+      const safeInterests = Array.isArray(interests)
+        ? interests.filter((i) => typeof i === "string").map((i) => i.trim()).filter(Boolean).slice(0, 10)
+        : [];
+      const profilePatch = {
+        ...(goal ? { exploration_mode: String(goal).trim().slice(0, 100) } : {}),
+        ...(safeInterests.length > 0 ? { interests: safeInterests } : {}),
+        ...(challenge ? { constraints: [String(challenge).trim().slice(0, 200)] } : {}),
+        preferences: {
+          ...(background ? { background: String(background).trim().slice(0, 100) } : {}),
+          ...(weeklyTime ? { weekly_time: String(weeklyTime).trim().slice(0, 50) } : {}),
+        },
+      };
+      await query(
+        `INSERT INTO student_profiles (user_id, profile_json, completeness, updated_at)
+         VALUES ($1, $2::jsonb, 20, NOW())
+         ON CONFLICT (user_id) DO UPDATE SET
+           profile_json = student_profiles.profile_json || $2::jsonb,
+           completeness = GREATEST(student_profiles.completeness, 20),
+           updated_at = NOW()`,
+        [userId, JSON.stringify(profilePatch)]
+      );
+    }
+
+    res.status(201).json({
+      id: userId,
+      username,
+      email: emailLower,
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      role: "student",
+      onboardingComplete: !!onboarding,
+    });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ── Auth: login ──────────────────────────────────────────────────────────────
+app.post("/api/auth/login", async (req, res, next) => {
+  try {
+    const { username, password } = req.body ?? {};
+    if (!username?.trim() || !password) {
+      return res.status(400).json({ error: "Username and password are required" });
+    }
+    const result = await query(
+      `SELECT id, username, email, user_first AS "firstName", user_last AS "lastName", role, password
+       FROM users
+       WHERE (username = $1 OR email = $1) AND password IS NOT NULL`,
+      [username.trim().toLowerCase()]
+    );
+    if (result.rows.length === 0 || result.rows[0].password !== password) {
+      return res.status(401).json({ error: "Invalid username or password" });
+    }
+    const u = result.rows[0];
+    res.json({ id: u.id, username: u.username, email: u.email, firstName: u.firstName, lastName: u.lastName, role: u.role || "student" });
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.get("/api/health", async (_req, res, next) => {
   try {
     const dbResult = await query("SELECT NOW() AS now");
