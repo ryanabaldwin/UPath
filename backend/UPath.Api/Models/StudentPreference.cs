@@ -9,7 +9,7 @@ public class StudentPreference
     [Column("user_id")]
     public int UserId { get; set; }
 
-    // Free-text interests string
+    // Free-text interests string (comma-separated from onboarding multi-select)
     [Column("interests")]
     public string? Interests { get; set; }
 
@@ -19,6 +19,19 @@ public class StudentPreference
 
     [Column("updated_at")]
     public DateTimeOffset UpdatedAt { get; set; }
+
+    // Onboarding questionnaire fields
+    [Column("background")]
+    public string? Background { get; set; }
+
+    [Column("goal")]
+    public string? Goal { get; set; }
+
+    [Column("challenge")]
+    public string? Challenge { get; set; }
+
+    [Column("weekly_time")]
+    public string? WeeklyTime { get; set; }
 
     // Navigation
     public User User { get; set; } = null!;

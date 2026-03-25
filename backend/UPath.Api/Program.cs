@@ -1,10 +1,16 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using UPath.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Controllers
-builder.Services.AddControllers();
+// Controllers with camelCase JSON
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    });
 
 // OpenAPI – accessible at /openapi/v1.json in Development
 builder.Services.AddOpenApi();
