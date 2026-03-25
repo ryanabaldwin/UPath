@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Compass, Users, Sparkles, ArrowRight, Search, Map } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 
 const HOW_IT_WORKS = [
   {
@@ -27,8 +26,6 @@ const HOW_IT_WORKS = [
 
 const Landing = () => {
   const { isAuthenticated } = useAuth();
-  const { userId } = useDemoIdentity();
-  const isLoggedIn = isAuthenticated || !!userId;
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
@@ -39,7 +36,7 @@ const Landing = () => {
           <span className="text-lg font-bold text-foreground">PathFinder</span>
         </div>
         <div className="flex gap-2">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <Link to="/dashboard">
               <Button size="sm">My Dashboard</Button>
             </Link>
@@ -68,7 +65,7 @@ const Landing = () => {
           Free career guidance for students and young adults. Explore options, build a real plan, and connect with mentors who care.
         </p>
         <div className="flex flex-wrap justify-center gap-3">
-          {isLoggedIn ? (
+          {isAuthenticated ? (
             <>
               <Link to="/dashboard">
                 <Button size="lg" className="rounded-full px-8 text-base gap-2">
@@ -96,7 +93,7 @@ const Landing = () => {
             </>
           )}
         </div>
-        {!isLoggedIn && (
+        {!isAuthenticated && (
           <p className="mt-4 text-xs text-muted-foreground">No credit card required · Takes 3 minutes to set up</p>
         )}
       </section>
@@ -121,7 +118,7 @@ const Landing = () => {
           ))}
         </div>
 
-        {!isLoggedIn && (
+        {!isAuthenticated && (
           <div className="mt-8 text-center">
             <Link to="/register">
               <Button size="lg" className="rounded-full px-8 gap-2">
