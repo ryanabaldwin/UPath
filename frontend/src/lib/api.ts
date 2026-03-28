@@ -72,6 +72,13 @@ export interface User {
   streak_count: number;
 }
 
+/** Extended user object returned by the admin GET /api/users endpoint */
+export interface AdminUser extends User {
+  email: string;
+  username: string;
+  role: string;
+}
+
 
 export interface Mentor {
   mentor_id: number;
@@ -85,7 +92,7 @@ export interface Mentor {
 }
 
 async function getJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`);
+  const response = await fetch(`${API_BASE_URL}${path}`, { credentials: "include" });
   if (!response.ok) {
     throw await parseApiError(response);
   }
@@ -97,6 +104,7 @@ async function postJson<T>(path: string, body: unknown): Promise<T> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    credentials: "include",
   });
   if (!response.ok) {
     throw await parseApiError(response);
@@ -109,6 +117,7 @@ async function putJson<T>(path: string, body: unknown): Promise<T> {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    credentials: "include",
   });
   if (!response.ok) {
     throw await parseApiError(response);
@@ -121,7 +130,7 @@ export function fetchHealth() {
 }
 
 export function fetchUsers() {
-  return getJson<User[]>("/api/users");
+  return getJson<AdminUser[]>("/api/users");
 }
 
 export function fetchGoals() {
@@ -217,6 +226,7 @@ async function patchJson<T>(path: string, body: unknown): Promise<T> {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    credentials: "include",
   });
   if (!response.ok) {
     throw await parseApiError(response);
@@ -225,7 +235,7 @@ async function patchJson<T>(path: string, body: unknown): Promise<T> {
 }
 
 async function deleteJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, { method: "DELETE" });
+  const response = await fetch(`${API_BASE_URL}${path}`, { method: "DELETE", credentials: "include" });
   if (!response.ok) {
     throw await parseApiError(response);
   }
@@ -261,6 +271,7 @@ export function putUserPreferences(
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
+    credentials: "include",
   }).then(async (r) => {
     if (!r.ok) {
       throw await parseApiError(r);
@@ -380,6 +391,7 @@ export function addBookmark(userId: string, resourceId: number) {
 export async function removeBookmark(userId: string, resourceId: number): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/api/users/${userId}/bookmarks/${resourceId}`, {
     method: "DELETE",
+    credentials: "include",
   });
   if (!response.ok) {
     throw await parseApiError(response);
@@ -391,6 +403,7 @@ export async function unbookMentor(mentorId: number, menteeId: string): Promise<
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mentee_id: menteeId }),
+    credentials: "include",
   });
   if (!response.ok) {
     throw await parseApiError(response);
@@ -450,6 +463,14 @@ export interface AccountResponse {
 
 export function login(data: LoginRequest) {
   return postJson<LoginResponse>("/api/auth/login", data);
+}
+
+export function fetchMe() {
+  return getJson<LoginResponse>("/api/auth/me");
+}
+
+export function logoutApi() {
+  return postJson<{ ok: boolean }>("/api/auth/logout", {});
 }
 
 export function register(data: CreateAccountRequest) {

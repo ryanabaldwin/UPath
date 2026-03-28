@@ -12,9 +12,19 @@ public class UsersController : ControllerBase
 
     public UsersController(AppDbContext db) => _db = db;
 
+    /// <summary>
+    /// List all users. Restricted to admin role.
+    /// GET /api/users
+    /// </summary>
     [HttpGet]
     public async Task<IActionResult> GetAll()
     {
+        var role = HttpContext.Session.GetString("UserRole");
+        if (role != "admin")
+        {
+            return StatusCode(403, new { error = "Admin access required" });
+        }
+
         var users = await _db.Users
             .AsNoTracking()
             .OrderBy(u => u.Id)
@@ -24,6 +34,9 @@ public class UsersController : ControllerBase
                 user_first = u.FirstName,
                 user_last = u.LastName,
                 user_region = u.Region,
+                email = u.Email,
+                username = u.Username,
+                role = u.Role,
                 goal_id = u.UserGoals
                     .OrderByDescending(ug => ug.GoalId)
                     .Select(ug => (int?)ug.GoalId)
@@ -75,4 +88,3 @@ public class UsersController : ControllerBase
         return Ok(user);
     }
 }
-

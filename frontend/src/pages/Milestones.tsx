@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   fetchMilestoneTree,
   patchMilestone,
@@ -212,7 +212,7 @@ function MilestoneRow({
 
 const Milestones = () => {
   const queryClient = useQueryClient();
-  const { userId } = useDemoIdentity();
+  const { userId } = useAuth();
   const navigate = useNavigate();
 
   const [dialog, setDialog] = useState<MilestoneDialog>(null);

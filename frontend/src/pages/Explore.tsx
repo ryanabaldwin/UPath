@@ -6,7 +6,7 @@ import { careerPaths } from "@/data/mockData";
 import { Sparkles, MessageCircle, WifiOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
-import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import {
   API_BASE_URL,
@@ -37,7 +37,7 @@ const EXPLORATION_MODES = [
 ];
 
 const Explore = () => {
-  const { userId } = useDemoIdentity();
+  const { userId } = useAuth();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [selected, setSelected] = useState<string[]>([]);

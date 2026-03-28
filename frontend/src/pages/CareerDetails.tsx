@@ -6,7 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import { Briefcase, GraduationCap, Clock, DollarSign, Heart, ArrowLeft, CheckCircle2 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   convertGoalPathToGoal,
   createGoalPath,
@@ -52,7 +52,7 @@ const CareerDetails = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { userId } = useDemoIdentity();
+  const { userId } = useAuth();
 
   // Persist state to sessionStorage so page survives refresh / direct URL access
   const locationState = location.state as

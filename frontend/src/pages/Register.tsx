@@ -3,21 +3,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { Compass, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
-import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 import { toast } from "sonner";
 
 export default function Register() {
   const navigate = useNavigate();
   const { setPendingRegistration, isAuthenticated, isLoading: authLoading } = useAuth();
-  const { userId, isLoading: demoLoading } = useDemoIdentity();
 
   useEffect(() => {
-    if (!authLoading && !demoLoading && isAuthenticated) {
+    if (!authLoading && isAuthenticated) {
       navigate("/dashboard", { replace: true });
     }
-  }, [isAuthenticated, authLoading, demoLoading, navigate]);
-
-  // Note: don't redirect demo users — they may want to create a real account
+  }, [isAuthenticated, authLoading, navigate]);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [username, setUsername] = useState("");
