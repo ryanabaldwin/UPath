@@ -3,9 +3,10 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { DemoIdentityProvider } from "@/contexts/DemoIdentityContext";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ErrorBoundary from "./components/ErrorBoundary";
+import RequireAuth from "./components/RequireAuth";
+import RequireAdmin from "./components/RequireAdmin";
 import Landing from "./pages/Landing";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
@@ -15,6 +16,7 @@ import Explore from "./pages/Explore";
 import CareerDetails from "./pages/CareerDetails";
 import Resources from "./pages/Resources";
 import EditProfile from "./pages/EditProfile";
+import AdminUsers from "./pages/AdminUsers";
 import AppLayout from "./components/AppLayout";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -26,30 +28,42 @@ const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <DemoIdentityProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Landing />} />
-                <Route path="/onboarding" element={<Onboarding />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route element={<AppLayout />}>
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/milestones" element={<Milestones />} />
-                  <Route path="/mentors" element={<Mentors />} />
-                  <Route path="/explore" element={<Explore />} />
-                  <Route path="/careers" element={<CareerDetails />} />
-                  <Route path="/resources" element={<Resources />} />
-                  <Route path="/profile" element={<EditProfile />} />
-                </Route>
-                <Route path="*" element={<NotFound />} />
-              </Routes>
-            </BrowserRouter>
-          </TooltipProvider>
-        </DemoIdentityProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/onboarding" element={<Onboarding />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route
+                element={
+                  <RequireAuth>
+                    <AppLayout />
+                  </RequireAuth>
+                }
+              >
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/milestones" element={<Milestones />} />
+                <Route path="/mentors" element={<Mentors />} />
+                <Route path="/explore" element={<Explore />} />
+                <Route path="/careers" element={<CareerDetails />} />
+                <Route path="/resources" element={<Resources />} />
+                <Route path="/profile" element={<EditProfile />} />
+                <Route
+                  path="/admin/users"
+                  element={
+                    <RequireAdmin>
+                      <AdminUsers />
+                    </RequireAdmin>
+                  }
+                />
+              </Route>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
       </AuthProvider>
     </QueryClientProvider>
   </ErrorBoundary>

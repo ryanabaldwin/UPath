@@ -1,4 +1,4 @@
-import { Map, Users, Compass, BookOpen, Home, Briefcase, LogIn, LogOut } from "lucide-react";
+import { Map, Users, Compass, BookOpen, Home, Briefcase, LogOut, Shield } from "lucide-react";
 import { NavLink, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -13,7 +13,7 @@ const links = [
 ];
 
 const DesktopNav = () => {
-  const { isAuthenticated, logout } = useAuth();
+  const { isAdmin, logout } = useAuth();
 
   return (
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-56 border-r border-border bg-card md:flex md:flex-col" aria-label="Side navigation">
@@ -40,25 +40,31 @@ const DesktopNav = () => {
             {label}
           </NavLink>
         ))}
+        {isAdmin && (
+          <NavLink
+            to="/admin/users"
+            className={({ isActive }) =>
+              cn(
+                "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors",
+                isActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground"
+              )
+            }
+          >
+            <Shield className="h-5 w-5" />
+            Admin
+          </NavLink>
+        )}
       </nav>
       <div className="border-t border-border px-3 py-3">
-        {isAuthenticated ? (
-          <button
-            onClick={logout}
-            className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
-            <LogOut className="h-5 w-5" />
-            Sign out
-          </button>
-        ) : (
-          <Link
-            to="/login"
-            className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-          >
-            <LogIn className="h-5 w-5" />
-            Sign in
-          </Link>
-        )}
+        <button
+          onClick={logout}
+          className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        >
+          <LogOut className="h-5 w-5" />
+          Sign out
+        </button>
       </div>
     </aside>
   );

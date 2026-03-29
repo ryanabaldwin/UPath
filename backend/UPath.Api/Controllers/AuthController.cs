@@ -51,6 +51,10 @@ public class AuthController : ControllerBase
             return Unauthorized(new { error = "Invalid username or password" });
         }
 
+        // Store user info in session
+        HttpContext.Session.SetString("UserId", user.Id.ToString());
+        HttpContext.Session.SetString("UserRole", user.Role);
+
         return Ok(new LoginResponse(
             Id: user.Id.ToString(),
             Username: user.Username,
@@ -59,5 +63,50 @@ public class AuthController : ControllerBase
             LastName: user.LastName,
             Role: user.Role
         ));
+    }
+
+    /// <summary>
+    /// Return the currently authenticated user (session check).
+    /// GET /api/auth/me
+    /// </summary>
+    [HttpGet("me")]
+    public async Task<IActionResult> Me()
+    {
+        var userIdStr = HttpContext.Session.GetString("UserId");
+        if (string.IsNullOrEmpty(userIdStr) || !int.TryParse(userIdStr, out var userId))
+        {
+            return Unauthorized(new { error = "Not authenticated" });
+        }
+
+        var user = await _db.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user is null)
+        {
+            // Session references a deleted user — clear it
+            HttpContext.Session.Clear();
+            return Unauthorized(new { error = "Not authenticated" });
+        }
+
+        return Ok(new LoginResponse(
+            Id: user.Id.ToString(),
+            Username: user.Username,
+            Email: user.Email,
+            FirstName: user.FirstName,
+            LastName: user.LastName,
+            Role: user.Role
+        ));
+    }
+
+    /// <summary>
+    /// Sign out the current user by clearing the session.
+    /// POST /api/auth/logout
+    /// </summary>
+    [HttpPost("logout")]
+    public IActionResult Logout()
+    {
+        HttpContext.Session.Clear();
+        return Ok(new { ok = true });
     }
 }

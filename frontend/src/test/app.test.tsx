@@ -2,9 +2,8 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
-import { DemoIdentityProvider } from "@/contexts/DemoIdentityContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Landing from "@/pages/Landing";
-import Dashboard from "@/pages/Dashboard";
 import Explore from "@/pages/Explore";
 
 function renderWithProviders(
@@ -24,7 +23,7 @@ function renderWithProviders(
   );
 }
 
-function renderAppWithIdentity(ui: React.ReactElement, { route = "/" }: { route?: string } = {}) {
+function renderAppWithAuth(ui: React.ReactElement, { route = "/" }: { route?: string } = {}) {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: { retry: false },
@@ -33,9 +32,9 @@ function renderAppWithIdentity(ui: React.ReactElement, { route = "/" }: { route?
   });
   return render(
     <QueryClientProvider client={queryClient}>
-      <DemoIdentityProvider>
+      <AuthProvider>
         <MemoryRouter initialEntries={[route]}>{ui}</MemoryRouter>
-      </DemoIdentityProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }
@@ -49,32 +48,45 @@ describe("Landing", () => {
   });
 });
 
-describe("Dashboard", () => {
-  beforeEach(() => {
-    vi.stubGlobal("fetch", vi.fn(() =>
-      Promise.resolve({ ok: true, json: () => Promise.resolve([]) })
-    ));
-    if (typeof window.localStorage?.clear === "function") {
-      window.localStorage.clear();
-    }
-  });
-
-  it("shows prompt to select profile when no users", async () => {
-    renderAppWithIdentity(<Dashboard />, { route: "/dashboard" });
-    expect(await screen.findByText(/select a demo profile/i)).toBeInTheDocument();
-  });
-});
-
 describe("Explore AI coach", () => {
-  const userId = "11111111-1111-1111-1111-111111111111";
+  const userId = "1";
 
   beforeEach(() => {
     const fetchMock = vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
       const url = String(input);
       const method = init?.method || "GET";
 
-      if (url.endsWith("/api/users") && method === "GET") {
-        return { ok: true, json: async () => [{ id: userId, user_first: "A", user_last: "B" }] };
+      // Return auth user for /auth/me so the AuthProvider considers us logged in
+      if (url.includes("/api/auth/me") && method === "GET") {
+        return {
+          ok: true,
+          json: async () => ({
+            id: userId,
+            username: "test.user",
+            email: "test@test.com",
+            firstName: "Test",
+            lastName: "User",
+            role: "student",
+          }),
+        };
+      }
+      if (url.includes(`/api/users/${userId}`) && method === "GET" && !url.includes("/preferences") && !url.includes("/profile") && !url.includes("/ai") && !url.includes("/milestones") && !url.includes("/events")) {
+        return {
+          ok: true,
+          json: async () => ({
+            id: userId,
+            user_first: "Test",
+            user_last: "User",
+            user_region: null,
+            goal_id: null,
+            user_img_src: null,
+            goal_title: null,
+            north_star_vision: null,
+            definition_of_success: null,
+            current_grade_level: null,
+            streak_count: 0,
+          }),
+        };
       }
       if (url.includes(`/api/users/${userId}/preferences`) && method === "GET") {
         return { ok: true, json: async () => ({ user_id: userId, interests: null, selected_career_paths: [] }) };
@@ -92,7 +104,7 @@ describe("Explore AI coach", () => {
           }),
         };
       }
-      if (url.includes("/api/users/11111111-1111-1111-1111-111111111111/events") && method === "POST") {
+      if (url.includes(`/api/users/${userId}/events`) && method === "POST") {
         return { ok: true, json: async () => ({ ok: true }) };
       }
       if (url.includes(`/api/users/${userId}/ai/threads/thread-1/messages`) && method === "POST") {
@@ -142,16 +154,15 @@ describe("Explore AI coach", () => {
     });
 
     vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
-    window.localStorage.setItem("upath_demo_user_id", userId);
   });
 
   it("shows starter mode prompt", async () => {
-    renderAppWithIdentity(<Explore />, { route: "/explore" });
+    renderAppWithAuth(<Explore />, { route: "/explore" });
     expect(await screen.findByText(/pick a starter mode/i)).toBeInTheDocument();
   });
 
   it("shows 'View My New Plan' CTA when AI returns show_milestones action", async () => {
-    renderAppWithIdentity(<Explore />, { route: "/explore" });
+    renderAppWithAuth(<Explore />, { route: "/explore" });
     fireEvent.click(await screen.findByRole("button", { name: /money soon/i }));
     await screen.findByText(/what subjects energize you most/i);
 
@@ -165,7 +176,7 @@ describe("Explore AI coach", () => {
   });
 
   it("shows blocked state when unsafe message is sent", async () => {
-    renderAppWithIdentity(<Explore />, { route: "/explore" });
+    renderAppWithAuth(<Explore />, { route: "/explore" });
     fireEvent.click(await screen.findByRole("button", { name: /money soon/i }));
     await screen.findByText(/what subjects energize you most/i);
 

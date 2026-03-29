@@ -22,7 +22,7 @@ import {
   removeBookmark,
   type Resource as ApiResource,
 } from "@/lib/api";
-import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import {
   PARTICIPANT_INTEREST_OPTIONS,
@@ -42,7 +42,7 @@ type ResourceItem = ApiResource & {
 
 const Resources = () => {
   const queryClient = useQueryClient();
-  const { userId } = useDemoIdentity();
+  const { userId } = useAuth();
   const [search, setSearch] = useState("");
   const [tab, setTab] = useState<string>("All");
   const [careerFilter, setCareerFilter] = useState<"all" | ParticipantCareerArea>("all");

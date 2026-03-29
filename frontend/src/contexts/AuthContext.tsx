@@ -1,7 +1,18 @@
 import { createContext, useContext, useState, useCallback, useEffect } from "react";
-import { login as apiLogin, register as apiRegister, type LoginResponse, type CreateAccountRequest, type AccountResponse, type RegisterRequest, type OnboardingData } from "@/lib/api";
+import {
+  login as apiLogin,
+  register as apiRegister,
+  fetchMe,
+  logoutApi,
+  fetchUser,
+  type LoginResponse,
+  type CreateAccountRequest,
+  type AccountResponse,
+  type RegisterRequest,
+  type OnboardingData,
+  type User,
+} from "@/lib/api";
 
-const AUTH_STORAGE_KEY = "upath_auth_user";
 const PENDING_REG_KEY = "upath_pending_registration";
 
 export interface AuthUser {
@@ -14,12 +25,20 @@ export interface AuthUser {
 }
 
 interface AuthContextValue {
+  /** Auth identity (from login / session) */
   user: AuthUser | null;
+  /** Full user profile data (fetched from /api/users/:id) */
+  profile: User | null;
   isAuthenticated: boolean;
+  isAdmin: boolean;
   isLoading: boolean;
   login: (username: string, password: string) => Promise<void>;
   register: (registration: RegisterRequest, onboarding: OnboardingData) => Promise<string>;
   logout: () => void;
+  /** The authenticated user's ID (null when not logged in) */
+  userId: string | null;
+  /** Re-fetch the user profile from the API */
+  refetchProfile: () => Promise<void>;
   setPendingRegistration: (data: RegisterRequest) => void;
   getPendingRegistration: () => RegisterRequest | null;
   clearPendingRegistration: () => void;
@@ -29,19 +48,61 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
+  const [profile, setProfile] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // On mount, check the session cookie via /auth/me
   useEffect(() => {
-    const stored = localStorage.getItem(AUTH_STORAGE_KEY);
-    if (stored) {
+    let cancelled = false;
+    (async () => {
       try {
-        setUser(JSON.parse(stored));
+        const me = await fetchMe();
+        if (!cancelled) {
+          setUser({
+            id: me.id,
+            username: me.username,
+            email: me.email,
+            firstName: me.firstName,
+            lastName: me.lastName,
+            role: me.role,
+          });
+        }
       } catch {
-        localStorage.removeItem(AUTH_STORAGE_KEY);
+        // Not logged in — that's fine
+      } finally {
+        if (!cancelled) setIsLoading(false);
       }
-    }
-    setIsLoading(false);
+    })();
+    return () => { cancelled = true; };
   }, []);
+
+  // Fetch the full user profile whenever the auth user changes
+  useEffect(() => {
+    if (!user) {
+      setProfile(null);
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const p = await fetchUser(user.id);
+        if (!cancelled) setProfile(p);
+      } catch {
+        // Profile fetch failed — leave null
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [user]);
+
+  const refetchProfile = useCallback(async () => {
+    if (!user) return;
+    try {
+      const p = await fetchUser(user.id);
+      setProfile(p);
+    } catch {
+      // ignore
+    }
+  }, [user]);
 
   const login = useCallback(async (username: string, password: string) => {
     const response = await apiLogin({ username, password });
@@ -54,7 +115,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       role: response.role,
     };
     setUser(authUser);
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authUser));
   }, []);
 
   const register = useCallback(async (registration: RegisterRequest, onboarding: OnboardingData): Promise<string> => {
@@ -68,14 +128,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       role: response.role,
     };
     setUser(authUser);
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(authUser));
     localStorage.removeItem(PENDING_REG_KEY);
     return authUser.id;
   }, []);
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    try {
+      await logoutApi();
+    } catch {
+      // Best-effort
+    }
     setUser(null);
-    localStorage.removeItem(AUTH_STORAGE_KEY);
+    setProfile(null);
   }, []);
 
   const setPendingRegistration = useCallback((data: RegisterRequest) => {
@@ -102,11 +166,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     <AuthContext.Provider
       value={{
         user,
+        profile,
         isAuthenticated: !!user,
+        isAdmin: user?.role === "admin",
         isLoading,
         login,
         register,
         logout,
+        userId: user?.id ?? null,
+        refetchProfile,
         setPendingRegistration,
         getPendingRegistration,
         clearPendingRegistration,
