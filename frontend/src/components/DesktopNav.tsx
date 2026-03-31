@@ -19,7 +19,7 @@ const DesktopNav = () => {
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-56 border-r border-border bg-card md:flex md:flex-col" aria-label="Side navigation">
       <Link to="/" className="flex items-center gap-2 px-5 py-5 hover:opacity-80 transition-opacity">
         <Compass className="h-7 w-7 text-primary" />
-        <span className="text-lg font-bold text-foreground">PathFinder</span>
+        <span className="text-lg font-bold text-foreground">UPath</span>
       </Link>
       <nav className="flex flex-1 flex-col gap-1 px-3">
         {links.map(({ to, icon: Icon, label }) => (
