@@ -3,9 +3,9 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { careerPaths } from "@/data/mockData";
-import { Sparkles, MessageCircle, WifiOff } from "lucide-react";
+import { Sparkles, MessageCircle, WifiOff, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 import { toast } from "sonner";
 import {
@@ -35,6 +35,13 @@ const EXPLORATION_MODES = [
   { id: "building", label: "Building things" },
   { id: "not-sure", label: "Not sure yet" },
 ];
+
+const careerPathToSlug = (path: string): string =>
+  path
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
 
 const Explore = () => {
   const { userId } = useDemoIdentity();
@@ -430,20 +437,41 @@ const Explore = () => {
       </div>
 
       <div className="flex flex-wrap justify-center gap-3">
-        {careerPaths.map((path) => (
-          <button
-            key={path}
-            onClick={() => toggle(path)}
-            className={cn(
-              "rounded-full border px-4 py-2.5 text-sm font-medium transition-all",
-              selected.includes(path)
-                ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                : "border-border bg-card text-foreground hover:border-primary/50 hover:bg-primary/5"
-            )}
-          >
-            {path}
-          </button>
-        ))}
+        {careerPaths.map((path) => {
+          const slug = careerPathToSlug(path);
+          const isSelected = selected.includes(path);
+          return (
+            <button
+              key={path}
+              type="button"
+              onClick={() => toggle(path)}
+              className={cn(
+                "group inline-flex items-center gap-2 rounded-full border px-4 py-2.5 text-sm font-medium transition-all",
+                isSelected
+                  ? "border-primary bg-primary text-primary-foreground shadow-sm"
+                  : "border-border bg-card text-foreground hover:border-primary/50 hover:bg-primary/5"
+              )}
+            >
+              <span className="whitespace-nowrap">{path}</span>
+              <Link
+                to={`/paths/${slug}`}
+                onClick={(e) => {
+                  // Don’t toggle selection when clicking the info icon
+                  e.stopPropagation();
+                }}
+                className={cn(
+                  "inline-flex h-7 w-7 items-center justify-center rounded-full border text-xs transition-all",
+                  isSelected
+                    ? "border-primary/70 bg-primary/20 text-primary-foreground group-hover:bg-primary/30"
+                    : "border-border bg-card text-muted-foreground group-hover:border-primary/50 group-hover:bg-primary/5"
+                )}
+                aria-label={`Learn more about ${path}`}
+              >
+                <Info className="h-3.5 w-3.5" />
+              </Link>
+            </button>
+          );
+        })}
       </div>
 
       <div className="text-center">
