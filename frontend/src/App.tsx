@@ -15,6 +15,7 @@ import Explore from "./pages/Explore";
 import CareerDetails from "./pages/CareerDetails";
 import Resources from "./pages/Resources";
 import EditProfile from "./pages/EditProfile";
+import CareerOverview from "./pages/CareerOverview";
 import AppLayout from "./components/AppLayout";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
@@ -42,6 +43,7 @@ const App = () => (
                   <Route path="/mentors" element={<Mentors />} />
                   <Route path="/explore" element={<Explore />} />
                   <Route path="/careers" element={<CareerDetails />} />
+                  <Route path="/paths/:slug" element={<CareerOverview />} />
                   <Route path="/resources" element={<Resources />} />
                   <Route path="/profile" element={<EditProfile />} />
                 </Route>
