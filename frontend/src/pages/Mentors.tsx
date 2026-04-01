@@ -5,7 +5,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { fetchMentors, bookMentor, unbookMentor, fetchUserMeetings, type Mentor } from "@/lib/api";
-import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
 function avatarInitials(m: Mentor) {
@@ -108,7 +108,7 @@ function MentorCardSkeleton() {
 
 const Mentors = () => {
   const queryClient = useQueryClient();
-  const { userId } = useDemoIdentity();
+  const { userId } = useAuth();
   const { data: mentors = [], isLoading } = useQuery({
     queryKey: ["mentors"],
     queryFn: fetchMentors,

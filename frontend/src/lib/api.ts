@@ -9,12 +9,20 @@ import type {
   MilestoneTier,
   MilestoneCategory,
   NorthStarFields,
+  MilestoneTreeSummary,
   RecommendationsResponse,
   ResourceSearchFilters,
   StudentProfileJson,
 } from "@/lib/aiTypes";
 
-export type { MilestoneNode, MilestoneStatus, MilestoneTier, MilestoneCategory, NorthStarFields };
+export type {
+  MilestoneNode,
+  MilestoneStatus,
+  MilestoneTier,
+  MilestoneCategory,
+  NorthStarFields,
+  MilestoneTreeSummary,
+};
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
@@ -72,6 +80,13 @@ export interface User {
   streak_count: number;
 }
 
+/** Extended user object returned by the admin GET /api/users endpoint */
+export interface AdminUser extends User {
+  email: string;
+  username: string;
+  role: string;
+}
+
 
 export interface Mentor {
   mentor_id: number;
@@ -85,7 +100,7 @@ export interface Mentor {
 }
 
 async function getJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`);
+  const response = await fetch(`${API_BASE_URL}${path}`, { credentials: "include" });
   if (!response.ok) {
     throw await parseApiError(response);
   }
@@ -97,6 +112,7 @@ async function postJson<T>(path: string, body: unknown): Promise<T> {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    credentials: "include",
   });
   if (!response.ok) {
     throw await parseApiError(response);
@@ -109,6 +125,7 @@ async function putJson<T>(path: string, body: unknown): Promise<T> {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    credentials: "include",
   });
   if (!response.ok) {
     throw await parseApiError(response);
@@ -121,7 +138,7 @@ export function fetchHealth() {
 }
 
 export function fetchUsers() {
-  return getJson<User[]>("/api/users");
+  return getJson<AdminUser[]>("/api/users");
 }
 
 export function fetchGoals() {
@@ -133,7 +150,9 @@ export function fetchUser(id: string) {
 }
 
 export function fetchMilestoneTree(userId: string) {
-  return getJson<{ tree: MilestoneNode[] }>(`/api/users/${userId}/milestones/tree`);
+  return getJson<{ tree: MilestoneNode[]; summary: MilestoneTreeSummary }>(
+    `/api/users/${userId}/milestones/tree`
+  );
 }
 
 export interface CreateMilestoneInput {
@@ -166,11 +185,20 @@ export function deleteMilestone(userId: string, milestoneId: number) {
   return deleteJson<{ ok: boolean }>(`/api/users/${userId}/milestones/${milestoneId}`);
 }
 
-export function generateMilestones(userId: string, selectedPath: string) {
-  return postJson<{ macro_id: number; generated_count: number }>(
-    `/api/users/${userId}/milestones/generate`,
-    { selected_path: selectedPath }
-  );
+export interface GenerateMilestoneJourneyResponse {
+  journey_plan_id: number;
+  northstar_milestone_id: number;
+  generated_count: number;
+  plan_end_date: string;
+  career_path_key: string;
+}
+
+/** Generate a 5-year journey from a DB career id or a career_path_key slug. */
+export function generateMilestoneJourney(
+  userId: string,
+  input: { career_id: number } | { career_path_key: string }
+) {
+  return postJson<GenerateMilestoneJourneyResponse>(`/api/users/${userId}/milestones/generate`, input);
 }
 
 export interface UpdateUserInput {
@@ -217,6 +245,7 @@ async function patchJson<T>(path: string, body: unknown): Promise<T> {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
+    credentials: "include",
   });
   if (!response.ok) {
     throw await parseApiError(response);
@@ -225,7 +254,7 @@ async function patchJson<T>(path: string, body: unknown): Promise<T> {
 }
 
 async function deleteJson<T>(path: string): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${path}`, { method: "DELETE" });
+  const response = await fetch(`${API_BASE_URL}${path}`, { method: "DELETE", credentials: "include" });
   if (!response.ok) {
     throw await parseApiError(response);
   }
@@ -257,10 +286,18 @@ export function putUserPreferences(
   userId: string,
   data: { interests?: string | null; selected_career_paths?: string[] }
 ) {
+  const payload: Record<string, unknown> = {};
+  if (Object.prototype.hasOwnProperty.call(data, "interests")) {
+    payload.interests = data.interests;
+  }
+  if (Object.prototype.hasOwnProperty.call(data, "selected_career_paths")) {
+    payload.selected_career_paths = data.selected_career_paths;
+  }
   return fetch(`${API_BASE_URL}/api/users/${userId}/preferences`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
+    credentials: "include",
   }).then(async (r) => {
     if (!r.ok) {
       throw await parseApiError(r);
@@ -361,6 +398,7 @@ export interface Career {
   title: string;
   description: string | null;
   category: string;
+  career_path_key: string | null;
   average_salary: number | null;
 }
 
@@ -380,6 +418,7 @@ export function addBookmark(userId: string, resourceId: number) {
 export async function removeBookmark(userId: string, resourceId: number): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/api/users/${userId}/bookmarks/${resourceId}`, {
     method: "DELETE",
+    credentials: "include",
   });
   if (!response.ok) {
     throw await parseApiError(response);
@@ -391,6 +430,7 @@ export async function unbookMentor(mentorId: number, menteeId: string): Promise<
     method: "DELETE",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ mentee_id: menteeId }),
+    credentials: "include",
   });
   if (!response.ok) {
     throw await parseApiError(response);
@@ -450,6 +490,14 @@ export interface AccountResponse {
 
 export function login(data: LoginRequest) {
   return postJson<LoginResponse>("/api/auth/login", data);
+}
+
+export function fetchMe() {
+  return getJson<LoginResponse>("/api/auth/me");
+}
+
+export function logoutApi() {
+  return postJson<{ ok: boolean }>("/api/auth/logout", {});
 }
 
 export function register(data: CreateAccountRequest) {

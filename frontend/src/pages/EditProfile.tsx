@@ -7,7 +7,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UserCircle, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
 
-import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { patchUser } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -61,7 +61,7 @@ const profileSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
 const EditProfile = () => {
-  const { user, userId, refetchUsers } = useDemoIdentity();
+  const { profile: user, userId, refetchProfile } = useAuth();
   const queryClient = useQueryClient();
 
   const form = useForm<ProfileFormValues>({
@@ -105,7 +105,7 @@ const EditProfile = () => {
       }),
     onSuccess: () => {
       toast.success("Profile updated");
-      refetchUsers();
+      refetchProfile();
       queryClient.invalidateQueries({ queryKey: ["user", userId] });
     },
     onError: () => {

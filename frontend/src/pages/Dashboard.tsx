@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Map, Users, Compass, BookOpen, ArrowRight, Star } from "lucide-react";
-import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   fetchMilestoneTree,
   fetchUserMeetings,
@@ -16,7 +16,7 @@ import {
 } from "@/lib/api";
 
 const Dashboard = () => {
-  const { userId, user } = useDemoIdentity();
+  const { userId, profile: user } = useAuth();
 
   const { data: treeData } = useQuery({
     queryKey: ["milestone-tree", userId],
@@ -80,16 +80,7 @@ const Dashboard = () => {
   ];
 
   if (!userId) {
-    return (
-      <div className="space-y-6">
-        <h1 className="text-2xl font-bold text-foreground">Your Dashboard</h1>
-        <p className="text-muted-foreground">
-          Choose a profile from the dropdown above, or{" "}
-          <a href="/login" className="text-primary hover:underline">sign in</a>{" "}
-          to see your personalized goals and progress.
-        </p>
-      </div>
-    );
+    return null; // RequireAuth guard handles redirect
   }
 
   return (

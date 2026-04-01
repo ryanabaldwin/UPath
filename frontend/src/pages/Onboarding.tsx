@@ -4,7 +4,6 @@ import { Compass, ArrowRight, ArrowLeft, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
-import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
 import { submitOnboarding } from "@/lib/api";
 import { toast } from "sonner";
 import { PARTICIPANT_INTEREST_OPTIONS } from "@/constants/participantInterests";
@@ -108,8 +107,7 @@ const emptyAnswers: Answers = {
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const { getPendingRegistration, register } = useAuth();
-  const { userId, users, isLoading: isDemoLoading, refetchUsers } = useDemoIdentity();
+  const { getPendingRegistration, register, userId, user: authUser, isLoading: isAuthLoading } = useAuth();
 
   const [showIntro, setShowIntro] = useState(true);
   const [isDone, setIsDone] = useState(false);
@@ -128,11 +126,11 @@ export default function Onboarding() {
   }, [isNewRegistration]);
 
   useEffect(() => {
-    if (!isDone && !isNewRegistration && !userId && !isDemoLoading && users.length === 0) {
+    if (!isDone && !isNewRegistration && !userId && !isAuthLoading) {
       toast.error("Please start from the registration page");
       navigate("/register");
     }
-  }, [isDone, isNewRegistration, userId, isDemoLoading, users.length, navigate]);
+  }, [isDone, isNewRegistration, userId, isAuthLoading, navigate]);
 
   const currentStep = STEPS[step];
   const totalSteps = STEPS.length;
@@ -218,8 +216,7 @@ export default function Onboarding() {
     try {
       if (isNewRegistration && pendingRegistration) {
         const firstName = pendingRegistration.firstName;
-        const newUserId = await register(pendingRegistration, onboardingData);
-        await refetchUsers(newUserId);
+        await register(pendingRegistration, onboardingData);
         setDoneFirstName(firstName);
         setIsDone(true);
         setTimeout(() => navigate("/dashboard"), 2500);
@@ -238,7 +235,7 @@ export default function Onboarding() {
     }
   };
 
-  if (isDemoLoading && !isNewRegistration) {
+  if (isAuthLoading && !isNewRegistration) {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
@@ -248,7 +245,7 @@ export default function Onboarding() {
 
   // ── Success screen ──────────────────────────────────────────
   if (isDone) {
-    const firstName = doneFirstName || users.find((u) => u.id === userId)?.user_first || "there";
+    const firstName = doneFirstName || authUser?.firstName || "there";
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background px-6 text-center">
         <div className="mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-primary/10">

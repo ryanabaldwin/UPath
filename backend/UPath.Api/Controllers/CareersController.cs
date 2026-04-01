@@ -28,6 +28,7 @@ public class CareersController : ControllerBase
                 title = c.Title,
                 description = c.Description,
                 category = c.Category,
+                career_path_key = c.CareerPathKey,
                 average_salary = c.AverageSalary
             })
             .ToListAsync();

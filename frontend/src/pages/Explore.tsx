@@ -5,8 +5,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { careerPaths } from "@/data/mockData";
 import { Sparkles, MessageCircle, WifiOff, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Link, useNavigate } from "react-router-dom";
-import { useDemoIdentity } from "@/contexts/DemoIdentityContext";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import {
   API_BASE_URL,
@@ -44,7 +44,7 @@ const careerPathToSlug = (path: string): string =>
     .replace(/^-+|-+$/g, "");
 
 const Explore = () => {
-  const { userId } = useDemoIdentity();
+  const { userId } = useAuth();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [selected, setSelected] = useState<string[]>([]);

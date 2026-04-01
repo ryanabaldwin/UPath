@@ -103,6 +103,10 @@ public class AccountController : ControllerBase
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
 
+        // Log the new user in automatically
+        HttpContext.Session.SetString("UserId", user.Id.ToString());
+        HttpContext.Session.SetString("UserRole", user.Role);
+
         // Create student preferences with onboarding data
         var preferences = new StudentPreference
         {
@@ -184,6 +188,10 @@ public class AccountController : ControllerBase
 
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
+
+        // Log the new user in automatically
+        HttpContext.Session.SetString("UserId", user.Id.ToString());
+        HttpContext.Session.SetString("UserRole", user.Role);
 
         return CreatedAtAction(
             nameof(RegisterSimple),
