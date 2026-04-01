@@ -1,0 +1,29 @@
+Table users {
+  id int [pk, increment]
+  username varchar(50) [not null, unique]
+  password varchar(255) [not null]
+  role varchar(50) [not null]
+  region varchar(100)
+  ethnicity varchar(100)
+  incomebracket int
+}
+
+Table usergoals {
+  goalid int [pk, not null, increment, ref: > goals.goalid]
+  user_id int [pk, not null, ref: > users.id]
+  progress int [not null, note: "0–10 progress scale"]
+}
+
+Table goals {
+  goalid int [pk, increment]
+  pi1 varchar(255) [not null]
+  pi2 varchar(255) [not null]
+  pi3 varchar(255)
+  pi4 varchar(255)
+  pi5 varchar(255)
+  pi6 varchar(255)
+  pi7 varchar(255)
+  pi8 varchar(255)
+  pi9 varchar(255)
+  pi10 varchar(255)
+}

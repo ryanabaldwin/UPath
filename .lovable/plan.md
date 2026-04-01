@@ -1,6 +1,6 @@
 
 
-# PathFinder — Career & Education Planning for Youth
+# UPath — Career & Education Planning for Youth
 
 A mobile-first, responsive web app that helps disadvantaged youth explore career paths, connect with mentors, track milestones, and find resources like scholarships and jobs.
 

@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
+import { DemoIdentityProvider } from "@/contexts/DemoIdentityContext";
 import ErrorBoundary from "./components/ErrorBoundary";
 import RequireAuth from "./components/RequireAuth";
 import RequireAdmin from "./components/RequireAdmin";
@@ -16,6 +17,7 @@ import Explore from "./pages/Explore";
 import CareerDetails from "./pages/CareerDetails";
 import Resources from "./pages/Resources";
 import EditProfile from "./pages/EditProfile";
+import CareerOverview from "./pages/CareerOverview";
 import AdminUsers from "./pages/AdminUsers";
 import AppLayout from "./components/AppLayout";
 import NotFound from "./pages/NotFound";
@@ -28,42 +30,45 @@ const App = () => (
   <ErrorBoundary>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Landing />} />
-              <Route path="/onboarding" element={<Onboarding />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route
-                element={
-                  <RequireAuth>
-                    <AppLayout />
-                  </RequireAuth>
-                }
-              >
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/milestones" element={<Milestones />} />
-                <Route path="/mentors" element={<Mentors />} />
-                <Route path="/explore" element={<Explore />} />
-                <Route path="/careers" element={<CareerDetails />} />
-                <Route path="/resources" element={<Resources />} />
-                <Route path="/profile" element={<EditProfile />} />
+        <DemoIdentityProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/onboarding" element={<Onboarding />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
                 <Route
-                  path="/admin/users"
                   element={
-                    <RequireAdmin>
-                      <AdminUsers />
-                    </RequireAdmin>
+                    <RequireAuth>
+                      <AppLayout />
+                    </RequireAuth>
                   }
-                />
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
-        </TooltipProvider>
+                >
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/milestones" element={<Milestones />} />
+                  <Route path="/mentors" element={<Mentors />} />
+                  <Route path="/explore" element={<Explore />} />
+                  <Route path="/careers" element={<CareerDetails />} />
+                  <Route path="/paths/:slug" element={<CareerOverview />} />
+                  <Route path="/resources" element={<Resources />} />
+                  <Route path="/profile" element={<EditProfile />} />
+                  <Route
+                    path="/admin/users"
+                    element={
+                      <RequireAdmin>
+                        <AdminUsers />
+                      </RequireAdmin>
+                    }
+                  />
+                </Route>
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
+          </TooltipProvider>
+        </DemoIdentityProvider>
       </AuthProvider>
     </QueryClientProvider>
   </ErrorBoundary>

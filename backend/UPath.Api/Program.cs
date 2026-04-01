@@ -48,6 +48,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddSingleton<UPath.Api.Services.MilestoneJourneyTemplateService>();
+builder.Services.AddScoped<UPath.Api.Services.MilestoneJourneyGeneratorService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -75,7 +78,8 @@ app.Use(async (context, next) =>
                     || path.StartsWith("/api/auth/me")
                     || path.StartsWith("/api/auth/logout")
                     || path.StartsWith("/api/account/register")
-                    || path.StartsWith("/api/health");
+                    || path.StartsWith("/api/health")
+                    || path.StartsWith("/api/okr");
 
         if (!isPublic)
         {

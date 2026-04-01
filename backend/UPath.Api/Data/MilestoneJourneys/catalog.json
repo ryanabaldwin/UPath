@@ -1,0 +1,4594 @@
+{
+  "templates": {
+    "software-development": {
+      "careerPathKey": "software-development",
+      "northstar": {
+        "title": "Become a professional software developer",
+        "description": "Ship reliable code, grow core CS skills, and land a strong first role in tech."
+      },
+      "years": [
+        {
+          "title": "Year 1: Launchpad",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y1 Q1: Plan & foundations",
+              "description": null,
+              "months": [
+                {
+                  "title": "Finish strong in math & English; explore free coding intro (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Pick a language (Python or JS); complete a structured beginner module (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Build a tiny CLI or web page project; share with a mentor (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q2: Build & practice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Research CS/IT programs; list application deadlines (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Study for SAT/ACT; block weekly practice (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Apply to colleges or bootcamps; request recommendation letters (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q3: Ship & reflect",
+              "description": null,
+              "months": [
+                {
+                  "title": "Deepen data structures basics; solve 3 problems/week (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Contribute to open source or a class team project (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Prepare internship applications; polish resume & GitHub (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q4: Accelerate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Internship or part-time: ship features; collect feedback (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Expand portfolio with 2 shipped projects (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Interview practice: behavioral + one technical round weekly (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 2: Academics & portfolio",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y2 Q1: Plan & foundations",
+              "description": null,
+              "months": [
+                {
+                  "title": "Take advanced coursework or certs aligned to stack (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Lead a project milestone; document architecture decisions (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Network: coffee chats & local meetups (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q2: Build & practice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Specialize (web, mobile, or backend); pick learning roadmap (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Mock interviews; refine stories with metrics (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Capstone or senior project with demo video (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q3: Ship & reflect",
+              "description": null,
+              "months": [
+                {
+                  "title": "Negotiate offers; compare growth not only salary (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Onboard strong: docs, tooling, code review habits (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Ship small wins in production; seek mentorship (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q4: Accelerate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Own a feature end-to-end (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Performance & testing fundamentals (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Mentor an intern or junior teammate (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 3: Internships & depth",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y3 Q1: Plan & foundations",
+              "description": null,
+              "months": [
+                {
+                  "title": "Grow T-shaped skills: one adjacent domain (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Present work at a meetup or internal demo (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Plan next role level: scope & leadership (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q2: Build & practice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Deepen system design; read real postmortems (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Refine long-term specialty; set 2-year goals (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Give back: OSS, teaching, or interviewing (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q3: Ship & reflect",
+              "description": null,
+              "months": [
+                {
+                  "title": "Sustain learning habit; balance health & craft (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Finish strong in math & English; explore free coding intro (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Pick a language (Python or JS); complete a structured beginner module (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q4: Accelerate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Build a tiny CLI or web page project; share with a mentor (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Research CS/IT programs; list application deadlines (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Study for SAT/ACT; block weekly practice (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 4: Early career velocity",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y4 Q1: Plan & foundations",
+              "description": null,
+              "months": [
+                {
+                  "title": "Apply to colleges or bootcamps; request recommendation letters (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Deepen data structures basics; solve 3 problems/week (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Contribute to open source or a class team project (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q2: Build & practice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Prepare internship applications; polish resume & GitHub (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Internship or part-time: ship features; collect feedback (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Expand portfolio with 2 shipped projects (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q3: Ship & reflect",
+              "description": null,
+              "months": [
+                {
+                  "title": "Interview practice: behavioral + one technical round weekly (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Take advanced coursework or certs aligned to stack (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Lead a project milestone; document architecture decisions (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q4: Accelerate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Network: coffee chats & local meetups (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Specialize (web, mobile, or backend); pick learning roadmap (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Mock interviews; refine stories with metrics (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 5: Growth & mastery",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y5 Q1: Plan & foundations",
+              "description": null,
+              "months": [
+                {
+                  "title": "Capstone or senior project with demo video (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Negotiate offers; compare growth not only salary (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Onboard strong: docs, tooling, code review habits (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q2: Build & practice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Ship small wins in production; seek mentorship (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Own a feature end-to-end (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Performance & testing fundamentals (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q3: Ship & reflect",
+              "description": null,
+              "months": [
+                {
+                  "title": "Mentor an intern or junior teammate (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Grow T-shaped skills: one adjacent domain (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Present work at a meetup or internal demo (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q4: Accelerate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Plan next role level: scope & leadership (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Deepen system design; read real postmortems (software)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Refine long-term specialty; set 2-year goals (software)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "healthcare": {
+      "careerPathKey": "healthcare",
+      "northstar": {
+        "title": "Become a licensed healthcare professional (e.g., RN)",
+        "description": "Complete prerequisites, clinical training, licensure, and your first role in patient care."
+      },
+      "years": [
+        {
+          "title": "Year 1: Explore & prerequisites",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y1 Q1: Foundations",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science & GPA focus: biology, chemistry basics (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Volunteer at clinic or hospital; log hours (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Research nursing/premed pathways; shadow a shift (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q2: Clinical skills",
+              "description": null,
+              "months": [
+                {
+                  "title": "Test prep; strengthen communication skills (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Apply to programs; financial aid & scholarships (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Complete prerequisites with labs (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q3: Licensure & transition",
+              "description": null,
+              "months": [
+                {
+                  "title": "CPR/BLS certification; health screenings (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Interview for nursing or allied health programs (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Begin program: fundamentals of patient care (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q4: Impact & growth",
+              "description": null,
+              "months": [
+                {
+                  "title": "Clinical skills labs; dosage calculations (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Clinical rotations: document reflections (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Prepare for NCLEX or board exams (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 2: Training & clinicals",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y2 Q1: Foundations",
+              "description": null,
+              "months": [
+                {
+                  "title": "Pass licensure; apply to new grad residencies (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "First role: time management on the floor (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Preceptorship goals; seek feedback (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q2: Clinical skills",
+              "description": null,
+              "months": [
+                {
+                  "title": "Specialty exploration: ICU, ED, pediatrics (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Evidence-based practice: small QI project (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Certifications (ACLS, PALS) as needed (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q3: Licensure & transition",
+              "description": null,
+              "months": [
+                {
+                  "title": "Mentor peers; join professional association (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Charge nurse or lead tasks; leadership shadow (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Continuing education plan; CEU tracking (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q4: Impact & growth",
+              "description": null,
+              "months": [
+                {
+                  "title": "Work-life sustainability; burnout prevention (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Patient advocacy project (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Teaching or precepting interest (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 3: Licensure & first job",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y3 Q1: Foundations",
+              "description": null,
+              "months": [
+                {
+                  "title": "Career ladder: certifications & roles (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Research or community health outreach (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Policy awareness: healthcare trends (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q2: Clinical skills",
+              "description": null,
+              "months": [
+                {
+                  "title": "Public health volunteer work (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Long-term specialty certification path (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Reflect on impact; set 5-year care goals (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q3: Licensure & transition",
+              "description": null,
+              "months": [
+                {
+                  "title": "Balance compassion with boundaries (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Celebrate progress; renew license & goals (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science & GPA focus: biology, chemistry basics (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q4: Impact & growth",
+              "description": null,
+              "months": [
+                {
+                  "title": "Volunteer at clinic or hospital; log hours (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Research nursing/premed pathways; shadow a shift (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Test prep; strengthen communication skills (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 4: Deepen specialty",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y4 Q1: Foundations",
+              "description": null,
+              "months": [
+                {
+                  "title": "Apply to programs; financial aid & scholarships (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Complete prerequisites with labs (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "CPR/BLS certification; health screenings (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q2: Clinical skills",
+              "description": null,
+              "months": [
+                {
+                  "title": "Interview for nursing or allied health programs (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Begin program: fundamentals of patient care (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Clinical skills labs; dosage calculations (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q3: Licensure & transition",
+              "description": null,
+              "months": [
+                {
+                  "title": "Clinical rotations: document reflections (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Prepare for NCLEX or board exams (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Pass licensure; apply to new grad residencies (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q4: Impact & growth",
+              "description": null,
+              "months": [
+                {
+                  "title": "First role: time management on the floor (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Preceptorship goals; seek feedback (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Specialty exploration: ICU, ED, pediatrics (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 5: Lead & sustain",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y5 Q1: Foundations",
+              "description": null,
+              "months": [
+                {
+                  "title": "Evidence-based practice: small QI project (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Certifications (ACLS, PALS) as needed (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Mentor peers; join professional association (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q2: Clinical skills",
+              "description": null,
+              "months": [
+                {
+                  "title": "Charge nurse or lead tasks; leadership shadow (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Continuing education plan; CEU tracking (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Work-life sustainability; burnout prevention (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q3: Licensure & transition",
+              "description": null,
+              "months": [
+                {
+                  "title": "Patient advocacy project (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Teaching or precepting interest (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Career ladder: certifications & roles (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q4: Impact & growth",
+              "description": null,
+              "months": [
+                {
+                  "title": "Research or community health outreach (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Policy awareness: healthcare trends (healthcare)",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Public health volunteer work (healthcare)",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "product-management": {
+      "careerPathKey": "product-management",
+      "northstar": {
+        "title": "Become a product manager who ships valuable products",
+        "description": "Blend user insight, data, and leadership to deliver outcomes users love."
+      },
+      "years": [
+        {
+          "title": "Year 1: PM craft",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y1 Q1: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 1: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 2: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 3: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q2: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 4: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 5: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 6: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q3: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 7: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 8: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 9: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q4: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 10: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 11: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 12: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 2: PM craft",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y2 Q1: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 13: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 14: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 15: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q2: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 16: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 17: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 18: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q3: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 19: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 20: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 21: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q4: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 22: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 23: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 24: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 3: PM craft",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y3 Q1: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 25: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 26: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 27: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q2: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 28: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 29: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 30: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q3: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 31: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 32: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 33: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q4: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 34: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 35: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 36: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 4: PM craft",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y4 Q1: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 37: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 38: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 39: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q2: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 40: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 41: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 42: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q3: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 43: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 44: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 45: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q4: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 46: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 47: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 48: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 5: PM craft",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y5 Q1: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 49: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 50: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 51: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q2: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 52: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 53: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 54: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q3: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 55: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 56: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 57: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q4: Discover → Define → Deliver → Learn",
+              "description": null,
+              "months": [
+                {
+                  "title": "PM Month 58: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 59: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "PM Month 60: user research, prioritization, metrics, and stakeholder practice",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "trades-technical": {
+      "careerPathKey": "trades-technical",
+      "northstar": {
+        "title": "Become a licensed skilled tradesperson (e.g., electrician)",
+        "description": "Complete apprenticeship, licensing, and build a reputation for safety and quality."
+      },
+      "years": [
+        {
+          "title": "Year 1: Trade pathway",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y1 Q1: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 1: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 2: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 3: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q2: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 4: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 5: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 6: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q3: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 7: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 8: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 9: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q4: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 10: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 11: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 12: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 2: Trade pathway",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y2 Q1: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 13: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 14: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 15: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q2: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 16: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 17: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 18: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q3: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 19: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 20: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 21: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q4: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 22: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 23: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 24: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 3: Trade pathway",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y3 Q1: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 25: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 26: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 27: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q2: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 28: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 29: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 30: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q3: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 31: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 32: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 33: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q4: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 34: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 35: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 36: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 4: Trade pathway",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y4 Q1: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 37: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 38: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 39: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q2: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 40: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 41: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 42: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q3: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 43: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 44: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 45: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q4: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 46: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 47: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 48: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 5: Trade pathway",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y5 Q1: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 49: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 50: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 51: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q2: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 52: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 53: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 54: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q3: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 55: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 56: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 57: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q4: Skills → Certs → Hours → Mastery",
+              "description": null,
+              "months": [
+                {
+                  "title": "Trade Month 58: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 59: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Trade Month 60: safety, tools, code, and on-site reps",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "computer-engineering": {
+      "careerPathKey": "computer-engineering",
+      "northstar": {
+        "title": "Become a computer hardware engineer",
+        "description": "Master EE/CS foundations, labs, and hardware design practices."
+      },
+      "years": [
+        {
+          "title": "Year 1: Hardware depth",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y1 Q1: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 1: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 2: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 3: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q2: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 4: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 5: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 6: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q3: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 7: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 8: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 9: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q4: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 10: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 11: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 12: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 2: Hardware depth",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y2 Q1: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 13: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 14: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 15: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q2: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 16: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 17: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 18: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q3: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 19: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 20: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 21: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q4: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 22: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 23: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 24: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 3: Hardware depth",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y3 Q1: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 25: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 26: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 27: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q2: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 28: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 29: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 30: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q3: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 31: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 32: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 33: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q4: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 34: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 35: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 36: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 4: Hardware depth",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y4 Q1: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 37: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 38: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 39: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q2: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 40: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 41: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 42: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q3: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 43: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 44: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 45: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q4: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 46: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 47: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 48: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 5: Hardware depth",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y5 Q1: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 49: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 50: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 51: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q2: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 52: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 53: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 54: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q3: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 55: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 56: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 57: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q4: Theory → Lab → Design → Validate",
+              "description": null,
+              "months": [
+                {
+                  "title": "HW Month 58: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 59: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "HW Month 60: circuits, labs, FPGA/embedded, and design reviews",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "business-entrepreneurship": {
+      "careerPathKey": "business-entrepreneurship",
+      "northstar": {
+        "title": "Build a sustainable business or entrepreneurial career",
+        "description": "Validate ideas, serve customers, and manage money and operations responsibly."
+      },
+      "years": [
+        {
+          "title": "Year 1: Entrepreneur journey",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y1 Q1: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 1: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 2: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 3: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q2: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 4: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 5: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 6: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q3: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 7: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 8: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 9: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q4: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 10: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 11: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 12: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 2: Entrepreneur journey",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y2 Q1: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 13: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 14: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 15: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q2: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 16: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 17: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 18: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q3: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 19: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 20: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 21: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q4: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 22: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 23: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 24: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 3: Entrepreneur journey",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y3 Q1: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 25: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 26: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 27: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q2: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 28: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 29: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 30: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q3: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 31: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 32: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 33: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q4: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 34: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 35: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 36: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 4: Entrepreneur journey",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y4 Q1: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 37: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 38: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 39: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q2: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 40: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 41: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 42: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q3: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 43: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 44: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 45: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q4: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 46: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 47: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 48: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 5: Entrepreneur journey",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y5 Q1: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 49: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 50: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 51: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q2: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 52: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 53: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 54: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q3: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 55: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 56: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 57: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q4: Learn → Build → Sell → Scale",
+              "description": null,
+              "months": [
+                {
+                  "title": "Biz Month 58: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 59: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Biz Month 60: customer interviews, MVP, unit economics, ops",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "education": {
+      "careerPathKey": "education",
+      "northstar": {
+        "title": "Become a credentialed educator",
+        "description": "Prepare academically, complete student teaching, and lead inclusive classrooms."
+      },
+      "years": [
+        {
+          "title": "Year 1: Teaching pathway",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y1 Q1: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 1: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 2: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 3: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q2: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 4: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 5: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 6: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q3: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 7: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 8: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 9: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q4: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 10: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 11: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 12: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 2: Teaching pathway",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y2 Q1: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 13: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 14: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 15: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q2: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 16: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 17: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 18: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q3: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 19: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 20: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 21: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q4: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 22: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 23: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 24: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 3: Teaching pathway",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y3 Q1: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 25: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 26: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 27: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q2: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 28: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 29: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 30: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q3: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 31: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 32: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 33: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q4: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 34: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 35: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 36: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 4: Teaching pathway",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y4 Q1: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 37: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 38: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 39: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q2: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 40: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 41: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 42: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q3: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 43: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 44: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 45: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q4: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 46: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 47: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 48: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 5: Teaching pathway",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y5 Q1: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 49: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 50: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 51: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q2: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 52: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 53: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 54: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q3: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 55: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 56: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 57: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q4: Foundations → Practice → Credential → Lead",
+              "description": null,
+              "months": [
+                {
+                  "title": "Edu Month 58: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 59: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Edu Month 60: pedagogy, classroom management, licensure prep",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "creative-arts-design": {
+      "careerPathKey": "creative-arts-design",
+      "northstar": {
+        "title": "Become a professional designer / creative",
+        "description": "Develop craft, portfolio, clients, and brand across media."
+      },
+      "years": [
+        {
+          "title": "Year 1: Creative career",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y1 Q1: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 1: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 2: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 3: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q2: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 4: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 5: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 6: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q3: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 7: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 8: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 9: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q4: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 10: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 11: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 12: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 2: Creative career",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y2 Q1: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 13: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 14: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 15: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q2: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 16: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 17: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 18: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q3: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 19: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 20: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 21: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q4: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 22: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 23: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 24: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 3: Creative career",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y3 Q1: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 25: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 26: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 27: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q2: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 28: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 29: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 30: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q3: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 31: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 32: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 33: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q4: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 34: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 35: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 36: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 4: Creative career",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y4 Q1: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 37: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 38: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 39: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q2: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 40: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 41: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 42: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q3: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 43: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 44: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 45: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q4: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 46: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 47: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 48: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 5: Creative career",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y5 Q1: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 49: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 50: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 51: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q2: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 52: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 53: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 54: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q3: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 55: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 56: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 57: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q4: Skills → Portfolio → Clients → Voice",
+              "description": null,
+              "months": [
+                {
+                  "title": "Design Month 58: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 59: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "work"
+                },
+                {
+                  "title": "Design Month 60: fundamentals, portfolio pieces, critique, client work",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "science": {
+      "careerPathKey": "science",
+      "northstar": {
+        "title": "Become an environmental or research scientist",
+        "description": "Build STEM depth, research experience, and science communication."
+      },
+      "years": [
+        {
+          "title": "Year 1: Science track",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y1 Q1: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 1: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 2: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 3: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q2: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 4: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 5: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 6: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q3: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 7: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 8: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 9: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q4: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 10: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 11: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 12: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 2: Science track",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y2 Q1: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 13: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 14: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 15: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q2: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 16: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 17: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 18: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q3: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 19: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 20: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 21: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q4: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 22: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 23: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 24: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 3: Science track",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y3 Q1: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 25: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 26: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 27: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q2: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 28: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 29: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 30: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q3: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 31: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 32: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 33: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q4: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 34: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 35: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 36: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 4: Science track",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y4 Q1: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 37: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 38: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 39: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q2: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 40: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 41: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 42: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q3: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 43: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 44: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 45: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q4: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 46: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 47: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 48: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 5: Science track",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y5 Q1: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 49: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 50: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 51: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q2: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 52: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 53: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 54: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q3: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 55: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 56: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 57: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q4: Core → Lab → Research → Share",
+              "description": null,
+              "months": [
+                {
+                  "title": "Science Month 58: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 59: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Science Month 60: lab skills, stats, field work, publications",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "data-analytics": {
+      "careerPathKey": "data-analytics",
+      "northstar": {
+        "title": "Become a data analyst",
+        "description": "Turn raw data into decisions with SQL, visualization, and statistics."
+      },
+      "years": [
+        {
+          "title": "Year 1: Analytics craft",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y1 Q1: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 1: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 2: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 3: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q2: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 4: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 5: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 6: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q3: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 7: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 8: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 9: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y1 Q4: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 10: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 11: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 12: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 2: Analytics craft",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y2 Q1: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 13: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 14: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 15: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q2: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 16: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 17: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 18: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q3: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 19: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 20: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 21: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y2 Q4: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 22: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 23: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 24: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 3: Analytics craft",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y3 Q1: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 25: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 26: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 27: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q2: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 28: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 29: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 30: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q3: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 31: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 32: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 33: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y3 Q4: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 34: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 35: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 36: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 4: Analytics craft",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y4 Q1: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 37: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 38: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 39: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q2: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 40: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 41: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 42: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q3: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 43: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 44: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 45: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y4 Q4: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 46: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 47: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 48: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Year 5: Analytics craft",
+          "description": null,
+          "quarters": [
+            {
+              "title": "Y5 Q1: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 49: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 50: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 51: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q2: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 52: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 53: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 54: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q3: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 55: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 56: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 57: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            },
+            {
+              "title": "Y5 Q4: Data → Insight → Action → Iterate",
+              "description": null,
+              "months": [
+                {
+                  "title": "Data Month 58: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 59: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "school"
+                },
+                {
+                  "title": "Data Month 60: SQL, spreadsheets, viz, stakeholder stories",
+                  "description": null,
+                  "category": "life"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
