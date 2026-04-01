@@ -15,6 +15,7 @@ export interface Mentor {
 }
 
 import type { ParticipantCareerArea } from "@/constants/participantInterests";
+import type { CareerPathId } from "@/data/careerPathOverviews";
 
 export interface Resource {
   id: number;
@@ -290,17 +291,22 @@ export const resources: Resource[] = [
   },
 ];
 
-export const careerPaths = [
-  "Software Development",
-  "Computer Engineering",
-  "Product Management",
-  "Healthcare",
-  "Business & Entrepreneurship",
-  "Education",
-  "Creative Arts & Design",
-  "Trades & Technical Skills",
-  "Science",
+/** Labels + slugs aligned with backend `career_path_key` / milestone templates (10 paths). */
+export const exploreCareerSections: ReadonlyArray<{ label: string; slug: CareerPathId }> = [
+  { label: "Software Development", slug: "software-development" },
+  { label: "Computer Engineering", slug: "computer-engineering" },
+  { label: "Product Management", slug: "product-management" },
+  { label: "Healthcare", slug: "healthcare" },
+  { label: "Business & Entrepreneurship", slug: "business-entrepreneurship" },
+  { label: "Education", slug: "education" },
+  { label: "Creative Arts & Design", slug: "creative-arts-design" },
+  { label: "Trades & Technical Skills", slug: "trades-technical" },
+  { label: "Science", slug: "science" },
+  { label: "Data Analytics", slug: "data-analytics" },
 ];
+
+/** @deprecated Use exploreCareerSections for labels tied to overview slugs */
+export const careerPaths = exploreCareerSections.map((s) => s.label);
 
 // new mock data from Sarah for career exploration
 export interface Career {

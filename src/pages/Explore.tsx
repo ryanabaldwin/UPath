@@ -175,7 +175,7 @@ const Explore = () => {
 
   const handleFindPath = async () => {
     if (!userId) {
-      navigate("/careers", { state: { selectedPaths: selected, interests } });
+      navigate("/dashboard", { state: { selectedPaths: selected, interests } });
       return;
     }
     await saveMutation.mutateAsync();
@@ -185,7 +185,7 @@ const Explore = () => {
       has_interests: Boolean(interests.trim()),
       mode,
     });
-    navigate("/careers", {
+    navigate("/dashboard", {
       state: {
         selectedPaths: selected,
         interests,

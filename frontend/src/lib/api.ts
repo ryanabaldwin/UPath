@@ -149,10 +149,14 @@ export function fetchUser(id: string) {
   return getJson<User>(`/api/users/${id}`);
 }
 
+export interface MilestoneTreeResponse {
+  tree: MilestoneNode[];
+  summary: MilestoneTreeSummary;
+  has_active_generated_plan: boolean;
+}
+
 export function fetchMilestoneTree(userId: string) {
-  return getJson<{ tree: MilestoneNode[]; summary: MilestoneTreeSummary }>(
-    `/api/users/${userId}/milestones/tree`
-  );
+  return getJson<MilestoneTreeResponse>(`/api/users/${userId}/milestones/tree`);
 }
 
 export interface CreateMilestoneInput {
