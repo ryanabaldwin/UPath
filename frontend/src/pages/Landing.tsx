@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Compass, Users, Sparkles, ArrowRight, Search, Map } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import OKRSection from "@/components/OKRSection";
 
 const HOW_IT_WORKS = [
   {
@@ -55,7 +56,6 @@ const Landing = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-r from-black/30 to-transparent" />
           </div>
-          
         </div>
         
         <div className="relative mx-auto max-w-7xl px-6 pt-20 pb-12 lg:pt-24 lg:pb-16">
@@ -120,8 +120,11 @@ const Landing = () => {
         </div>
       </section>
 
+      {/* OKR Metrics Section */}
+      <OKRSection />
+
       {/* How it works */}
-      <section className="bg-background py-20">
+      <section className="bg-background pt-10 pb-20">
         <div className="mx-auto w-full max-w-3xl px-6">
           <h2 className="mb-2 text-center text-4xl font-bold text-foreground">
             How it works
@@ -132,7 +135,7 @@ const Landing = () => {
           
           <div className="flex flex-col gap-4">
             {HOW_IT_WORKS.map(({ step, icon: Icon, title, description }) => (
-              <div key={step} className="flex items-start gap-4 bg-card p-6 border border-border/50">
+              <div key={step} className="flex items-start gap-4 rounded-xl bg-card p-6 border border-border/60">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10">
                   <Icon className="h-6 w-6 text-primary" />
                 </div>

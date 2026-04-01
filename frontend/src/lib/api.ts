@@ -9,12 +9,20 @@ import type {
   MilestoneTier,
   MilestoneCategory,
   NorthStarFields,
+  MilestoneTreeSummary,
   RecommendationsResponse,
   ResourceSearchFilters,
   StudentProfileJson,
 } from "@/lib/aiTypes";
 
-export type { MilestoneNode, MilestoneStatus, MilestoneTier, MilestoneCategory, NorthStarFields };
+export type {
+  MilestoneNode,
+  MilestoneStatus,
+  MilestoneTier,
+  MilestoneCategory,
+  NorthStarFields,
+  MilestoneTreeSummary,
+};
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
@@ -142,7 +150,9 @@ export function fetchUser(id: string) {
 }
 
 export function fetchMilestoneTree(userId: string) {
-  return getJson<{ tree: MilestoneNode[] }>(`/api/users/${userId}/milestones/tree`);
+  return getJson<{ tree: MilestoneNode[]; summary: MilestoneTreeSummary }>(
+    `/api/users/${userId}/milestones/tree`
+  );
 }
 
 export interface CreateMilestoneInput {
@@ -175,11 +185,20 @@ export function deleteMilestone(userId: string, milestoneId: number) {
   return deleteJson<{ ok: boolean }>(`/api/users/${userId}/milestones/${milestoneId}`);
 }
 
-export function generateMilestones(userId: string, selectedPath: string) {
-  return postJson<{ macro_id: number; generated_count: number }>(
-    `/api/users/${userId}/milestones/generate`,
-    { selected_path: selectedPath }
-  );
+export interface GenerateMilestoneJourneyResponse {
+  journey_plan_id: number;
+  northstar_milestone_id: number;
+  generated_count: number;
+  plan_end_date: string;
+  career_path_key: string;
+}
+
+/** Generate a 5-year journey from a DB career id or a career_path_key slug. */
+export function generateMilestoneJourney(
+  userId: string,
+  input: { career_id: number } | { career_path_key: string }
+) {
+  return postJson<GenerateMilestoneJourneyResponse>(`/api/users/${userId}/milestones/generate`, input);
 }
 
 export interface UpdateUserInput {
@@ -267,10 +286,17 @@ export function putUserPreferences(
   userId: string,
   data: { interests?: string | null; selected_career_paths?: string[] }
 ) {
+  const payload: Record<string, unknown> = {};
+  if (Object.prototype.hasOwnProperty.call(data, "interests")) {
+    payload.interests = data.interests;
+  }
+  if (Object.prototype.hasOwnProperty.call(data, "selected_career_paths")) {
+    payload.selected_career_paths = data.selected_career_paths;
+  }
   return fetch(`${API_BASE_URL}/api/users/${userId}/preferences`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
     credentials: "include",
   }).then(async (r) => {
     if (!r.ok) {
@@ -372,6 +398,7 @@ export interface Career {
   title: string;
   description: string | null;
   category: string;
+  career_path_key: string | null;
   average_salary: number | null;
 }
 

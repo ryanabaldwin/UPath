@@ -53,6 +53,7 @@ psql -U postgres -d upath_db -f backend/db/migrations/008_onboarding_fields.sql
 psql -U postgres -d upath_db -f backend/db/migrations/009_careers_table.sql
 psql -U postgres -d upath_db -f backend/db/migrations/010_add_auth_fields.sql
 psql -U postgres -d upath_db -f backend/db/migrations/011_seed_admin_user.sql
+psql -U postgres -d upath_db -f backend/db/migrations/012_career_path_journey_plans.sql
 ```
 
 If you want to run them all in one shot:

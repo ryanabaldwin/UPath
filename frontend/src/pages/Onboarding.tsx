@@ -274,7 +274,7 @@ export default function Onboarding() {
         <header className="flex items-center justify-between px-5 py-4 border-b border-border/50">
           <div className="flex items-center gap-2">
             <Compass className="h-6 w-6 text-primary" />
-            <span className="text-base font-bold text-foreground">PathFinder</span>
+            <span className="text-base font-bold text-foreground">UPath</span>
           </div>
           {firstName && (
             <span className="text-sm text-muted-foreground">Hi, {firstName}!</span>
@@ -346,7 +346,7 @@ export default function Onboarding() {
       <header className="flex items-center justify-between px-5 py-4 border-b border-border/50">
         <div className="flex items-center gap-2">
           <Compass className="h-6 w-6 text-primary" />
-          <span className="text-base font-bold text-foreground">PathFinder</span>
+          <span className="text-base font-bold text-foreground">UPath</span>
         </div>
         {isNewRegistration && pendingRegistration && (
           <span className="text-sm text-muted-foreground">
