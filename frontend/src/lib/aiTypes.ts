@@ -99,6 +99,30 @@ export interface MilestoneNode {
 
 export type MilestoneTree = MilestoneNode[];
 
+/** Server-computed rollups from GET /api/users/:id/milestones/tree */
+export interface MilestoneTreeSummary {
+  estimatedCompletionDate: string | null;
+  estimatedTimeRemainingDays: number | null;
+  planProgressPercent: number;
+  totalDailySteps: number;
+  completedDailySteps: number;
+  currentQuarter: {
+    label: string;
+    dueDate: string | null;
+    progressPercent: number;
+    completedSteps: number;
+    totalSteps: number;
+    daysRemainingInQuarter: number | null;
+  } | null;
+  quarterRollups: Array<{
+    label: string;
+    dueDate: string | null;
+    progressPercent: number;
+    completedSteps: number;
+    totalSteps: number;
+  }>;
+}
+
 export interface NorthStarFields {
   north_star_vision?: string;
   definition_of_success?: string;

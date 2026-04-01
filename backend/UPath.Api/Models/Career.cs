@@ -23,6 +23,10 @@ public class Career
     [Column("average_salary")]
     public int? AverageSalary { get; set; }
 
+    /// <summary>Stable slug for milestone journey templates (e.g. software-development).</summary>
+    [Column("career_path_key")]
+    public string? CareerPathKey { get; set; }
+
     [Column("created_at")]
     public DateTimeOffset CreatedAt { get; set; }
 }

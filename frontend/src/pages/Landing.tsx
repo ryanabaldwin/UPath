@@ -33,7 +33,7 @@ const Landing = () => {
       <header className="flex items-center justify-between px-5 py-4">
         <div className="flex items-center gap-2">
           <Compass className="h-7 w-7 text-primary" />
-          <span className="text-lg font-bold text-foreground">PathFinder</span>
+          <span className="text-lg font-bold text-foreground">UPath</span>
         </div>
         <div className="flex gap-2">
           {isAuthenticated ? (

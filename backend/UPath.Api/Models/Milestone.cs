@@ -38,6 +38,9 @@ public class Milestone
     [Column("due_date")]
     public DateOnly? DueDate { get; set; }
 
+    [Column("journey_plan_id")]
+    public long? JourneyPlanId { get; set; }
+
     [Column("created_at")]
     public DateTimeOffset CreatedAt { get; set; }
 
@@ -48,4 +51,6 @@ public class Milestone
     public User User { get; set; } = null!;
     public Milestone? Parent { get; set; }
     public ICollection<Milestone> Children { get; set; } = [];
+
+    public JourneyPlan? JourneyPlan { get; set; }
 }
