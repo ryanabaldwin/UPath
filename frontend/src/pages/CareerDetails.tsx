@@ -151,13 +151,6 @@ const CareerDetails = () => {
   return (
     <div className="space-y-8">
       <div>
-        <Link
-          to="/explore"
-          className="mb-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Explore
-        </Link>
         <h1 className="text-2xl font-bold text-foreground">Your Career Matches</h1>
         <p className="mt-1 text-muted-foreground">
           {selectedPaths.length > 0 || interests

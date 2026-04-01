@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Compass, ArrowRight, ArrowLeft, Check, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -272,10 +272,10 @@ export default function Onboarding() {
     return (
       <div className="flex min-h-screen flex-col bg-background">
         <header className="flex items-center justify-between px-5 py-4 border-b border-border/50">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <Compass className="h-6 w-6 text-primary" />
             <span className="text-base font-bold text-foreground">PathFinder</span>
-          </div>
+          </Link>
           {firstName && (
             <span className="text-sm text-muted-foreground">Hi, {firstName}!</span>
           )}
@@ -344,29 +344,14 @@ export default function Onboarding() {
     <div className="flex min-h-screen flex-col bg-background">
       {/* Header */}
       <header className="flex items-center justify-between px-5 py-4 border-b border-border/50">
-        <div className="flex items-center gap-2">
+        <Link to="/" className="flex items-center gap-2">
           <Compass className="h-6 w-6 text-primary" />
           <span className="text-base font-bold text-foreground">PathFinder</span>
-        </div>
+        </Link>
         {isNewRegistration && pendingRegistration && (
           <span className="text-sm text-muted-foreground">
             Hi, {pendingRegistration.firstName}!
           </span>
-        )}
-        {!isNewRegistration && users.length > 0 && (
-          <div className="flex items-center gap-2">
-            <select
-              value={userId ?? ""}
-              onChange={(e) => setUserId(e.target.value || null)}
-              className="text-xs rounded-lg border border-border bg-background px-2 py-1.5 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50"
-            >
-              {users.map((u) => (
-                <option key={u.id} value={u.id}>
-                  {u.user_first} {u.user_last}
-                </option>
-              ))}
-            </select>
-          </div>
         )}
       </header>
 

@@ -1,4 +1,4 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { UserCircle, LogOut } from "lucide-react";
 import BottomNav from "./BottomNav";
 import DesktopNav from "./DesktopNav";
@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 
 const AppLayout = () => {
   const { user, profile, logout } = useAuth();
+  const navigate = useNavigate();
 
   const displayName = profile
     ? `${profile.user_first} ${profile.user_last}`
@@ -37,7 +38,7 @@ const AppLayout = () => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={logout}
+            onClick={() => { logout(); navigate("/"); }}
             className="text-muted-foreground hover:text-foreground"
             title="Sign out"
           >
