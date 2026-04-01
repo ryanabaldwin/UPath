@@ -74,7 +74,3 @@ VALUES
   ('David',  'Chen',    'West',  NULL, 'Computer Engineering',       'Hardware engineer who volunteers with coding bootcamps for youth.'),
   ('Aaliyah','Brooks',  'South', NULL, 'Business & Entrepreneurship','Small business owner who mentors young entrepreneurs in her community.');
 
-INSERT INTO meetings (mentor_id, mentee_id, "time", meetingstatus)
-VALUES
-  (1, 1, '2026-03-01 10:00:00', 'scheduled'),
-  (2, 2, '2026-03-02 14:30:00', 'completed');

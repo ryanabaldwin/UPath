@@ -178,11 +178,6 @@ VALUES
   ('Aaliyah', 'Brooks', 'South', NULL, 'Business & Entrepreneurship', 'Small business owner who mentors young entrepreneurs in her community.')
 ON CONFLICT DO NOTHING;
 
-INSERT INTO meetings (mentor_id, mentee_id, "time", meetingstatus)
-VALUES
-  (1, '11111111-1111-1111-1111-111111111111', '2026-03-01 10:00:00', 'scheduled'),
-  (2, '22222222-2222-2222-2222-222222222222', '2026-03-02 14:30:00', 'completed')
-ON CONFLICT DO NOTHING;
 
 INSERT INTO resources (title, description, category, link, industry, education_level, format, location, cost_usd, eligibility_notes)
 VALUES

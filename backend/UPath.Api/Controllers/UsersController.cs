@@ -88,34 +88,6 @@ public class UsersController : ControllerBase
     }
 
     /// <summary>
-    /// GET /api/users/{id}/meetings
-    /// </summary>
-    [HttpGet("{id:int}/meetings")]
-    public async Task<IActionResult> GetUserMeetings([FromRoute] int id)
-    {
-        if (!IsPreferencesOwner(id))
-            return Forbid();
-
-        var meetings = await _db.Meetings
-            .AsNoTracking()
-            .Where(m => m.MenteeId == id)
-            .OrderBy(m => m.ScheduledTime)
-            .Select(m => new
-            {
-                mentor_id = m.MentorId,
-                mentee_id = m.MenteeId.ToString(),
-                time = m.ScheduledTime,
-                meetingstatus = m.MeetingStatus,
-                mentor_first = m.Mentor.MentorFirst,
-                mentor_last = m.Mentor.MentorLast,
-                specialty = m.Mentor.Specialty
-            })
-            .ToListAsync();
-
-        return Ok(meetings);
-    }
-
-    /// <summary>
     /// PATCH /api/users/{id} — partial update (snake_case keys from frontend). Session user must match id.
     /// </summary>
     [HttpPatch("{id:int}")]

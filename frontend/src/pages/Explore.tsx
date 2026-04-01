@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { careerPaths } from "@/data/mockData";
 import { Sparkles, MessageCircle, WifiOff, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 import {
