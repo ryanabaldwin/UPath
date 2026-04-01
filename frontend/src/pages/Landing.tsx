@@ -132,7 +132,7 @@ const Landing = () => {
           
           <div className="flex flex-col gap-4">
             {HOW_IT_WORKS.map(({ step, icon: Icon, title, description }) => (
-              <div key={step} className="flex items-start gap-4 rounded-2xl bg-card p-6 shadow-sm border border-border/50 hover:shadow-md transition-shadow">
+              <div key={step} className="flex items-start gap-4 bg-card p-6 border border-border/50">
                 <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10">
                   <Icon className="h-6 w-6 text-primary" />
                 </div>
@@ -161,7 +161,7 @@ const Landing = () => {
           </div>
 
           {/* Content side */}
-          <div className="relative p-8 lg:p-12 flex flex-col justify-center bg-background">
+          <div className="relative p-8 lg:p-16 lg:py-20 flex flex-col justify-center bg-background">
             <h2 className="text-3xl font-bold text-foreground mb-4">
               Ready to find your path?
             </h2>
@@ -189,12 +189,12 @@ const Landing = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 text-center border-t border-border/50">
+      <footer className="py-8 text-center bg-slate-900">
         <div className="flex items-center justify-center gap-2 mb-2">
           <Compass className="h-5 w-5 text-primary" />
-          <span className="font-semibold text-foreground">PathFinder</span>
+          <span className="font-semibold text-white">PathFinder</span>
         </div>
-        <p className="text-xs text-muted-foreground">
+        <p className="text-xs text-slate-400">
           Helping students find their way since 2024
         </p>
       </footer>
