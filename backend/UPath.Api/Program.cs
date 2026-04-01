@@ -78,7 +78,8 @@ app.Use(async (context, next) =>
                     || path.StartsWith("/api/auth/me")
                     || path.StartsWith("/api/auth/logout")
                     || path.StartsWith("/api/account/register")
-                    || path.StartsWith("/api/health");
+                    || path.StartsWith("/api/health")
+                    || path.StartsWith("/api/okr");
 
         if (!isPublic)
         {
