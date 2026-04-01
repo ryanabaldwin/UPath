@@ -267,10 +267,17 @@ export function putUserPreferences(
   userId: string,
   data: { interests?: string | null; selected_career_paths?: string[] }
 ) {
+  const payload: Record<string, unknown> = {};
+  if (Object.prototype.hasOwnProperty.call(data, "interests")) {
+    payload.interests = data.interests;
+  }
+  if (Object.prototype.hasOwnProperty.call(data, "selected_career_paths")) {
+    payload.selected_career_paths = data.selected_career_paths;
+  }
   return fetch(`${API_BASE_URL}/api/users/${userId}/preferences`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
     credentials: "include",
   }).then(async (r) => {
     if (!r.ok) {
