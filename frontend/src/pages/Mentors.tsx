@@ -21,6 +21,7 @@ function MentorCard({
   isBooking,
   isUnbooking,
   canBook,
+  canCancelBooking,
 }: {
   mentor: Mentor;
   onBook: (id: number) => void;
@@ -28,6 +29,7 @@ function MentorCard({
   isBooking: boolean;
   isUnbooking: boolean;
   canBook: boolean;
+  canCancelBooking: boolean;
 }) {
   const available = mentor.is_available;
 
@@ -63,7 +65,17 @@ function MentorCard({
             </p>
           )}
           <div className="mt-3 flex gap-2">
-            {available ? (
+            {canCancelBooking ? (
+              <Button
+                size="sm"
+                variant="outline"
+                className="rounded-full"
+                disabled={!canBook || isUnbooking}
+                onClick={() => onUnbook(mentor.mentor_id)}
+              >
+                {isUnbooking ? "Cancelling…" : "Cancel Booking"}
+              </Button>
+            ) : available ? (
               <Button
                 size="sm"
                 className="rounded-full"
@@ -73,14 +85,8 @@ function MentorCard({
                 {isBooking ? "Booking…" : "Book Now"}
               </Button>
             ) : (
-              <Button
-                size="sm"
-                variant="outline"
-                className="rounded-full"
-                disabled={!canBook || isUnbooking}
-                onClick={() => onUnbook(mentor.mentor_id)}
-              >
-                {isUnbooking ? "Cancelling…" : "Cancel Booking"}
+              <Button size="sm" variant="outline" className="rounded-full" disabled>
+                Booked
               </Button>
             )}
           </div>
@@ -132,7 +138,7 @@ const Mentors = () => {
   });
 
   const unbookMutation = useMutation({
-    mutationFn: (mentorId: number) => unbookMentor(mentorId, userId!),
+    mutationFn: (mentorId: number) => unbookMentor(mentorId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["mentors"] });
       queryClient.invalidateQueries({ queryKey: ["user-meetings", userId] });
@@ -144,6 +150,10 @@ const Mentors = () => {
   });
 
   const canBook = !!userId;
+  const scheduledMeetings = myMeetings.filter((m) => m.meetingstatus === "scheduled");
+  const myScheduledMentorIds = new Set(
+    scheduledMeetings.map((m) => m.mentor_id)
+  );
 
   const handleCancelBooking = (mentorId: number) => {
     if (window.confirm("Are you sure you want to cancel this booking?")) {
@@ -160,11 +170,11 @@ const Mentors = () => {
         </p>
       </div>
 
-      {myMeetings.length > 0 && (
+      {scheduledMeetings.length > 0 && (
         <div className="rounded-xl border border-primary/20 bg-primary/5 p-4">
           <h2 className="text-sm font-semibold text-foreground mb-2">My mentor sessions</h2>
           <ul className="space-y-2">
-            {myMeetings.map((m) => (
+            {scheduledMeetings.map((m) => (
               <li key={`${m.mentor_id}-${m.time}`} className="flex items-center justify-between text-sm">
                 <span>
                   {m.mentor_first} {m.mentor_last}
@@ -200,6 +210,7 @@ const Mentors = () => {
               isBooking={bookMutation.isPending}
               isUnbooking={unbookMutation.isPending}
               canBook={canBook}
+              canCancelBooking={myScheduledMentorIds.has(m.mentor_id)}
             />
           ))
         )}

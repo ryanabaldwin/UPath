@@ -425,11 +425,9 @@ export async function removeBookmark(userId: string, resourceId: number): Promis
   }
 }
 
-export async function unbookMentor(mentorId: number, menteeId: string): Promise<{ ok: boolean }> {
+export async function unbookMentor(mentorId: number): Promise<{ ok: boolean }> {
   const response = await fetch(`${API_BASE_URL}/api/mentors/${mentorId}/book`, {
     method: "DELETE",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ mentee_id: menteeId }),
     credentials: "include",
   });
   if (!response.ok) {

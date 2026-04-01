@@ -8,16 +8,38 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  convertGoalPathToGoal,
-  createGoalPath,
   createRecommendations,
-  createResourceRecommendations,
+  generateMilestoneJourney,
   trackUserEvent,
 } from "@/lib/api";
 import { toast } from "sonner";
-import type { GoalPath, GroundedResourceRecommendation, RecommendationMatch } from "@/lib/aiTypes";
+import type { RecommendationMatch } from "@/lib/aiTypes";
 
 const CAREER_SESSION_KEY = "upath_career_state";
+const CAREER_PATH_KEY_OVERRIDES: Record<string, string> = {
+  "software development": "software-development",
+  healthcare: "healthcare",
+  "product management": "product-management",
+  "trades & technical skills": "trades-technical",
+  "trades and technical skills": "trades-technical",
+  "trades & technical": "trades-technical",
+  "computer engineering": "computer-engineering",
+  "business & entrepreneurship": "business-entrepreneurship",
+  "business and entrepreneurship": "business-entrepreneurship",
+  education: "education",
+  "creative arts & design": "creative-arts-design",
+  "creative arts and design": "creative-arts-design",
+  science: "science",
+  "data & analytics": "data-analytics",
+  "data and analytics": "data-analytics",
+};
+
+function toCareerPathKey(pathTitle: string): string {
+  const normalized = pathTitle.trim().toLowerCase();
+  const overridden = CAREER_PATH_KEY_OVERRIDES[normalized];
+  if (overridden) return overridden;
+  return normalized.replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+}
 
 const FALLBACK_MATCHES: RecommendationMatch[] = [
   {
@@ -92,31 +114,19 @@ const CareerDetails = () => {
   });
 
   const buildPlanMutation = useMutation({
-    mutationFn: (selectedPath: string) => createGoalPath(userId!, selectedPath),
-    onError: (e: Error) => toast.error(e.message || "Unable to build your plan"),
-  });
-
-  const convertMutation = useMutation({
-    mutationFn: (goalPathId: string) => convertGoalPathToGoal(userId!, goalPathId),
+    mutationFn: (selectedPath: string) =>
+      generateMilestoneJourney(userId!, { career_path_key: toCareerPathKey(selectedPath) }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["milestone-tree", userId] });
       queryClient.invalidateQueries({ queryKey: ["next-step", userId] });
-      toast.success("Milestone plan created!");
+      queryClient.invalidateQueries({ queryKey: ["user", userId] });
+      toast.success("Your milestone plan is ready");
     },
-    onError: (e: Error) => toast.error(e.message || "Unable to build your milestone plan"),
-  });
-  const resourceRecommendationsMutation = useMutation({
-    mutationFn: (payload: { goal_path_id: string; selected_path: string }) =>
-      createResourceRecommendations(userId!, {
-        goal_path_id: payload.goal_path_id,
-        helps_step_number: 1,
-        selected_path: payload.selected_path,
-      }),
-    onError: (e: Error) => toast.error(e.message || "Unable to load grounded resources"),
+    onError: (e: Error) => toast.error(e.message || "Unable to build your plan"),
   });
 
   const displayedMatches = recommendationMutation.data?.matches ?? incomingMatches;
-  const builtGoalPath = buildPlanMutation.data;
+  const generatedJourney = buildPlanMutation.data;
 
   const handleRegenerate = async (intent: string) => {
     if (!userId) return;
@@ -131,20 +141,21 @@ const CareerDetails = () => {
   const handleBuildPlan = async (selectedPath: string) => {
     if (!userId) return;
     const res = await buildPlanMutation.mutateAsync(selectedPath);
-    await resourceRecommendationsMutation.mutateAsync({
-      goal_path_id: res.goal_path_id,
-      selected_path: selectedPath,
-    });
-    await trackUserEvent(userId, "goal_path_generated", {
-      goal_path_id: res.goal_path_id,
+    await trackUserEvent(userId, "milestone_journey_generated", {
+      journey_plan_id: res.journey_plan_id,
+      generated_count: res.generated_count,
+      plan_end_date: res.plan_end_date,
+      career_path_key: res.career_path_key,
       selected_path: selectedPath,
     });
   };
 
-  const handleSetAsGoal = async (goalPathId: string) => {
-    if (!userId) return;
-    await convertMutation.mutateAsync(goalPathId);
-    await trackUserEvent(userId, "milestone_plan_started", { goal_path_id: goalPathId });
+  const handleGoToMilestones = async () => {
+    if (userId && generatedJourney) {
+      await trackUserEvent(userId, "milestone_plan_started", {
+        journey_plan_id: generatedJourney.journey_plan_id,
+      });
+    }
     navigate("/milestones");
   };
 
@@ -267,16 +278,7 @@ const CareerDetails = () => {
         </Card>
       ))}
 
-      {builtGoalPath && (
-        <GoalPathCard
-          goalPathId={builtGoalPath.goal_path_id}
-          goalPath={builtGoalPath.goal_path}
-          resourceRecommendations={resourceRecommendationsMutation.data?.recommendations ?? []}
-          citations={resourceRecommendationsMutation.data?.citations ?? []}
-          onSetAsGoal={() => void handleSetAsGoal(builtGoalPath.goal_path_id)}
-          isSettingGoal={convertMutation.isPending}
-        />
-      )}
+      {generatedJourney && <JourneyGeneratedCard onGoToMilestones={() => void handleGoToMilestones()} />}
 
       <div className="rounded-xl bg-primary/5 p-6 text-center">
         <Briefcase className="mx-auto mb-2 h-8 w-8 text-primary" />
@@ -297,84 +299,20 @@ const CareerDetails = () => {
   );
 };
 
-function GoalPathCard({
-  goalPathId,
-  goalPath,
-  resourceRecommendations,
-  citations,
-  onSetAsGoal,
-  isSettingGoal,
-}: {
-  goalPathId: string;
-  goalPath: GoalPath;
-  resourceRecommendations: GroundedResourceRecommendation[];
-  citations: number[];
-  onSetAsGoal: () => void;
-  isSettingGoal: boolean;
-}) {
+function JourneyGeneratedCard({ onGoToMilestones }: { onGoToMilestones: () => void }) {
   return (
     <Card className="border-primary/30 bg-primary/5">
       <CardHeader className="pb-2">
-        <CardTitle className="text-lg">Your plan: {goalPath.selected_path}</CardTitle>
-        <p className="text-sm text-muted-foreground">{goalPath.long_term_goal}</p>
+        <CardTitle className="text-lg">Your milestone plan is ready</CardTitle>
+        <p className="text-sm text-muted-foreground">
+          We generated your journey milestones. Open Milestones to review and start tracking progress.
+        </p>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div>
-          <h4 className="mb-2 text-sm font-semibold text-foreground">Short-term goals</h4>
-          <ul className="space-y-1 text-sm text-muted-foreground">
-            {goalPath.short_term_goals.map((goal) => (
-              <li key={goal}>• {goal}</li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h4 className="mb-2 text-sm font-semibold text-foreground">Top weekly steps</h4>
-          <div className="space-y-2">
-            {goalPath.weekly_steps.slice(0, 3).map((step) => (
-              <div key={step.id} className="rounded-lg border border-border bg-card p-3 text-sm">
-                <p className="font-medium text-foreground">
-                  {step.week}: {step.label}
-                </p>
-                <p className="text-muted-foreground">
-                  ~{step.estimated_hours} hrs, ${step.estimated_cost_usd} estimated
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="rounded-lg border border-border bg-card p-3 text-sm text-muted-foreground">
-          <p className="font-medium text-foreground">Alternates</p>
-          <p className="mt-1">Fast-entry: {goalPath.alternates.fast_entry}</p>
-          <p>Higher-ceiling: {goalPath.alternates.higher_ceiling}</p>
-        </div>
-        {resourceRecommendations.length > 0 && (
-          <div className="rounded-lg border border-border bg-card p-3 text-sm">
-            <p className="font-medium text-foreground">Resources for step 1 (grounded)</p>
-            <div className="mt-2 space-y-2">
-              {resourceRecommendations.map((resource) => (
-                <div key={resource.resource_id} className="rounded-md border border-border p-2">
-                  <p className="font-medium text-foreground">{resource.title}</p>
-                  <p className="text-muted-foreground">{resource.why_this_helps}</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Eligibility: {resource.eligibility.education_level ?? "Any level"}
-                    {" · "}
-                    {resource.eligibility.location ?? "Any location"}
-                    {" · "}
-                    {resource.eligibility.estimated_cost_usd == null
-                      ? "Cost varies"
-                      : `$${resource.eligibility.estimated_cost_usd}`}
-                  </p>
-                </div>
-              ))}
-            </div>
-            <p className="text-xs text-muted-foreground mt-2">Citations: {citations.join(", ")}</p>
-          </div>
-        )}
-        <Button className="rounded-full" onClick={onSetAsGoal} disabled={isSettingGoal}>
+        <Button className="rounded-full" onClick={onGoToMilestones}>
           <CheckCircle2 className="mr-1 h-4 w-4" />
-          {isSettingGoal ? "Setting goal..." : "Set as my goal"}
+          Go to Milestones
         </Button>
-        <p className="text-xs text-muted-foreground">Goal path ID: {goalPathId}</p>
       </CardContent>
     </Card>
   );
