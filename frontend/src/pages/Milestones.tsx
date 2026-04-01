@@ -1,6 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Star, Flag, ChevronRight, ChevronDown, Flame, Plus, Pencil, Trash2, Compass } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -721,27 +722,34 @@ const Milestones = () => {
               </div>
             )}
             {summary && summary.quarterRollups.length > 1 && (
-              <div className="space-y-2">
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                  All quarters (snapshot)
-                </p>
-                <div className="grid max-h-48 gap-2 overflow-y-auto pr-1 sm:grid-cols-2">
-                  {summary.quarterRollups.map((q) => (
-                    <div
-                      key={`${q.label}-${q.dueDate ?? ""}`}
-                      className="rounded-md border border-border/80 bg-background/60 px-2 py-1.5 text-xs"
-                    >
-                      <div className="flex justify-between gap-2 font-medium">
-                        <span className="line-clamp-2">{q.label}</span>
-                        <span className="shrink-0 tabular-nums text-muted-foreground">{q.progressPercent}%</span>
+              <Collapsible defaultOpen={false}>
+                <CollapsibleTrigger
+                  type="button"
+                  className="group flex w-full items-center justify-between gap-2 rounded-lg border border-border/80 bg-background/40 px-3 py-2 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground hover:bg-muted/50"
+                >
+                  <span>All quarters (snapshot)</span>
+                  <ChevronRight className="h-4 w-4 shrink-0 transition-transform group-data-[state=open]:hidden" />
+                  <ChevronDown className="hidden h-4 w-4 shrink-0 group-data-[state=open]:block" />
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                  <div className="grid max-h-48 gap-2 overflow-y-auto pr-1 pt-2 sm:grid-cols-2">
+                    {summary.quarterRollups.map((q) => (
+                      <div
+                        key={`${q.label}-${q.dueDate ?? ""}`}
+                        className="rounded-md border border-border/80 bg-background/60 px-2 py-1.5 text-xs"
+                      >
+                        <div className="flex justify-between gap-2 font-medium">
+                          <span className="line-clamp-2">{q.label}</span>
+                          <span className="shrink-0 tabular-nums text-muted-foreground">{q.progressPercent}%</span>
+                        </div>
+                        {q.dueDate && (
+                          <p className="mt-0.5 text-[10px] text-muted-foreground">Due {q.dueDate}</p>
+                        )}
                       </div>
-                      {q.dueDate && (
-                        <p className="mt-0.5 text-[10px] text-muted-foreground">Due {q.dueDate}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
             )}
           </CardContent>
         </Card>
