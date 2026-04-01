@@ -56,6 +56,27 @@ public class UsersController : ControllerBase
         return Ok(users);
     }
 
+    [HttpGet("{id:int}/meetings")]
+    public async Task<IActionResult> GetMeetings([FromRoute] int id)
+    {
+        var meetings = await _db.Meetings
+            .AsNoTracking()
+            .Where(m => m.MenteeId == id)
+            .Select(m => new
+            {
+                mentor_id = m.MentorId,
+                mentee_id = m.MenteeId.ToString(),
+                time = m.ScheduledTime,
+                meetingstatus = m.MeetingStatus,
+                mentor_first = m.Mentor.MentorFirst,
+                mentor_last = m.Mentor.MentorLast,
+                specialty = m.Mentor.Specialty
+            })
+            .ToListAsync();
+
+        return Ok(meetings);
+    }
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetById([FromRoute] int id)
     {
