@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
 using UPath.Api.Data;
+using UPath.Api.Models;
 
 namespace UPath.Api.Controllers;
 
@@ -119,4 +120,3 @@ public class MentorsController : ControllerBase
         public string? MenteeId { get; set; }
     }
 }
-

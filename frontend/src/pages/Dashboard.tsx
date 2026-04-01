@@ -1,21 +1,24 @@
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Map, Users, Compass, BookOpen, ArrowRight, Star } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import { toast } from "sonner";
 import {
   fetchMilestoneTree,
   fetchUserMeetings,
   fetchUserBookmarks,
   fetchGoals,
   fetchNextPlanStep,
+  unbookMentor,
   type MilestoneNode,
 } from "@/lib/api";
 
 const Dashboard = () => {
+  const queryClient = useQueryClient();
   const { userId, profile: user } = useAuth();
 
   const { data: treeData } = useQuery({
@@ -30,6 +33,18 @@ const Dashboard = () => {
     queryFn: () => fetchUserMeetings(userId!),
     enabled: !!userId,
     retry: false,
+  });
+
+  const unbookMutation = useMutation({
+    mutationFn: (mentorId: number) => unbookMentor(mentorId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["user-meetings", userId] });
+      queryClient.invalidateQueries({ queryKey: ["mentors"] });
+      toast.success("Booking cancelled.");
+    },
+    onError: (err: Error) => {
+      toast.error(err.message || "Failed to cancel booking");
+    },
   });
 
   const { data: bookmarks = [] } = useQuery({
@@ -68,9 +83,9 @@ const Dashboard = () => {
   const hasMilestones = tree.length > 0;
   const macroNode = tree.find((n) => n.tier === "macro");
 
-  const nextMeeting = meetings[0];
+  const scheduledMeetings = meetings.filter((m) => m.meetingstatus === "scheduled");
 
-  const hasMentor = meetings.length > 0;
+  const hasMentor = scheduledMeetings.length > 0;
   const hasExplored = goals.length > 0;
   const checklistDone = hasMilestones && hasMentor;
   const checklistSteps = [
@@ -170,6 +185,49 @@ const Dashboard = () => {
         </Card>
       )}
 
+      {/* Booked mentor sessions — shown directly below Your Plan */}
+      {scheduledMeetings.length > 0 && (
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-lg">Booked mentor sessions</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {scheduledMeetings.map((m) => (
+              <div key={`${m.mentor_id}-${m.time}`} className="flex items-center justify-between gap-2">
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    {m.mentor_first} {m.mentor_last}
+                    {m.specialty ? ` · ${m.specialty}` : ""}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {new Date(m.time).toLocaleDateString(undefined, {
+                      weekday: "short",
+                      month: "short",
+                      day: "numeric",
+                      hour: "numeric",
+                      minute: "2-digit",
+                    })}
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="shrink-0 rounded-full"
+                  disabled={unbookMutation.isPending}
+                  onClick={() => {
+                    if (window.confirm("Cancel this booking?")) {
+                      unbookMutation.mutate(m.mentor_id);
+                    }
+                  }}
+                >
+                  Cancel
+                </Button>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
       {nextStepData?.next_step && (
         <Card className="border-primary/30 bg-primary/5">
           <CardHeader className="pb-2">
@@ -183,33 +241,6 @@ const Dashboard = () => {
             </p>
             <Button variant="outline" size="sm" className="mt-3 rounded-full" asChild>
               <Link to="/milestones">Track this step</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      )}
-
-      {/* Next mentor session */}
-      {nextMeeting && (
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-lg">Next mentor session</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              {nextMeeting.mentor_first} {nextMeeting.mentor_last}
-              {nextMeeting.specialty ? ` · ${nextMeeting.specialty}` : ""}
-            </p>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-foreground">
-              {new Date(nextMeeting.time).toLocaleDateString(undefined, {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-                hour: "numeric",
-                minute: "2-digit",
-              })}
-            </p>
-            <Button variant="outline" size="sm" className="mt-3 rounded-full" asChild>
-              <Link to="/mentors">View all mentors</Link>
             </Button>
           </CardContent>
         </Card>

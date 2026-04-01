@@ -58,27 +58,12 @@ public class UsersController : ControllerBase
         return Ok(users);
     }
 
-    [HttpGet("{id:int}")]
-    public async Task<IActionResult> GetById([FromRoute] int id)
-    {
-        var user = await UserPublicProjectionSingleAsync(id);
-        if (user is null) return NotFound(new { error = "User not found" });
-        return Ok(user);
-    }
-
-    /// <summary>
-    /// GET /api/users/{id}/meetings
-    /// </summary>
     [HttpGet("{id:int}/meetings")]
-    public async Task<IActionResult> GetUserMeetings([FromRoute] int id)
+    public async Task<IActionResult> GetMeetings([FromRoute] int id)
     {
-        if (!IsPreferencesOwner(id))
-            return Forbid();
-
         var meetings = await _db.Meetings
             .AsNoTracking()
             .Where(m => m.MenteeId == id)
-            .OrderBy(m => m.ScheduledTime)
             .Select(m => new
             {
                 mentor_id = m.MentorId,
@@ -92,6 +77,14 @@ public class UsersController : ControllerBase
             .ToListAsync();
 
         return Ok(meetings);
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetById([FromRoute] int id)
+    {
+        var user = await UserPublicProjectionSingleAsync(id);
+        if (user is null) return NotFound(new { error = "User not found" });
+        return Ok(user);
     }
 
     /// <summary>
