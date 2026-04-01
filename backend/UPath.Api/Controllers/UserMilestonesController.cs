@@ -4,6 +4,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using UPath.Api.Data;
 using UPath.Api.Models;
+using UPath.Api.Services;
 
 namespace UPath.Api.Controllers;
 
@@ -27,8 +28,13 @@ public class UserMilestonesController : ControllerBase
     };
 
     private readonly AppDbContext _db;
+    private readonly MilestoneJourneyGeneratorService _journeyGenerator;
 
-    public UserMilestonesController(AppDbContext db) => _db = db;
+    public UserMilestonesController(AppDbContext db, MilestoneJourneyGeneratorService journeyGenerator)
+    {
+        _db = db;
+        _journeyGenerator = journeyGenerator;
+    }
 
     [HttpGet("tree")]
     public async Task<IActionResult> GetTree([FromRoute] int userId)
@@ -69,7 +75,66 @@ public class UserMilestonesController : ControllerBase
             }
         }
 
-        return Ok(new { tree = roots });
+        var flatForSummary = await _db.Milestones
+            .AsNoTracking()
+            .Where(m => m.UserId == userId)
+            .Select(m => new MilestoneTreeSummaryCalculator.FlatNode(
+                m.Id,
+                m.ParentId,
+                m.Tier,
+                m.Status,
+                m.DueDate == null ? null : m.DueDate.Value.ToString("yyyy-MM-dd"),
+                m.Title))
+            .ToListAsync();
+
+        var summary = MilestoneTreeSummaryCalculator.Compute(flatForSummary, DateOnly.FromDateTime(DateTime.UtcNow));
+
+        return Ok(new { tree = roots, summary });
+    }
+
+    /// <summary>Generate a 5-year milestone journey from JSON templates (replaces any prior generated plan).</summary>
+    [HttpPost("generate")]
+    public async Task<IActionResult> GenerateJourney([FromRoute] int userId, [FromBody] GenerateJourneyRequest? body)
+    {
+        if (!IsSessionUser(userId))
+            return Forbid();
+
+        if (body is null)
+            return BadRequest(new { error = "body is required" });
+
+        string? pathKey = string.IsNullOrWhiteSpace(body.CareerPathKey) ? null : body.CareerPathKey.Trim();
+
+        if (body.CareerId is int cid)
+        {
+            var career = await _db.Careers.AsNoTracking().FirstOrDefaultAsync(c => c.CareerId == cid);
+            if (career is null)
+                return NotFound(new { error = "Career not found" });
+            pathKey = career.CareerPathKey;
+        }
+
+        if (string.IsNullOrEmpty(pathKey))
+            return BadRequest(new { error = "career_id or career_path_key is required" });
+
+        try
+        {
+            var result = await _journeyGenerator.GenerateAsync(userId, pathKey);
+            return Ok(new
+            {
+                journey_plan_id = result.JourneyPlanId,
+                northstar_milestone_id = result.NorthstarMilestoneId,
+                generated_count = result.CreatedCount,
+                plan_end_date = result.PlanEndDate.ToString("yyyy-MM-dd"),
+                career_path_key = pathKey
+            });
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return NotFound(new { error = ex.Message });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return BadRequest(new { error = ex.Message });
+        }
     }
 
     [HttpPost]
@@ -259,6 +324,12 @@ public class UserMilestonesController : ControllerBase
         return Ok(new { ok = true });
     }
 
+    private bool IsSessionUser(int userId)
+    {
+        var sessionId = HttpContext.Session.GetString("UserId");
+        return int.TryParse(sessionId, out var sid) && sid == userId;
+    }
+
     private static MilestoneNodeDto ToFlatDto(Milestone m) => new()
     {
         Id = (int)m.Id,
@@ -295,6 +366,15 @@ public class UserMilestonesController : ControllerBase
         if (raw is null) return null;
         var s = raw.Trim();
         return ValidStatuses.Contains(s) ? s : null;
+    }
+
+    public sealed class GenerateJourneyRequest
+    {
+        [JsonPropertyName("career_id")]
+        public int? CareerId { get; set; }
+
+        [JsonPropertyName("career_path_key")]
+        public string? CareerPathKey { get; set; }
     }
 
     public sealed class CreateMilestoneRequest

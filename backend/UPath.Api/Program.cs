@@ -48,6 +48,9 @@ builder.Services.AddCors(options =>
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddSingleton<UPath.Api.Services.MilestoneJourneyTemplateService>();
+builder.Services.AddScoped<UPath.Api.Services.MilestoneJourneyGeneratorService>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

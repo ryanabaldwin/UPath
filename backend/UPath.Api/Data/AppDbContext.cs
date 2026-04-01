@@ -18,6 +18,7 @@ public class AppDbContext : DbContext
     public DbSet<ResourceBookmark> ResourceBookmarks => Set<ResourceBookmark>();
     public DbSet<Milestone> Milestones => Set<Milestone>();
     public DbSet<Career> Careers => Set<Career>();
+    public DbSet<JourneyPlan> JourneyPlans => Set<JourneyPlan>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -121,6 +122,21 @@ public class AppDbContext : DbContext
             .HasOne(m => m.Parent)
             .WithMany(m => m.Children)
             .HasForeignKey(m => m.ParentId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<JourneyPlan>()
+            .HasKey(j => j.Id);
+
+        modelBuilder.Entity<JourneyPlan>()
+            .HasOne(j => j.User)
+            .WithMany()
+            .HasForeignKey(j => j.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Milestone>()
+            .HasOne(m => m.JourneyPlan)
+            .WithMany(j => j.Milestones)
+            .HasForeignKey(m => m.JourneyPlanId)
             .OnDelete(DeleteBehavior.Cascade);
 
         // ── Careers ──────────────────────────────────────────────────────────

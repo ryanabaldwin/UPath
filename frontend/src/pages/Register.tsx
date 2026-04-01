@@ -70,7 +70,7 @@ export default function Register() {
       <header className="flex items-center justify-between px-5 py-4 border-b border-border/50">
         <Link to="/" className="flex items-center gap-2">
           <Compass className="h-6 w-6 text-primary" />
-          <span className="text-base font-bold text-foreground">PathFinder</span>
+          <span className="text-base font-bold text-foreground">UPath</span>
         </Link>
         <Link to="/login">
           <Button variant="ghost" size="sm">
