@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Compass, Users, Sparkles, ArrowRight, Search, Map } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
+import OKRSection from "@/components/OKRSection";
 
 const HOW_IT_WORKS = [
   {
@@ -96,6 +97,7 @@ const Landing = () => {
         {!isAuthenticated && (
           <p className="mt-4 text-xs text-muted-foreground">No credit card required · Takes 3 minutes to set up</p>
         )}
+        <OKRSection />
       </section>
 
       {/* How it works */}
