@@ -29,7 +29,6 @@ import {
   fetchMilestoneTree,
   patchMilestone,
   createMilestone,
-  generateMilestones,
   fetchNextPlanStep,
   type MilestoneNode,
   type CreateMilestoneInput,
@@ -288,15 +287,6 @@ const Milestones = () => {
       toast.success("Milestone updated");
     },
     onError: (e: Error) => toast.error(e.message || "Failed to update milestone"),
-  });
-
-  const generateMutation = useMutation({
-    mutationFn: (selectedPath: string) => generateMilestones(userId!, selectedPath),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["milestone-tree", userId] });
-      toast.success("Milestone plan created!");
-    },
-    onError: (e: Error) => toast.error(e.message || "Failed to generate milestones"),
   });
 
   const handleToggle = (milestoneId: number, currentlyDone: boolean) => {
@@ -571,15 +561,6 @@ const Milestones = () => {
               >
                 <Plus className="mr-1.5 h-3.5 w-3.5" />
                 Add North Star
-              </Button>
-              <Button
-                size="sm"
-                className="rounded-full"
-                disabled={generateMutation.isPending}
-                onClick={() => generateMutation.mutate("")}
-              >
-                <Plus className="mr-1.5 h-3.5 w-3.5" />
-                {generateMutation.isPending ? "Generating…" : "Quick Start Plan"}
               </Button>
             </div>
           </CardContent>
