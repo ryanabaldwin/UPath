@@ -28,7 +28,7 @@ namespace UPath.Api.Controllers
                 objective = "Empower underprivileged youth to explore career paths",
                 results = new[]
                 {
-                    new { label = "Students exploring careers", value = studentCount },
+                    new { label = "Students served", value = studentCount },
                     new { label = "Mentor connections", value = mentorConnections },
                     new { label = "Milestones completed", value = milestonesCompleted }
                 }
