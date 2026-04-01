@@ -34,7 +34,7 @@ const Landing = () => {
       <header className="absolute top-0 left-0 right-0 z-10 flex items-center px-5 py-4">
         <div className="flex items-center gap-2">
           <Compass className="h-7 w-7 text-primary" />
-          <span className="text-lg font-bold text-white">PathFinder</span>
+          <span className="text-lg font-bold text-white">UPath</span>
         </div>
       </header>
 
@@ -195,7 +195,7 @@ const Landing = () => {
       <footer className="py-8 text-center bg-slate-900">
         <div className="flex items-center justify-center gap-2 mb-2">
           <Compass className="h-5 w-5 text-primary" />
-          <span className="font-semibold text-white">PathFinder</span>
+          <span className="font-semibold text-white">UPath</span>
         </div>
         <p className="text-xs text-slate-400">
           Helping students find their way since 2024
