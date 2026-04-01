@@ -1,31 +1,69 @@
-import { useMemo } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useMemo, useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Info, Target } from "lucide-react";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { ArrowLeft, Info, Loader2, Target } from "lucide-react";
 import { CAREER_PATH_OVERVIEWS, type CareerPathId } from "@/data/careerPathOverviews";
-
-const slugFromTitle = (title: string): CareerPathId | null => {
-  const normalized = title
-    .toLowerCase()
-    .replace(/&/g, "and")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-
-  if (!normalized) return null;
-
-  return normalized as CareerPathId;
-};
+import { useAuth } from "@/contexts/AuthContext";
+import { fetchMilestoneTree, generateMilestoneJourney } from "@/lib/api";
+import { toast } from "sonner";
 
 const CareerOverview = () => {
   const params = useParams<{ slug?: string }>();
   const slug = params.slug as CareerPathId | undefined;
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { userId } = useAuth();
+  const [confirmReplaceOpen, setConfirmReplaceOpen] = useState(false);
 
   const overview = useMemo(() => {
     if (slug && CAREER_PATH_OVERVIEWS[slug]) return CAREER_PATH_OVERVIEWS[slug];
     return null;
   }, [slug]);
+
+  const { data: treeData } = useQuery({
+    queryKey: ["milestone-tree", userId],
+    queryFn: () => fetchMilestoneTree(userId!),
+    enabled: !!userId,
+  });
+
+  const generateMutation = useMutation({
+    mutationFn: () => generateMilestoneJourney(userId!, { career_path_key: slug! }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["milestone-tree", userId] });
+      queryClient.invalidateQueries({ queryKey: ["next-step", userId] });
+      queryClient.invalidateQueries({ queryKey: ["user", userId] });
+      setConfirmReplaceOpen(false);
+      toast.success("Your 5-year milestone journey was generated");
+      navigate("/milestones");
+    },
+    onError: (e: Error) => toast.error(e.message || "Could not generate journey"),
+  });
+
+  const runGenerate = () => {
+    if (!userId || !slug) return;
+    generateMutation.mutate();
+  };
+
+  const handleBuildClick = () => {
+    if (!userId || !slug) return;
+    if (treeData?.has_active_generated_plan) {
+      setConfirmReplaceOpen(true);
+      return;
+    }
+    runGenerate();
+  };
 
   if (!overview) {
     return (
@@ -50,6 +88,8 @@ const CareerOverview = () => {
     );
   }
 
+  const generating = generateMutation.isPending;
+
   return (
     <div className="space-y-8">
       <div>
@@ -60,14 +100,39 @@ const CareerOverview = () => {
           <ArrowLeft className="h-4 w-4" />
           Back to Explore
         </Link>
-        <div className="flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10 text-2xl">
-            {overview.emoji}
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-primary/10 text-2xl">
+              {overview.emoji}
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold text-foreground">{overview.title}</h1>
+              <p className="mt-1 text-sm text-muted-foreground">{overview.tagline}</p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">{overview.title}</h1>
-            <p className="mt-1 text-sm text-muted-foreground">{overview.tagline}</p>
-          </div>
+        </div>
+
+        <div className="mt-6 rounded-xl border border-border bg-card p-4 shadow-sm">
+          <p className="text-sm font-medium text-foreground">Build your milestone path</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Creates a 5-year plan from our template for this career path. You can edit milestones anytime on the
+            Milestones page.
+          </p>
+          <Button
+            className="mt-4 rounded-full"
+            size="lg"
+            onClick={handleBuildClick}
+            disabled={!userId || generating}
+          >
+            {generating ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Building…
+              </>
+            ) : (
+              "Build my milestone path"
+            )}
+          </Button>
         </div>
       </div>
 
@@ -141,9 +206,42 @@ const CareerOverview = () => {
           ))}
         </CardContent>
       </Card>
+
+      <AlertDialog open={confirmReplaceOpen} onOpenChange={setConfirmReplaceOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Replace your generated milestone plan?</AlertDialogTitle>
+            <AlertDialogDescription className="space-y-2 text-left">
+              <span>
+                You already have a milestone plan created from a template. Building a new plan will remove your current
+                template plan and delete milestones that belong to it.
+              </span>
+              <span className="block">
+                Milestones you added yourself outside of a generated plan are not removed by this action.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={generating}>Cancel</AlertDialogCancel>
+            <Button
+              className="rounded-full"
+              onClick={() => runGenerate()}
+              disabled={generating}
+            >
+              {generating ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Replacing…
+                </>
+              ) : (
+                "Replace and build"
+              )}
+            </Button>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
 
 export default CareerOverview;
-

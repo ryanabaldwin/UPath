@@ -1,10 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { MemoryRouter } from "react-router-dom";
+import { MemoryRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Landing from "@/pages/Landing";
 import Explore from "@/pages/Explore";
+import CareerOverview from "@/pages/CareerOverview";
+import { exploreCareerSections } from "@/data/mockData";
 
 function renderWithProviders(
   ui: React.ReactElement,
@@ -40,15 +42,33 @@ function renderAppWithAuth(ui: React.ReactElement, { route = "/" }: { route?: st
 }
 
 describe("Landing", () => {
+  beforeEach(() => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => ({ ok: false, status: 401, json: async () => ({}) })) as unknown as typeof fetch
+    );
+  });
+
   it("shows hero heading and CTA", () => {
-    renderWithProviders(<Landing />);
-    expect(screen.getByRole("heading", { name: /find your path/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /go to my dashboard/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /explore careers first/i })).toBeInTheDocument();
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <MemoryRouter>
+            <Landing />
+          </MemoryRouter>
+        </AuthProvider>
+      </QueryClientProvider>
+    );
+    expect(screen.getByRole("heading", { name: /your career path/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /get started — it's free/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /sign in/i })).toBeInTheDocument();
   });
 });
 
-describe("Explore AI coach", () => {
+describe("Explore career hub", () => {
   const userId = "1";
 
   beforeEach(() => {
@@ -56,7 +76,6 @@ describe("Explore AI coach", () => {
       const url = String(input);
       const method = init?.method || "GET";
 
-      // Return auth user for /auth/me so the AuthProvider considers us logged in
       if (url.includes("/api/auth/me") && method === "GET") {
         return {
           ok: true,
@@ -70,7 +89,25 @@ describe("Explore AI coach", () => {
           }),
         };
       }
-      if (url.includes(`/api/users/${userId}`) && method === "GET" && !url.includes("/preferences") && !url.includes("/profile") && !url.includes("/ai") && !url.includes("/milestones") && !url.includes("/events")) {
+      if (url.includes("/milestones/tree") && method === "GET") {
+        return {
+          ok: true,
+          json: async () => ({
+            tree: [],
+            summary: {
+              estimatedCompletionDate: null,
+              estimatedTimeRemainingDays: null,
+              planProgressPercent: 0,
+              totalDailySteps: 0,
+              completedDailySteps: 0,
+              currentQuarter: null,
+              quarterRollups: [],
+            },
+            has_active_generated_plan: false,
+          }),
+        };
+      }
+      if (url.match(/\/api\/users\/\d+$/) && method === "GET" && !url.includes("milestones")) {
         return {
           ok: true,
           json: async () => ({
@@ -88,105 +125,56 @@ describe("Explore AI coach", () => {
           }),
         };
       }
-      if (url.includes(`/api/users/${userId}/preferences`) && method === "GET") {
-        return { ok: true, json: async () => ({ user_id: userId, interests: null, selected_career_paths: [] }) };
-      }
-      if (url.includes(`/api/users/${userId}/profile`) && method === "GET") {
-        return { ok: true, json: async () => ({ profile_json: {}, completeness: 0, thread_id: null }) };
-      }
-      if (url.includes(`/api/users/${userId}/ai/threads`) && method === "POST" && !url.includes("/messages")) {
-        return {
-          ok: true,
-          json: async () => ({
-            thread_id: "thread-1",
-            exploration_mode: "money-soon",
-            created_at: new Date().toISOString(),
-          }),
-        };
-      }
-      if (url.includes(`/api/users/${userId}/events`) && method === "POST") {
-        return { ok: true, json: async () => ({ ok: true }) };
-      }
-      if (url.includes(`/api/users/${userId}/ai/threads/thread-1/messages`) && method === "POST") {
-        const body = JSON.parse(String(init?.body || "{}"));
-        if (body.message === "unsafe") {
-          return {
-            ok: false,
-            status: 400,
-            json: async () => ({
-              error: {
-                code: "AI_COACH_UNSAFE_INPUT",
-                message: "blocked",
-                details: { safe_response: "Please ask a safer career question." },
-              },
-            }),
-          };
-        }
-        if (body.message?.toLowerCase().includes("build my plan")) {
-          return {
-            ok: true,
-            json: async () => ({
-              thread_id: "thread-1",
-              assistant_message: "I've created a personalized plan for you!",
-              updated_profile_json: {},
-              completeness: 60,
-              blocked: false,
-              actions: { show_milestones: true, generated_count: 8, macro_id: 1 },
-            }),
-          };
-        }
-        return {
-          ok: true,
-          json: async () => ({
-            thread_id: "thread-1",
-            assistant_message: "What subjects energize you most?",
-            updated_profile_json: {},
-            completeness: 20,
-            blocked: false,
-          }),
-        };
-      }
-      if (url.includes(`/api/users/${userId}/milestones/tree`) && method === "GET") {
-        return { ok: true, json: async () => ({ tree: [] }) };
-      }
-
       return { ok: true, json: async () => [] };
     });
 
     vi.stubGlobal("fetch", fetchMock as unknown as typeof fetch);
   });
 
-  it("shows starter mode prompt", async () => {
+  it("shows hero and Learn more links for all milestone-capable paths", async () => {
     renderAppWithAuth(<Explore />, { route: "/explore" });
-    expect(await screen.findByText(/pick a starter mode/i)).toBeInTheDocument();
+    expect(await screen.findByRole("heading", { name: /explore your future/i })).toBeInTheDocument();
+
+    const learnMoreLinks = screen.getAllByRole("link", { name: /^learn more$/i });
+    expect(learnMoreLinks).toHaveLength(exploreCareerSections.length);
+    const hrefs = learnMoreLinks.map((a) => a.getAttribute("href")).sort();
+    expect(hrefs).toEqual(exploreCareerSections.map((s) => `/paths/${s.slug}`).sort());
   });
 
-  it("shows 'View My New Plan' CTA when AI returns show_milestones action", async () => {
-    renderAppWithAuth(<Explore />, { route: "/explore" });
-    fireEvent.click(await screen.findByRole("button", { name: /money soon/i }));
-    await screen.findByText(/what subjects energize you most/i);
-
-    const input = screen.getByPlaceholderText(/type your answer/i);
-    fireEvent.change(input, { target: { value: "build my plan for software development" } });
-    fireEvent.click(screen.getByRole("button", { name: /send/i }));
-
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: /view my new plan/i })).toBeInTheDocument();
+  it("renders Data Analytics overview at /paths/data-analytics", async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
     });
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <MemoryRouter initialEntries={["/paths/data-analytics"]}>
+            <Routes>
+              <Route path="/paths/:slug" element={<CareerOverview />} />
+            </Routes>
+          </MemoryRouter>
+        </AuthProvider>
+      </QueryClientProvider>
+    );
+    expect(await screen.findByRole("heading", { name: /data analytics/i })).toBeInTheDocument();
+    expect(screen.getByText(/turn raw information into clear answers/i)).toBeInTheDocument();
   });
 
-  it("shows blocked state when unsafe message is sent", async () => {
-    renderAppWithAuth(<Explore />, { route: "/explore" });
-    fireEvent.click(await screen.findByRole("button", { name: /money soon/i }));
-    await screen.findByText(/what subjects energize you most/i);
-
-    const input = screen.getByPlaceholderText(/type your answer/i);
-    fireEvent.change(input, { target: { value: "unsafe" } });
-    fireEvent.click(screen.getByRole("button", { name: /send/i }));
-
-    await waitFor(() => {
-      expect(screen.getByText(/could not be processed safely/i)).toBeInTheDocument();
+  it("renders trades overview at canonical slug trades-technical", async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
     });
-    expect(screen.getByText(/please ask a safer career question/i)).toBeInTheDocument();
+    render(
+      <QueryClientProvider client={queryClient}>
+        <AuthProvider>
+          <MemoryRouter initialEntries={["/paths/trades-technical"]}>
+            <Routes>
+              <Route path="/paths/:slug" element={<CareerOverview />} />
+            </Routes>
+          </MemoryRouter>
+        </AuthProvider>
+      </QueryClientProvider>
+    );
+    expect(await screen.findByRole("heading", { name: /trades & technical skills/i })).toBeInTheDocument();
   });
 });

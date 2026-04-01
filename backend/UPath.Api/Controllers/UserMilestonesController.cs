@@ -89,7 +89,11 @@ public class UserMilestonesController : ControllerBase
 
         var summary = MilestoneTreeSummaryCalculator.Compute(flatForSummary, DateOnly.FromDateTime(DateTime.UtcNow));
 
-        return Ok(new { tree = roots, summary });
+        var hasActiveGeneratedPlan = await _db.JourneyPlans
+            .AsNoTracking()
+            .AnyAsync(j => j.UserId == userId);
+
+        return Ok(new { tree = roots, summary, has_active_generated_plan = hasActiveGeneratedPlan });
     }
 
     /// <summary>Generate a 5-year milestone journey from JSON templates (replaces any prior generated plan).</summary>

@@ -1,4 +1,4 @@
-import { Map, Users, Compass, BookOpen, Home, Briefcase, LogOut, Shield } from "lucide-react";
+import { Map, Users, Compass, BookOpen, Home, LogOut, Shield } from "lucide-react";
 import { NavLink, Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,7 +8,6 @@ const links = [
   { to: "/milestones", icon: Map, label: "Milestones" },
   { to: "/mentors", icon: Users, label: "Mentors" },
   { to: "/explore", icon: Compass, label: "Explore" },
-  { to: "/careers", icon: Briefcase, label: "Careers" },
   { to: "/resources", icon: BookOpen, label: "Resources" },
 ];
 

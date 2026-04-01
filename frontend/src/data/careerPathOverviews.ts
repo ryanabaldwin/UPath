@@ -6,8 +6,9 @@ export type CareerPathId =
   | "business-entrepreneurship"
   | "education"
   | "creative-arts-design"
-  | "trades-technical-skills"
-  | "science";
+  | "trades-technical"
+  | "science"
+  | "data-analytics";
 
 export interface CareerPathOverview {
   id: CareerPathId;
@@ -224,8 +225,8 @@ export const CAREER_PATH_OVERVIEWS: Record<CareerPathId, CareerPathOverview> = {
       "6–24 months to build a starter portfolio; 2–4+ years for some specialized roles or degrees.",
     salaryRange: "$35K–$100K+ depending on role, industry, and freelance vs. full-time.",
   },
-  "trades-technical-skills": {
-    id: "trades-technical-skills",
+  "trades-technical": {
+    id: "trades-technical",
     title: "Trades & Technical Skills",
     emoji: "🛠️",
     tagline: "Build, repair, and keep our communities running.",
@@ -279,6 +280,34 @@ export const CAREER_PATH_OVERVIEWS: Record<CareerPathId, CareerPathOverview> = {
       "Most science roles require at least a Bachelor’s degree, and many research roles need advanced degrees. However, entry-level lab and tech roles may be available with 2-year degrees or certificates.",
     timeToEntry: "2–6+ years depending on degree level and specialty.",
     salaryRange: "$40K–$120K+ depending on field, education, and sector.",
+  },
+  "data-analytics": {
+    id: "data-analytics",
+    title: "Data Analytics",
+    emoji: "📊",
+    tagline: "Turn raw information into clear answers and better decisions.",
+    summary:
+      "Data analytics careers focus on collecting, cleaning, analyzing, and visualizing data. Analysts help teams understand trends, measure performance, and make evidence-based choices in business, healthcare, education, and public policy.",
+    idealFor: [
+      "You like finding patterns and explaining what numbers mean",
+      "You’re comfortable with spreadsheets, charts, or learning tools like SQL or Python",
+      "You enjoy answering concrete questions with evidence",
+    ],
+    firstSteps: [
+      "Take a free intro to spreadsheets and charts (e.g. Google Sheets or Excel)",
+      "Try a short course on data literacy, SQL, or visualization basics",
+      "Practice on a small dataset you care about—sports, school, or a hobby",
+    ],
+    commonRoles: [
+      "Data Analyst",
+      "Business Intelligence Analyst",
+      "Reporting Analyst",
+      "Operations or Marketing Analyst",
+    ],
+    educationAndTraining:
+      "Many roles expect strong math and statistics comfort plus tools (Excel, SQL, BI tools). Bootcamps, certificates, Associate’s/Bachelor’s degrees in analytics, business, or STEM are common entry paths.",
+    timeToEntry: "6–24 months with focused learning and portfolio projects; longer with a full degree.",
+    salaryRange: "$55K–$110K+ depending on industry, location, and experience.",
   },
 };
 

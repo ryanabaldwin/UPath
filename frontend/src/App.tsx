@@ -14,7 +14,6 @@ import Dashboard from "./pages/Dashboard";
 import Milestones from "./pages/Milestones";
 import Mentors from "./pages/Mentors";
 import Explore from "./pages/Explore";
-import CareerDetails from "./pages/CareerDetails";
 import Resources from "./pages/Resources";
 import EditProfile from "./pages/EditProfile";
 import CareerOverview from "./pages/CareerOverview";
@@ -51,7 +50,6 @@ const App = () => (
                   <Route path="/milestones" element={<Milestones />} />
                   <Route path="/mentors" element={<Mentors />} />
                   <Route path="/explore" element={<Explore />} />
-                  <Route path="/careers" element={<CareerDetails />} />
                   <Route path="/paths/:slug" element={<CareerOverview />} />
                   <Route path="/resources" element={<Resources />} />
                   <Route path="/profile" element={<EditProfile />} />
